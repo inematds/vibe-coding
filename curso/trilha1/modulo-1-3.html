@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="vibe-coding">
+
+  <!-- ANTI-FOUC: script BLOQUEANTE, SEPARADO, PRIMEIRO no <head>, antes do Tailwind e do learn.css. -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <title>Módulo 1.3 · De "Funciona" a "Funciona Bem": Enhancement | Vibe Coding</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Manifesto do curso (OBRIGATORIO, identico em TODA pagina) -->
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "vibe-coding",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos & Primeiro Workflow", "modules": [
+        { "id": "1-1", "title": "Fundamentos & Ambiente", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "O Ciclo Completo: Plan, Build, Troubleshoot, Optimize", "topics": 8, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "De Funciona a Funciona Bem: Enhancement", "topics": 8, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Domínio do Agente de Código", "modules": [
+        { "id": "2-1", "title": "Workflows Agênticos & o Framework WAT", "topics": 9, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Estendendo o Agente: MCP & Pesquisa", "topics": 7, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Skills, Geração de Artefatos & Tokens", "topics": 9, "href": "curso/trilha2/modulo-2-3.html" }
+      ]},
+      { "n": "3", "title": "Hospedagem & Deploy", "modules": [
+        { "id": "3-1", "title": "Do Local ao Sempre-Ligado: GitHub & Trigger.dev", "topics": 8, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Agentes em Produção: Agendados & Webhooks", "topics": 8, "href": "curso/trilha3/modulo-3-2.html" }
+      ]},
+      { "n": "4", "title": "Construindo Frontends & Apps", "modules": [
+        { "id": "4-1", "title": "Modelo Mental & Primeiro App", "topics": 8, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Produção Real: Auth, Segurança, Pagamentos & Integração", "topics": 9, "href": "curso/trilha4/modulo-4-2.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    [id] { scroll-margin-top: 5rem; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - acento (emerald) + cores das outras trilhas no nav */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5, 150, 105, 0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5, 150, 105, 0.18); }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .text-emerald-300 { color: #047857; }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-900\/20 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .hover\:text-amber-400:hover { color: #92400e; }
+    html:not(.dark) .hover\:bg-amber-500\/10:hover { background-color: rgba(217, 119, 6, 0.08); }
+    html:not(.dark) .text-red-400 { color: #dc2626; }
+    html:not(.dark) .bg-red-900\/20 { background-color: rgba(220, 38, 38, 0.07); }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(220, 38, 38, 0.25); }
+    html:not(.dark) .bg-emerald-900\/20 { background-color: rgba(5, 150, 105, 0.08); }
+
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* TOC scrollspy active link */
+    .inema-toc-link.is-active, [data-inema-toc] a.is-active { color: #34d399; font-weight: 600; }
+    html:not(.dark) [data-inema-toc] a.is-active { color: #059669; }
+
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <a class="skip sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-emerald-600 focus:text-white focus:rounded-lg" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- NAVIGATION (T1 ativa) -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">⚡</span>
+            <span class="font-bold text-lg hidden sm:inline">Vibe Coding</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10">
+            <span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span><span class="hidden sm:inline">Domínio</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span><span class="hidden sm:inline">Deploy</span>
+          </a>
+          <a href="../trilha4/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors">
+            <span class="sm:hidden">T4</span><span class="hidden sm:inline">Apps</span>
+          </a>
+          <button type="button" data-inema-journey-open class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors ml-1">
+            <span aria-hidden="true">◷</span><span>Minha jornada</span>
+            <span class="inema-journey-badge hidden" data-inema-journey-badge data-count="0"></span>
+          </button>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" aria-label="Alternar tema claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Início</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Trilha 1</a>
+      <span>/</span>
+      <span class="text-emerald-400">Módulo 1.3</span>
+    </div>
+  </nav>
+
+  <!-- HEADER DO MÓDULO -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">MÓDULO 1.3</span>
+      <h3 class="text-2xl font-bold mb-4">✨ De "Funciona" a "Funciona Bem": Enhancement</h3>
+      <p class="text-lg text-neutral-400 max-w-3xl">Transformar um workflow que "passa nos testes" em um pronto para o mundo real. Você aprende a filosofia de enhancement em camadas, a ordem de prioridade e seis melhorias concretas — de fallback sem match a indicador de confiança — uma mudança por vez.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">8</div>
+          <div class="text-xs text-neutral-400">Tópicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">~55</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Inter.</div>
+          <div class="text-xs text-neutral-400">Nível</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-emerald-400">Polish</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+      <div class="mt-6 max-w-2xl" data-inema-meter="modulo:1-3" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 1.3">
+        <div class="flex items-center justify-between mb-1 text-sm">
+          <span class="text-neutral-400">Progresso do módulo</span>
+          <span class="text-emerald-400 font-semibold"><span data-inema-meter-pct>0%</span> · <span data-inema-meter-frac>0 de 8</span></span>
+        </div>
+        <div class="inema-bar h-2 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-emerald-500 rounded-full" data-inema-meter-fill style="width:0%"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[1fr_220px] lg:gap-10">
+
+    <main id="conteudo" class="min-w-0">
+
+      <!-- SVG FUTURISTA: as camadas de enhancement -->
+      <section class="mb-12">
+        <p class="text-neutral-300 mb-4 inema-prose leading-relaxed">Enhancement não é um salto: é uma escada. Você sobe um degrau por vez — primeiro o que <strong class="text-emerald-400">quebra</strong>, depois o que é <strong class="text-emerald-400">ineficiente</strong>, depois a <strong class="text-emerald-400">qualidade da saída</strong> e só então a <strong class="text-emerald-400">performance</strong>. O diagrama mostra essa ordem de prioridade, da base (erro) ao topo (velocidade).</p>
+        <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 overflow-hidden mb-3">
+          <svg viewBox="0 0 1000 260" class="w-full h-auto" role="img" aria-label="Escada de prioridade do enhancement: da base ao topo — tratamento de erro, melhorias de lógica, qualidade da saída e performance; a cada degrau, testar tudo de novo">
+            <defs>
+              <linearGradient id="m13-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/>
+              </linearGradient>
+              <filter id="m13-glow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <pattern id="m13-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+                <circle cx="1.3" cy="1.3" r="1.3" fill="#10b981" opacity="0.12"/>
+              </pattern>
+              <marker id="m13-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+            </defs>
+            <rect x="0" y="0" width="1000" height="260" fill="url(#m13-grid)"/>
+
+            <!-- Degrau 1: Erro (base, foco) -->
+            <g filter="url(#m13-glow)"><rect class="wf-a" x="60" y="186" width="300" height="48" rx="12" fill="#0e2018" stroke="url(#m13-grad)" stroke-width="2.5"/></g>
+            <text x="92" y="216" fill="#34d399" font-family="Inter,sans-serif" font-weight="700" font-size="16">1 · Erro</text>
+            <text x="210" y="216" fill="#9ee9c9" font-family="Inter,sans-serif" font-size="12">o que quebra</text>
+
+            <!-- Degrau 2: Lógica -->
+            <rect class="wf-a" x="230" y="132" width="300" height="48" rx="12" fill="#0e2018" stroke="#34d399" stroke-width="2"/>
+            <text x="262" y="162" fill="#9ee9c9" font-family="Inter,sans-serif" font-weight="600" font-size="15">2 · Lógica</text>
+            <text x="372" y="162" fill="#7fd6b3" font-family="Inter,sans-serif" font-size="12">o que é ineficiente</text>
+
+            <!-- Degrau 3: Qualidade da saída -->
+            <rect class="wf-a" x="400" y="78" width="320" height="48" rx="12" fill="#0e2018" stroke="#34d399" stroke-width="2"/>
+            <text x="432" y="108" fill="#9ee9c9" font-family="Inter,sans-serif" font-weight="600" font-size="15">3 · Saída</text>
+            <text x="540" y="108" fill="#7fd6b3" font-family="Inter,sans-serif" font-size="12">a experiência</text>
+
+            <!-- Degrau 4: Performance (topo) -->
+            <rect class="wf-a" x="580" y="24" width="320" height="48" rx="12" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+            <text x="612" y="54" fill="#bfe6ff" font-family="Inter,sans-serif" font-weight="600" font-size="15">4 · Performance</text>
+            <text x="752" y="54" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="12">a velocidade</text>
+
+            <!-- Setas conectando os degraus -->
+            <g fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.5">
+              <path d="M255,186 L300,180" marker-end="url(#m13-ahc)"/>
+              <path d="M425,132 L470,126" marker-end="url(#m13-ahc)"/>
+              <path d="M605,78 L650,72" marker-end="url(#m13-ahc)"/>
+            </g>
+            <text x="500" y="254" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="12">a cada degrau: re-teste o happy path, teste a correção e confirme que nada mais quebrou</text>
+          </svg>
+        </div>
+        <p class="text-xs text-neutral-500">Diagrama ilustrativo — recriação conceitual da ordem de enhancement, não uma captura de tela real.</p>
+      </section>
+
+      <!-- TÓPICO 1 -->
+      <section id="topico-1" data-inema-topic="modulo-1-3#topico-1" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+            <h2 class="text-2xl font-bold">🪜 Filosofia de enhancement em camadas</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m1-3-t1-p1">
+          <strong class="text-emerald-400">O que é:</strong> um workflow que "funciona" é básico e sem erros aparentes; um que <strong class="text-emerald-400">"funciona bem"</strong> trata casos extremos, tem boa experiência e é eficiente. A filosofia de enhancement é fechar essa distância <strong class="text-emerald-400">em camadas</strong> — uma mudança por vez, em degraus, para não se sobrecarregar.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+            <h4 class="font-bold text-emerald-400 mb-4">✓ Funciona BEM</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Casos extremos tratados (sem match, e-mail automático).</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Boa experiência: formatação, assinatura, tom.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Eficiente do gatilho ao rascunho.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Só "Funciona"</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Quebra no primeiro caso fora do happy path.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Responde até e-mails automáticos e no-reply.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Saída crua, sem voz de marca nem personalização.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🧭</span> Por que aprender</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m1-3-t1-p2">Enhancement é iterativo e fluido: faça o essencial primeiro, mantenha uma lista de "seria bom ter", colete feedback do mundo real, demonstre para um grupo pequeno e só então aplique novas rodadas. Limpeza também é enhancement — organizar, rotular e até colorir nós sobrepostos conta.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm"><strong>Teste tudo depois de cada mudança</strong> e salve/faça backup à medida que avança. Re-teste o happy path, teste o caso extremo que você corrigiu e confirme que nada mais quebrou.</p>
+        </div>
+
+        <h3 class="text-lg font-bold mb-3">Conceitos-chave</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Em camadas</div><p class="text-xs text-neutral-400">Uma mudança por vez.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Testar sempre</div><p class="text-xs text-neutral-400">Depois de cada degrau.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Backup</div><p class="text-xs text-neutral-400">Salve o progresso.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Fluido</div><p class="text-xs text-neutral-400">Feedback do mundo real.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 2 -->
+      <section id="topico-2" data-inema-topic="modulo-1-3#topico-2" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+            <h2 class="text-2xl font-bold">📊 Ordem de prioridade</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m1-3-t2-p1">
+          <strong class="text-emerald-400">O que é:</strong> há uma ordem clara para enhancement — <strong class="text-emerald-400">erro → lógica → qualidade da saída → performance</strong>. Primeiro o que quebra, depois o que é ineficiente, depois a experiência e por último a velocidade. Pular essa ordem é tempo perdido.
+        </p>
+
+        <h3 class="text-xl font-bold mb-4">Os quatro degraus, em ordem</h3>
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Tratamento de erro — o que quebra</h4>
+              <p class="text-neutral-300 text-sm">Casos que fazem o workflow falhar ou produzir resposta errada. Vem primeiro: um e-mail bonito é inútil se nenhum e-mail (ou o e-mail errado) é gerado.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Melhorias de lógica — o que é ineficiente</h4>
+              <p class="text-neutral-300 text-sm">Regras que poderiam ser mais espertas: filtrar e-mails velhos, ignorar automáticos, ramificar quando não há match.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Qualidade da saída — a experiência</h4>
+              <p class="text-neutral-300 text-sm">Como o resultado se sente: formatação do e-mail, voz de marca, assinatura, personalização com o nome do cliente.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">4</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Performance — a velocidade</h4>
+              <p class="text-neutral-300 text-sm">Quão rápido vai do gatilho ao rascunho. Otimize por último, quando o resto já está correto e polido.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-emerald-400 mb-3 flex items-center"><span class="mr-2">🧭</span> Por que aprender</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m1-3-t2-p2">Sempre confirme que o happy path ainda funciona <strong>antes e depois</strong> de mudar — assim você não culpa a sua mudança nova por uma quebra que já existia. A ordem evita polir algo que ainda nem está confiável.</p>
+        </div>
+
+        <h3 class="text-lg font-bold mb-3">Conceitos-chave</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">1. Erro</div><p class="text-xs text-neutral-400">O que quebra.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">2. Lógica</div><p class="text-xs text-neutral-400">O que é ineficiente.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">3. Saída</div><p class="text-xs text-neutral-400">A experiência.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">4. Performance</div><p class="text-xs text-neutral-400">A velocidade.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 3 -->
+      <section id="topico-3" data-inema-topic="modulo-1-3#topico-3" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+            <h2 class="text-2xl font-bold">🛟 Fallback sem match</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m1-3-t3-p1">
+          <strong class="text-emerald-400">O que é:</strong> quando o vector store <strong class="text-emerald-400">não acha</strong> uma política para responder, o agente não deve inventar. A solução: o agente emite um marcador de confiança ("política encontrada" / "nenhuma política"), um nó de código interpreta, um <strong class="text-emerald-400">IF</strong> ramifica e um novo rascunho educado diz "vamos pesquisar e retornar".
+        </p>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+          <div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">Cadeia de fallback (exemplo ilustrativo)</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed">agente → marcador: "no policy found"
+   ↓
+nó de código → lê o marcador
+   ↓
+<span class="text-emerald-400">IF</span> → política encontrada?
+   ├─ sim → rascunho normal
+   └─ não → rascunho "vamos pesquisar
+            e retornar" (bem formatado)</pre>
+        </div>
+
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🧭</span> Por que aprender</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m1-3-t3-p2">É a defesa nº 1 contra alucinação. Antecipe as perguntas de esclarecimento (limiar de match, mensagem de fallback, score de relevância) antes de pedir a mudança. E verifique: uma pergunta de "frete internacional" deve cair no rascunho de pesquisa, nunca numa resposta inventada.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Teste com uma pergunta provavelmente fora de escopo e confirme que o rascunho de fallback aparece — não uma alucinação. Bônus: esse rascunho costuma ser melhor formatado, com parágrafos e quebras de linha.</p>
+        </div>
+
+        <h3 class="text-lg font-bold mb-3">Conceitos-chave</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Marcador</div><p class="text-xs text-neutral-400">Confiança no system prompt.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Nó de código</div><p class="text-xs text-neutral-400">Interpreta o marcador.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">IF</div><p class="text-xs text-neutral-400">Ramifica o fluxo.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Rascunho extra</div><p class="text-xs text-neutral-400">"Vamos pesquisar."</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 4 -->
+      <section id="topico-4" data-inema-topic="modulo-1-3#topico-4" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+            <h2 class="text-2xl font-bold">⏱️ Filtro por tempo</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m1-3-t4-p1">
+          <strong class="text-emerald-400">O que é:</strong> processar só e-mails <strong class="text-emerald-400">mais novos que X minutos</strong>, para não reprocessar caixas antigas. Em vez de adicionar um nó de checagem de tempo, a IA descobre a sintaxe de busca do Gmail e adiciona um filtro <strong class="text-emerald-400">"newer than"</strong> direto no gatilho.
+        </p>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+          <div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">Filtro no gatilho do Gmail (exemplo ilustrativo)</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-emerald-400"># pedido em linguagem natural:</span>
+"Processe só e-mails dos últimos 10 minutos."
+
+<span class="text-emerald-400"># a IA adiciona ao gatilho:</span>
+query: newer_than:10m
+<span class="text-neutral-500"># sem nó separado de checagem de tempo</span></pre>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+            <h4 class="font-bold text-emerald-400 mb-4">✓ Vantagem</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Filtro direto no gatilho — sem nó extra.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Não reprocessa e-mails antigos da caixa.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Mais leve e mais rápido de executar.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ O que evitar</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Criar um nó de checagem de tempo redundante.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Janela tão curta que perde e-mails entre execuções.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Janela tão larga que reprocessa e duplica.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🧭</span> Por que aprender</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m1-3-t4-p2">Mostra que a IA muitas vezes acha um jeito mais elegante do que o óbvio — usar a query nativa do Gmail em vez de um nó. Alinhar a janela de tempo ao intervalo de polling evita perder ou duplicar e-mails.</p>
+        </div>
+
+        <h3 class="text-lg font-bold mb-3">Conceitos-chave</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">newer than</div><p class="text-xs text-neutral-400">Sintaxe do Gmail.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">No gatilho</div><p class="text-xs text-neutral-400">Sem nó separado.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Janela</div><p class="text-xs text-neutral-400">Alinhe ao polling.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Eficiência</div><p class="text-xs text-neutral-400">Menos reprocesso.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 5 -->
+      <section id="topico-5" data-inema-topic="modulo-1-3#topico-5" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+            <h2 class="text-2xl font-bold">🚫 Filtrar e-mails automáticos</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m1-3-t5-p1">
+          <strong class="text-emerald-400">O que é:</strong> nem todo e-mail merece resposta. Um nó de código após o gatilho detecta <strong class="text-emerald-400">out-of-office, notificações de entrega, newsletters e remetentes no-reply/postmaster/bounce/marketing</strong>, adiciona um booleano <code class="font-mono text-emerald-400">isAutomated</code> e o motivo, e ramifica para pular. Isso cria três portões: automático? → suporte? → match de política?
+        </p>
+
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">⚠️</span> A armadilha do case sensitivity</h3>
+          <p class="text-neutral-300 text-sm mb-3 inema-prose" data-inema-block="m1-3-t5-p2">Um bug clássico: o filtro deixou passar um remetente <code class="font-mono text-red-400">no-reply@</code> porque o código lia os campos de cabeçalho em <strong>minúsculas</strong>, mas eles chegavam <strong>capitalizados</strong>. A correção: comparar os dois casos. Cabeçalho com case sensitivity quebra filtros silenciosamente.</p>
+          <div class="bg-dark-800 rounded-lg p-3 border border-dark-600">
+            <pre class="font-mono text-xs text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-red-400"># falha:</span> header.toLowerCase() vs "No-Reply@..."
+<span class="text-emerald-400"># corrige:</span> comparar lower E original</pre>
+          </div>
+        </div>
+
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🧭</span> Por que aprender</h3>
+          <p class="text-neutral-300 text-sm">Evita rascunhos absurdos (responder a um "entrega concluída") e gasto de tokens à toa. Quando há vários workflows visíveis para a IA, <strong>nomeie o workflow existente</strong> no pedido — um pedido vago pode fazer a IA criar um workflow novo do zero.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Para testar um filtro, você precisa enviar exatamente aquele tipo de e-mail. Se um automático passar, copie o problema de volta para a IA e deixe-a corrigir o case sensitivity; recarregue o n8n e re-teste.</p>
+        </div>
+
+        <h3 class="text-lg font-bold mb-3">Conceitos-chave</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">isAutomated</div><p class="text-xs text-neutral-400">Booleano + motivo.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">3 portões</div><p class="text-xs text-neutral-400">Auto → suporte → match.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Case</div><p class="text-xs text-neutral-400">Compare os dois casos.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Nomeie</div><p class="text-xs text-neutral-400">O workflow existente.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 6 -->
+      <section id="topico-6" data-inema-topic="modulo-1-3#topico-6" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+            <h2 class="text-2xl font-bold">🗣️ Voz/tom da marca</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m1-3-t6-p1">
+          <strong class="text-emerald-400">O que é:</strong> ajustar o tom das respostas para algo amigável, prestativo, descontraído e entusiasmado. A mudança é feita em <strong class="text-emerald-400">dois lugares</strong>: o system prompt do agente de IA (respostas técnicas) e o rascunho de fallback "vamos pesquisar". Aqui já entramos na camada de qualidade da saída.
+        </p>
+
+        <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-emerald-400 mb-3 flex items-center"><span class="mr-2">🎨</span> O que entra no system prompt</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-1">•</span><span>Estilo de saudação e abertura.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-1">•</span><span>Diretrizes de tom ("tech-savvy, mas nunca condescendente").</span></li>
+            <li class="flex items-start space-x-2"><span class="text-emerald-400 mt-1">•</span><span>Frases encorajadoras e despedidas variadas.</span></li>
+          </ul>
+        </div>
+
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🧭</span> Por que aprender</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m1-3-t6-p2">O tom é o que faz a resposta parecer "da empresa" e não "de um robô genérico". Seja específico e <strong>referencie o workflow existente</strong> para a IA editá-lo, em vez de construir um novo. Atualizar os dois lugares (agente e fallback) mantém a voz consistente em qualquer caminho.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Depois de aplicar, envie um e-mail de teste e leia o rascunho como se fosse o cliente: a personalidade está lá? O tom é consistente entre a resposta técnica e o fallback?</p>
+        </div>
+
+        <h3 class="text-lg font-bold mb-3">Conceitos-chave</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Dois lugares</div><p class="text-xs text-neutral-400">Agente + fallback.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Tom</div><p class="text-xs text-neutral-400">Amigável e claro.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Específico</div><p class="text-xs text-neutral-400">Referencie o workflow.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Consistente</div><p class="text-xs text-neutral-400">Em todo caminho.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 7 -->
+      <section id="topico-7" data-inema-topic="modulo-1-3#topico-7" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">7</span>
+            <h2 class="text-2xl font-bold">👤 Personalização com nome do cliente</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m1-3-t7-p1">
+          <strong class="text-emerald-400">O que é:</strong> extrair o nome do cliente da <strong class="text-emerald-400">assinatura/fechamento</strong> do e-mail (padrões como "Abraços, João" / "Obrigada, Sara"), guardar numa variável e usar na saudação — com fallback <strong class="text-emerald-400">"Olá"</strong> quando não há assinatura. Um novo nó de código faz a extração; o prompt do agente e os dois rascunhos passam a usar o nome.
+        </p>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+          <div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">Extração do nome (exemplo ilustrativo)</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed">padrões: "Abraços, João" / "Obrigada, Sara"
+   ↓
+variável nome = "João"
+   ↓
+saudação: "Olá João," <span class="text-neutral-500"># ou "Olá" se vazio</span></pre>
+        </div>
+
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">⚠️</span> Por que aprender — "é por isso que se testa"</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m1-3-t7-p2">A lógica de extração/fallback pode se comportar de forma inesperada: sem assinatura, ela pode acabar usando o <strong>nome do endereço de e-mail</strong> em vez do "Olá". Teste com entradas extremas. A IA também pode fazer ajustes não pedidos (reposicionar nós) — revise.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Envie um e-mail de teste com assinatura clara e outro sem nenhuma. Confirme a saudação personalizada no primeiro e o fallback "Olá" (e não o nome do e-mail) no segundo.</p>
+        </div>
+
+        <h3 class="text-lg font-bold mb-3">Conceitos-chave</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Extração</div><p class="text-xs text-neutral-400">Da assinatura.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Variável</div><p class="text-xs text-neutral-400">Reusada nos rascunhos.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Fallback "Olá"</div><p class="text-xs text-neutral-400">Sem nome → genérico.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-emerald-400 font-semibold text-sm mb-1">Teste extremo</div><p class="text-xs text-neutral-400">Com e sem assinatura.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 8 -->
+      <section id="topico-8" data-inema-topic="modulo-1-3#topico-8" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">8</span>
+            <h2 class="text-2xl font-bold">🟢 Indicador de confiança</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m1-3-t8-p1">
+          <strong class="text-emerald-400">O que é:</strong> um <strong class="text-emerald-400">badge alto/médio/baixo</strong> a partir do score com que a base de conhecimento bateu — para <strong class="text-emerald-400">revisão interna</strong>, anexado ao final do rascunho. O agente emite o marcador (ex.: alto &gt; 0,8; médio 0,6–0,8; baixo &lt; 0,6); um nó de código interpreta e monta um badge HTML (verde/amarelo/vermelho, cinza quando não há match).
+        </p>
+
+        <div class="bg-gradient-to-br from-emerald-900/30 to-dark-800 rounded-xl border border-emerald-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-emerald-400 mb-3 flex items-center"><span class="mr-2">📶</span> A escala de confiança</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600"><span class="inline-block w-3 h-3 rounded-full bg-emerald-400 mb-1"></span><div class="text-emerald-400 font-semibold">Alto</div><p class="text-xs text-neutral-400">score &gt; 0,8</p></div>
+            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600"><span class="inline-block w-3 h-3 rounded-full bg-yellow-400 mb-1"></span><div class="text-yellow-400 font-semibold">Médio</div><p class="text-xs text-neutral-400">0,6 – 0,8</p></div>
+            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600"><span class="inline-block w-3 h-3 rounded-full bg-red-400 mb-1"></span><div class="text-red-400 font-semibold">Baixo</div><p class="text-xs text-neutral-400">score &lt; 0,6</p></div>
+            <div class="bg-dark-800/60 rounded-lg p-3 border border-dark-600"><span class="inline-block w-3 h-3 rounded-full bg-neutral-500 mb-1"></span><div class="text-neutral-400 font-semibold">Nenhum</div><p class="text-xs text-neutral-400">sem match</p></div>
+          </div>
+        </div>
+
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🧭</span> Por que aprender</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m1-3-t8-p2">O badge dá ao revisor humano um sinal rápido de quanto confiar no rascunho antes de enviar — sem ler tudo. Como nas outras melhorias, ancore o pedido no <strong>workflow existente nomeado</strong> para a IA editar em vez de recriar. É um exemplo de qualidade de saída voltada para quem opera o agente.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Teste com um e-mail de price-match (geralmente match parcial) para ver o badge médio/baixo aparecer. O badge é interno: ele orienta a revisão, não vai para o cliente.</p>
+        </div>
+
+        <!-- Checagem leve opcional -->
+        <div data-inema-check="modulo-1-3#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <p class="inema-check__q font-medium mb-4">Auto-recuperação (opcional): qual deve ser o PRIMEIRO degrau de enhancement, antes dos outros?</p>
+          <div class="inema-check-options inema-check__options space-y-2">
+            <button type="button" class="inema-check__option block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0">Performance — deixar tudo mais rápido.</button>
+            <button type="button" class="inema-check__option block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1">Tratamento de erro — o que quebra.</button>
+            <button type="button" class="inema-check__option block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2">Voz da marca — deixar o tom bonito.</button>
+          </div>
+          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="flex justify-start mt-8">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section class="mb-8">
+        <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumo do Módulo</h2>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Enhancement em camadas</strong><span class="text-neutral-400"> — uma mudança por vez; "funciona" vs "funciona bem".</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Ordem de prioridade</strong><span class="text-neutral-400"> — erro → lógica → qualidade da saída → performance.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Erro &amp; lógica</strong><span class="text-neutral-400"> — fallback sem match, filtro por tempo, filtrar automáticos (case!).</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Qualidade da saída</strong><span class="text-neutral-400"> — voz da marca, nome do cliente, indicador de confiança.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong class="text-neutral-100">Regra de ouro</strong><span class="text-neutral-400"> — backup, teste após cada mudança e ancore no workflow existente.</span></div></div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-emerald-400 mb-2">Próxima Trilha:</h3>
+            <p class="text-neutral-300">Trilha 2 — Domínio do Agente de Código: workflows agênticos, o framework WAT, MCP, skills e gestão de tokens.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="modulo-1-2.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Módulo Anterior</a>
+            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">Voltar para a Trilha →</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- TOC sticky + scrollspy -->
+    <aside class="hidden lg:block">
+      <nav data-inema-toc aria-label="Índice da página" class="sticky top-24 self-start">
+        <p class="text-sm text-neutral-400 mb-3">Seção <span data-inema-section-counter><span class="inema-toc-pos">1</span> de <span class="inema-toc-total">8</span></span></p>
+        <ol class="space-y-1.5 text-sm">
+          <li><a href="#topico-1" class="inema-toc-link text-neutral-400 hover:text-emerald-400 block">1. Enhancement em camadas</a></li>
+          <li><a href="#topico-2" class="inema-toc-link text-neutral-400 hover:text-emerald-400 block">2. Ordem de prioridade</a></li>
+          <li><a href="#topico-3" class="inema-toc-link text-neutral-400 hover:text-emerald-400 block">3. Fallback sem match</a></li>
+          <li><a href="#topico-4" class="inema-toc-link text-neutral-400 hover:text-emerald-400 block">4. Filtro por tempo</a></li>
+          <li><a href="#topico-5" class="inema-toc-link text-neutral-400 hover:text-emerald-400 block">5. Filtrar automáticos</a></li>
+          <li><a href="#topico-6" class="inema-toc-link text-neutral-400 hover:text-emerald-400 block">6. Voz/tom da marca</a></li>
+          <li><a href="#topico-7" class="inema-toc-link text-neutral-400 hover:text-emerald-400 block">7. Nome do cliente</a></li>
+          <li><a href="#topico-8" class="inema-toc-link text-neutral-400 hover:text-emerald-400 block">8. Indicador de confiança</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+  </div>
+
+  <footer class="border-t border-dark-600 py-8 mt-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Vibe Coding na Prática · Curso original <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium">INEMA.CLUB</a> · 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const htmlEl = document.documentElement;
+    if (htmlEl.classList.contains('dark')) { themeToggleLightIcon.classList.remove('hidden'); }
+    else { themeToggleDarkIcon.classList.remove('hidden'); }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      htmlEl.classList.toggle('dark');
+      const isDark = htmlEl.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      if (window.INEMA && INEMA.setPref) { INEMA.setPref('theme', isDark ? 'inema-dark' : 'claro'); }
+    });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+      if (window.INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-1-3#q1', {
+          answer: 1,
+          explain: {
+            0: 'Não. Performance vem por último — só faz sentido acelerar o que já está correto e polido.',
+            1: 'Isso. Tratamento de erro vem primeiro: um e-mail bonito é inútil se nenhum (ou o errado) é gerado.',
+            2: 'Não. Voz da marca é qualidade de saída — vem depois de erro e lógica estarem resolvidos.'
+          }
+        });
+      }
+    }
+  </script>
+
+</body>
+</html>

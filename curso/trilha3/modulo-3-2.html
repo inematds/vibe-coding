@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="vibe-coding">
+
+  <!-- ANTI-FOUC: script BLOQUEANTE, SEPARADO, PRIMEIRO no <head>, antes do Tailwind e do learn.css. -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <title>Módulo 3.2 · Agentes em Produção: Agendados & Webhooks | Vibe Coding</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Manifesto do curso (OBRIGATORIO, identico em TODA pagina) -->
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "vibe-coding",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos & Primeiro Workflow", "modules": [
+        { "id": "1-1", "title": "Fundamentos & Ambiente", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "O Ciclo Completo: Plan, Build, Troubleshoot, Optimize", "topics": 8, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "De Funciona a Funciona Bem: Enhancement", "topics": 8, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Domínio do Agente de Código", "modules": [
+        { "id": "2-1", "title": "Workflows Agênticos & o Framework WAT", "topics": 9, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Estendendo o Agente: MCP & Pesquisa", "topics": 7, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Skills, Geração de Artefatos & Tokens", "topics": 9, "href": "curso/trilha2/modulo-2-3.html" }
+      ]},
+      { "n": "3", "title": "Hospedagem & Deploy", "modules": [
+        { "id": "3-1", "title": "Do Local ao Sempre-Ligado: GitHub & Trigger.dev", "topics": 8, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Agentes em Produção: Agendados & Webhooks", "topics": 8, "href": "curso/trilha3/modulo-3-2.html" }
+      ]},
+      { "n": "4", "title": "Construindo Frontends & Apps", "modules": [
+        { "id": "4-1", "title": "Modelo Mental & Primeiro App", "topics": 8, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Produção Real: Auth, Segurança, Pagamentos & Integração", "topics": 9, "href": "curso/trilha4/modulo-4-2.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    [id] { scroll-margin-top: 5rem; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - acento (purple) + cores das outras trilhas no nav */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124, 58, 237, 0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124, 58, 237, 0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124, 58, 237, 0.18); }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .text-purple-300 { color: #6d28d9; }
+    html:not(.dark) .bg-purple-900\/20 { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-900\/20 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:text-amber-400:hover { color: #92400e; }
+    html:not(.dark) .hover\:bg-amber-500\/10:hover { background-color: rgba(217, 119, 6, 0.08); }
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-900\/20 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .text-red-400 { color: #dc2626; }
+    html:not(.dark) .bg-red-900\/20 { background-color: rgba(220, 38, 38, 0.07); }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(220, 38, 38, 0.25); }
+
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* TOC scrollspy active link */
+    .inema-toc-link.is-active, [data-inema-toc] a.is-active { color: #c084fc; font-weight: 600; }
+    html:not(.dark) [data-inema-toc] a.is-active { color: #7c3aed; }
+
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <a class="skip sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-purple-600 focus:text-white focus:rounded-lg" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- NAVIGATION (T3 ativa) -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">⚡</span>
+            <span class="font-bold text-lg hidden sm:inline">Vibe Coding</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span><span class="hidden sm:inline">Domínio</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10">
+            <span class="sm:hidden">T3</span><span class="hidden sm:inline">Deploy</span>
+          </a>
+          <a href="../trilha4/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors">
+            <span class="sm:hidden">T4</span><span class="hidden sm:inline">Apps</span>
+          </a>
+          <button type="button" data-inema-journey-open class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors ml-1">
+            <span aria-hidden="true">◷</span><span>Minha jornada</span>
+            <span class="inema-journey-badge hidden" data-inema-journey-badge data-count="0"></span>
+          </button>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" aria-label="Alternar tema claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-purple-400">Início</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-purple-400">Trilha 3</a>
+      <span>/</span>
+      <span class="text-purple-400">Módulo 3.2</span>
+    </div>
+  </nav>
+
+  <!-- HEADER DO MÓDULO -->
+  <header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MÓDULO 3.2</span>
+      <h3 class="text-2xl font-bold mb-4">⚙️ Agentes em Produção: Agendados &amp; Webhooks</h3>
+      <p class="text-lg text-neutral-400 max-w-3xl">Dois builds reais de ponta a ponta, com erro tratado e debug em produção. Você constrói um agente de pesquisa agendado (cron → Firecrawl → Google Sheets), resolve o OAuth refresh token, depura uma falha que só aparece em prod, monta um relatório por webhook (JSON → .docx → Google Drive), protege o endpoint com Bearer, liga o pipeline GitHub → Trigger.dev e domina o error handling em camadas e o loop humano de debug.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">8</div>
+          <div class="text-xs text-neutral-400">Tópicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">~65</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Inter.</div>
+          <div class="text-xs text-neutral-400">Nível</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-purple-400">Prod</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+      <div class="mt-6 max-w-2xl" data-inema-meter="modulo:3-2" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 3.2">
+        <div class="flex items-center justify-between mb-1 text-sm">
+          <span class="text-neutral-400">Progresso do módulo</span>
+          <span class="text-purple-400 font-semibold"><span data-inema-meter-pct>0%</span> · <span data-inema-meter-frac>0 de 8</span></span>
+        </div>
+        <div class="inema-bar h-2 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-purple-500 rounded-full" data-inema-meter-fill style="width:0%"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[1fr_220px] lg:gap-10">
+
+    <main id="conteudo" class="min-w-0">
+
+      <!-- SVG FUTURISTA: os dois builds em produção -->
+      <section class="mb-12">
+        <p class="text-neutral-300 mb-4 inema-prose leading-relaxed">Este módulo são dois builds completos rodando em produção. Um é <strong class="text-purple-400">agendado</strong>: o cron dispara, o Firecrawl pesquisa, a IA sintetiza e uma linha vai para o Google Sheets. O outro é por <strong class="text-purple-400">evento</strong>: um webhook recebe um payload JSON, gera um <code class="font-mono text-purple-400">.docx</code> e salva no Google Drive. O diagrama compara os dois caminhos.</p>
+        <div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 overflow-hidden mb-3">
+          <svg viewBox="0 0 1000 280" class="w-full h-auto" role="img" aria-label="Dois builds em produção: no caminho agendado, o cron dispara a tarefa que pesquisa com Firecrawl e escreve uma linha no Google Sheets; no caminho por webhook, um payload JSON dispara a tarefa que gera um arquivo docx e salva no Google Drive">
+            <defs>
+              <linearGradient id="m32-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#a855f7"/>
+              </linearGradient>
+              <filter id="m32-glow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <pattern id="m32-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+                <circle cx="1.3" cy="1.3" r="1.3" fill="#a855f7" opacity="0.12"/>
+              </pattern>
+              <marker id="m32-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#c084fc"/></marker>
+              <marker id="m32-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+            </defs>
+            <rect x="0" y="0" width="1000" height="280" fill="url(#m32-grid)"/>
+
+            <!-- Linha 1: AGENDADO -->
+            <text x="40" y="40" fill="#c084fc" font-family="Inter,sans-serif" font-size="12" font-weight="600">Build 1 · Agendado</text>
+            <rect x="40" y="52" width="150" height="56" rx="11" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+            <text x="115" y="76" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="13" font-weight="600">Cron</text>
+            <text x="115" y="94" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">8h todo dia</text>
+            <g fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.55"><path d="M190,80 L266,80" marker-end="url(#m32-ahc)"/></g>
+            <g filter="url(#m32-glow)"><rect x="266" y="46" width="180" height="68" rx="14" fill="#1a1230" stroke="url(#m32-grad)" stroke-width="2.5"/></g>
+            <text x="356" y="76" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="14">Tarefa</text>
+            <text x="356" y="96" text-anchor="middle" fill="#d8b9ff" font-family="Inter,sans-serif" font-size="11">Firecrawl + síntese</text>
+            <g fill="none" stroke="#a855f7" stroke-width="1.8" opacity="0.55"><path d="M446,80 L552,80" marker-end="url(#m32-ah)"/></g>
+            <rect x="552" y="52" width="190" height="56" rx="11" fill="#1a1230" stroke="#a855f7" stroke-width="2"/>
+            <text x="647" y="76" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="13" font-weight="600">Google Sheets</text>
+            <text x="647" y="94" text-anchor="middle" fill="#d8b9ff" font-family="Inter,sans-serif" font-size="10">linha appendada</text>
+
+            <!-- divisor -->
+            <line x1="40" y1="148" x2="960" y2="148" stroke="#374151" stroke-width="1" opacity="0.6"/>
+
+            <!-- Linha 2: WEBHOOK -->
+            <text x="40" y="184" fill="#c084fc" font-family="Inter,sans-serif" font-size="12" font-weight="600">Build 2 · Webhook</text>
+            <rect x="40" y="196" width="150" height="56" rx="11" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+            <text x="115" y="220" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="13" font-weight="600">Webhook</text>
+            <text x="115" y="238" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="10">payload JSON · Bearer</text>
+            <g fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.55"><path d="M190,224 L266,224" marker-end="url(#m32-ahc)"/></g>
+            <g filter="url(#m32-glow)"><rect x="266" y="190" width="180" height="68" rx="14" fill="#1a1230" stroke="url(#m32-grad)" stroke-width="2.5"/></g>
+            <text x="356" y="220" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-weight="600" font-size="14">Tarefa</text>
+            <text x="356" y="240" text-anchor="middle" fill="#d8b9ff" font-family="Inter,sans-serif" font-size="11">gera .docx</text>
+            <g fill="none" stroke="#a855f7" stroke-width="1.8" opacity="0.55"><path d="M446,224 L552,224" marker-end="url(#m32-ah)"/></g>
+            <rect x="552" y="196" width="190" height="56" rx="11" fill="#1a1230" stroke="#a855f7" stroke-width="2"/>
+            <text x="647" y="220" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="13" font-weight="600">Google Drive</text>
+            <text x="647" y="238" text-anchor="middle" fill="#d8b9ff" font-family="Inter,sans-serif" font-size="10">relatório salvo</text>
+
+            <!-- coluna comum: error handling + traces -->
+            <rect x="788" y="96" width="180" height="112" rx="14" fill="#1a1230" stroke="#a855f7" stroke-width="2" stroke-dasharray="5 4"/>
+            <text x="878" y="136" text-anchor="middle" fill="#c084fc" font-family="Inter,sans-serif" font-size="13" font-weight="600">Em ambos</text>
+            <text x="878" y="160" text-anchor="middle" fill="#d8b9ff" font-family="Inter,sans-serif" font-size="11">try/catch · retries</text>
+            <text x="878" y="178" text-anchor="middle" fill="#d8b9ff" font-family="Inter,sans-serif" font-size="11">logs · alertas · traces</text>
+          </svg>
+        </div>
+        <p class="text-xs text-neutral-500">Diagrama ilustrativo — recriação conceitual dos dois builds em produção, não uma captura de tela real.</p>
+      </section>
+
+      <!-- TÓPICO 1 -->
+      <section id="topico-1" data-inema-topic="modulo-3-2#topico-1" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+            <h2 class="text-2xl font-bold">📅 Masterclass: agente de pesquisa agendado</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-2">O que é</h3>
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m3-2-t1-p1">
+          O primeiro build é um <strong class="text-purple-400">agente de pesquisa agendado</strong>: uma tarefa do Trigger.dev que roda sozinha toda manhã num horário cron. Ela pesquisa um tópico fixo com o <strong class="text-purple-400">Firecrawl</strong>, sintetiza os achados com a IA e escreve uma linha estruturada no <strong class="text-purple-400">Google Sheets</strong>. Tudo num arquivo único (ex.: <code class="font-mono text-purple-400">morning-research.ts</code>), com o tópico hard-coded no topo — fácil de mudar e versionar.
+        </p>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Por que aprender</h3>
+        <h4 class="text-base font-bold mb-4">O fluxo de build</h4>
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Conferir pré-requisitos</h4>
+              <p class="text-neutral-300 text-sm">Repo conectado, conta do Trigger.dev, MCP instalado, projeto inicializado, env vars na nuvem e o Firecrawl MCP com a chave no .env.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Prompt em Plan Mode</h4>
+              <p class="text-neutral-300 text-sm">"Tarefa diária não-supervisionada, tópico fixo, pesquisa com Firecrawl, síntese, escreve uma linha no Sheets, sem perguntas no meio, trata erro sem crashar, loga cada passo."</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Preparar o Sheet e deployar</h4>
+              <p class="text-neutral-300 text-sm">Crie a aba <code class="font-mono text-purple-400">Sheet1</code> com cabeçalho (data, tópico, resumo, fontes, status). Deploy e teste manual no dashboard (não dá para esperar o horário agendado).</p>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Conceitos-chave</h3>
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">A IA pode não fazer perguntas de esclarecimento e tomar decisões razoáveis sozinha (colunas, tópico) — revise e ajuste depois. Mantenha o tópico hard-coded no topo do arquivo: é trivial de trocar e fica no controle de versão.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Não-supervisionada</div><p class="text-xs text-neutral-400">Roda sem ninguém.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Tópico fixo</div><p class="text-xs text-neutral-400">Hard-coded no topo.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Arquivo único</div><p class="text-xs text-neutral-400">Toda a tarefa num .ts.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Teste manual</div><p class="text-xs text-neutral-400">Dispara no dashboard.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 2 -->
+      <section id="topico-2" data-inema-topic="modulo-3-2#topico-2" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+            <h2 class="text-2xl font-bold">🔁 OAuth refresh token</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-2">O que é</h3>
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m3-2-t2-p1">
+          Para a tarefa escrever no Google Sheets de forma autônoma, ela precisa de um <strong class="text-purple-400">refresh token</strong> OAuth — uma credencial de configuração única que renova o acesso sem login manual. Em vez de uma service account, o build usa OAuth com client ID, client secret e o refresh token, todos no <code class="font-mono">.env</code> e nas env vars da nuvem.
+        </p>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Por que aprender</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+            <h4 class="font-bold text-purple-400 mb-4">✓ O caminho que funciona</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Pegar client ID + secret no Google Cloud Console.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Quando o Playground falha, rodar o script de terminal da IA.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Colar o refresh token no .env <em>e</em> nas env vars do Trigger.dev.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ A armadilha do Playground</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>O OAuth Playground pode dar "access blocked / request is invalid".</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Não insistir nele — use o fallback de script no terminal.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Não esquecer o refresh token no ambiente de produção.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Conceitos-chave</h3>
+        <p class="text-neutral-300 mb-4 inema-prose" data-inema-block="m3-2-t2-p2">O fallback é elegante: um script no terminal (usando client ID + secret do <code class="font-mono">.env</code>) imprime uma URL de autorização; você abre, autoriza, e o script devolve o refresh token para colar no <code class="font-mono">.env</code> e nas env vars. É o setup feito uma vez — depois a tarefa renova o acesso sozinha a cada execução.</p>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Client ID/secret</div><p class="text-xs text-neutral-400">Do Cloud Console.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Refresh token</div><p class="text-xs text-neutral-400">Renova o acesso.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Setup único</div><p class="text-xs text-neutral-400">Feito uma vez só.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Fallback CLI</div><p class="text-xs text-neutral-400">Quando o Playground falha.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 3 -->
+      <section id="topico-3" data-inema-topic="modulo-3-2#topico-3" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+            <h2 class="text-2xl font-bold">🐞 Debug que só aparece em produção</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-2">O que é</h3>
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m3-2-t3-p1">
+          Alguns erros só surgem com dados reais em produção. No build agendado, o Firecrawl retornou <code class="font-mono text-purple-400">success: false</code> e colocou os resultados numa propriedade <code class="font-mono text-purple-400">web</code> em vez de <code class="font-mono text-purple-400">data</code> — o <strong class="text-purple-400">shape</strong> da resposta diferiu do que o código assumia. A correção: ajustar o parsing, redeployar e disparar de novo.
+        </p>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+          <div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-purple-400"></span><span class="text-xs text-neutral-500 ml-2">O shape inesperado (exemplo ilustrativo)</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-neutral-500">// o código esperava:</span>
+{ "success": true, "data": [ ... ] }
+
+<span class="text-neutral-500">// mas em produção veio:</span>
+{ "success": false, "web": [ ... ] }   <span class="text-red-400">// ← parsing quebra aqui</span></pre>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Por que aprender</h3>
+        <p class="text-neutral-300 mb-4 inema-prose" data-inema-block="m3-2-t3-p2">Esperar erros do modelo é parte do jogo — ele pode assumir o formato errado de uma resposta de API. O importante é a reação: abrir o passo que falhou, copiar a mensagem de erro completa, colar na IA para diagnosticar, aplicar a correção de parsing, redeployar e disparar de novo. E aqui o tratamento de erro provou seu valor: mesmo com o Firecrawl falhando, a tarefa não crashou e ainda escreveu uma linha parcial no Sheets.</p>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Depois de deployar, dispare manualmente para testar — não espere o horário agendado. E confirme que a env var existe especificamente no ambiente de <strong>produção</strong>, não só no de dev.</p>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 4 -->
+      <section id="topico-4" data-inema-topic="modulo-3-2#topico-4" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+            <h2 class="text-2xl font-bold">📄 Masterclass: relatório por webhook</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-2">O que é</h3>
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m3-2-t4-p1">
+          O segundo build é orientado a evento: uma tarefa disparada por <strong class="text-purple-400">webhook</strong>. Um formulário web envia um payload JSON (campos como nome da empresa, setor, meta, desafio) para a URL do webhook; a tarefa gera um relatório <code class="font-mono text-purple-400">.docx</code> a partir desses campos e o salva automaticamente no <strong class="text-purple-400">Google Drive</strong>. A IA preenche as seções do relatório (sumário executivo, contexto do setor, desafios) a partir de poucos campos de entrada.
+        </p>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Por que aprender</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+            <h4 class="font-bold text-purple-400 mb-4">✓ O fluxo do build</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Prompt: webhook recebe JSON, gera .docx, salva no Drive, sem perguntas, trata erro, loga.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Folder ID opcional para organizar a saída no Drive.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Testar localmente com um payload de exemplo antes de ligar o formulário.</span></li>
+            </ul>
+          </div>
+          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+            <h4 class="font-bold text-blue-400 mb-4">📊 Ligando um formulário no-code</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Um gatilho de formulário no n8n + um nó HTTP Request.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>POST para a URL do webhook (que inclui o ID da task).</span></li>
+              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Corpo como JSON nomeado <code class="font-mono">payload</code>.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Conceitos-chave</h3>
+        <p class="text-neutral-300 mb-4 inema-prose" data-inema-block="m3-2-t4-p2">A tarefa normaliza os rótulos do formulário para o shape de payload esperado, e a execução pode ser de sucesso total ou parcial. A ordem de teste é sempre: <strong>local primeiro</strong> (dev server + payload de exemplo), depois com o formulário, e só então em produção. Qualquer formulário/sistema que suporte webhooks + API serve — não está preso a uma ferramenta específica.</p>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Payload JSON</div><p class="text-xs text-neutral-400">Campos do formulário.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">.docx</div><p class="text-xs text-neutral-400">Relatório gerado.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Google Drive</div><p class="text-xs text-neutral-400">Folder ID organiza.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Teste local</div><p class="text-xs text-neutral-400">Antes do formulário.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 5 -->
+      <section id="topico-5" data-inema-topic="modulo-3-2#topico-5" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+            <h2 class="text-2xl font-bold">🔔 Webhook como "campainha digital"</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-2">O que é</h3>
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m3-2-t5-p1">
+          Um <strong class="text-purple-400">webhook</strong> é uma "campainha digital": uma URL que escuta dados que chegam e, ao recebê-los, acorda a tarefa, passando o <strong class="text-purple-400">payload</strong> adiante. Enquanto o cron dispara por tempo, o webhook dispara por evento. A URL inclui o ID da task (ex.: <code class="font-mono text-purple-400">webhook-report</code>), e ela é compartilhável e embutível — pode vir de um site, um e-mail, outro sistema.
+        </p>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Por que aprender</h3>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">⚠️</span> Sem autenticação, qualquer um chama sua tarefa</h3>
+          <p class="text-neutral-300 text-sm mb-3 inema-prose" data-inema-block="m3-2-t5-p2">Uma URL aberta é um convite: qualquer pessoa que a descobrir pode disparar sua tarefa (e gastar seus tokens). A proteção é um header <code class="font-mono text-red-400">Authorization: Bearer &lt;chave&gt;</code> na requisição.</p>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Deixar o webhook sem autenticação.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Esquecer o espaço depois de <code class="font-mono text-red-400">Bearer&nbsp;</code> antes da chave.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Usar a URL de teste em vez da de produção no final.</span></li>
+          </ul>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Conceitos-chave</h3>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+          <div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-purple-400"></span><span class="text-xs text-neutral-500 ml-2">A requisição HTTP (exemplo ilustrativo)</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-purple-400">POST</span> https://.../webhook-report
+<span class="text-purple-400">Authorization:</span> Bearer &lt;chave-da-API&gt;
+<span class="text-purple-400">Content-Type:</span> application/json
+
+{ "payload": { "empresa": "...", "setor": "..." } }</pre>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">URL escuta</div><p class="text-xs text-neutral-400">Acorda a tarefa.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">ID da task</div><p class="text-xs text-neutral-400">Vai na URL.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Bearer</div><p class="text-xs text-neutral-400">Protege o endpoint.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Compartilhável</div><p class="text-xs text-neutral-400">Site, e-mail, sistema.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 6 -->
+      <section id="topico-6" data-inema-topic="modulo-3-2#topico-6" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+            <h2 class="text-2xl font-bold">🔗 Pipeline GitHub → Trigger.dev</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-2">O que é</h3>
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m3-2-t6-p1">
+          O <strong class="text-purple-400">pipeline GitHub → Trigger.dev</strong> fecha o ciclo de iteração: quando você muda algo no editor e dá push para o GitHub, o GitHub faz o <strong class="text-purple-400">deploy automático</strong> no Trigger.dev. Os arquivos mais recentes estão sempre no ar, sem deploy manual. É o "commit → push → deploy" rodando sozinho.
+        </p>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Por que aprender</h3>
+        <h4 class="text-base font-bold mb-4">Ligando o GitHub ao Trigger.dev</h4>
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Pedir o fluxo de auto-push à IA</h4>
+              <p class="text-neutral-300 text-sm">Peça para a IA configurar o fluxo: iterar no editor empurra para o GitHub, que faz deploy no Trigger.dev. Aprove os comandos bash.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Adicionar o Repository Secret</h4>
+              <p class="text-neutral-300 text-sm">No GitHub, em Settings &gt; Secrets and Variables &gt; Actions, crie <code class="font-mono text-purple-400">TRIGGER_ACCESS_TOKEN</code> com o valor da chave secreta do Trigger.dev.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Iterar e confirmar no dashboard</h4>
+              <p class="text-neutral-300 text-sm">A partir daí, cada push aciona o GitHub Actions, que deploya. Confirme no dashboard do Trigger.dev que a versão mais recente está no ar.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Conceitos-chave</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">commit → push</div><p class="text-xs text-neutral-400">Você itera no editor.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">GitHub Actions</div><p class="text-xs text-neutral-400">Dispara o deploy.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Repository Secret</div><p class="text-xs text-neutral-400">TRIGGER_ACCESS_TOKEN.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-purple-400 font-semibold text-sm mb-1">Sempre no ar</div><p class="text-xs text-neutral-400">Última versão deployada.</p></div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Com o pipeline no ar, o ciclo de debug em produção fica fluido: você corrige no editor, dá push, e a produção se atualiza sozinha — sem repetir o deploy manual a cada iteração.</p>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 7 -->
+      <section id="topico-7" data-inema-topic="modulo-3-2#topico-7" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">7</span>
+            <h2 class="text-2xl font-bold">🛡️ Error handling em camadas</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-2">O que é</h3>
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m3-2-t7-p1">
+          Sem um agente se auto-curando em produção, o <strong class="text-purple-400">tratamento de erro robusto</strong> é o que fecha o agentic gap. A abordagem é em camadas: <strong class="text-purple-400">log significativo</strong> em cada passo (visibilidade), <strong class="text-purple-400">try/catch</strong> em volta de cada chamada externa, <strong class="text-purple-400">retries</strong> configuráveis com backoff e <strong class="text-purple-400">alertas</strong> de falha. O Trigger.dev dá visibilidade e retry, mas só consegue retentar o que reconhece como falha.
+        </p>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Por que aprender</h3>
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Camada 1 — Logging</h4>
+              <p class="text-neutral-300 text-sm">Log claro em cada passo significativo: "Firecrawl retornou 429 na fonte 3", não "task failed". Logs vagos são inúteis.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Camada 2 — try/catch</h4>
+              <p class="text-neutral-300 text-sm">Envolva cada chamada de API externa em try/catch, logue o erro com contexto, continue onde der e só dê throw em falhas críticas.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Retries + Alertas</h4>
+              <p class="text-neutral-300 text-sm">Configure retries (ex.: até 3 com backoff exponencial a partir de 30s) e alertas (Project Settings &gt; Alerts) por e-mail/Slack/webhook.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Conceitos-chave</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+            <h4 class="font-bold text-purple-400 mb-4">✓ Boas práticas</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Logar contexto específico (código de status, qual fonte).</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Configurar alertas para saber da quebra antes do usuário.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Envolver chamadas externas no nível certo.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Erros a evitar</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Logs genéricos do tipo "task failed".</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Achar que retries consertam bugs de lógica (só falhas transitórias).</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Deployar sem nenhum alerta de falha configurado.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 8 -->
+      <section id="topico-8" data-inema-topic="modulo-3-2#topico-8" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">8</span>
+            <h2 class="text-2xl font-bold">🔄 O loop humano de debug</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-2">O que é</h3>
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m3-2-t8-p1">
+          Em produção, a IA ainda depura — mas não mais automaticamente. O <strong class="text-purple-400">loop humano de debug</strong> é o ciclo em que você é a ponte: abrir o trace vermelho no dashboard, copiar o erro, colar na IA ("aqui está o trace que falhou, o que está errado, como conserto?"), deixá-la diagnosticar, aplicar a correção e redeployar. O trace + a IA dão diagnóstico rápido; um humano só precisa levar o erro até ela.
+        </p>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Por que aprender</h3>
+        <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-xl border border-purple-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">🔁</span> O ciclo de quatro passos</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">1.</span><span><strong>Abrir</strong> o trace vermelho (a execução que falhou) no dashboard.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">2.</span><span><strong>Copiar</strong> a mensagem de erro completa do passo que quebrou.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">3.</span><span><strong>Colar</strong> na IA e deixá-la identificar a causa e o conserto.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-purple-400 mt-1">4.</span><span><strong>Redeployar</strong> e disparar de novo até passar.</span></li>
+          </ul>
+        </div>
+
+        <h3 class="text-lg font-semibold text-purple-400 mb-3">Conceitos-chave</h3>
+        <p class="text-neutral-300 mb-4 inema-prose" data-inema-block="m3-2-t8-p2">A mudança de mentalidade é deixar de ser o gatilho para configurar gatilhos que rodam enquanto você se afasta. Prompting e leitura de traces ficam mais fáceis com a repetição — o segundo build é sempre mais rápido que o primeiro. E garanta que toda tarefa deployada tenha alertas de falha, para você saber da quebra antes do usuário.</p>
+
+        <!-- Checagem leve -->
+        <div data-inema-check="modulo-3-2#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <p class="inema-check__q font-medium mb-4">Auto-recuperação (opcional): uma tarefa em produção falha intermitentemente porque a API externa às vezes responde com timeout. Qual recurso é o mais indicado?</p>
+          <div class="inema-check-options inema-check__options space-y-2">
+            <button type="button" class="inema-check__option block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0">Retries com backoff — a falha é transitória, não um bug de lógica.</button>
+            <button type="button" class="inema-check__option block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1">Reescrever toda a lógica da tarefa do zero.</button>
+            <button type="button" class="inema-check__option block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2">Remover o try/catch para o erro aparecer mais rápido.</button>
+          </div>
+          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="flex justify-start mt-8">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section class="mb-8">
+        <div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumo do Módulo</h2>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Agente agendado</strong><span class="text-neutral-400"> — cron → Firecrawl → síntese → linha no Google Sheets, não-supervisionado.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">OAuth refresh token + debug em prod</strong><span class="text-neutral-400"> — setup único (fallback via terminal); shape de resposta inesperado.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Relatório por webhook</strong><span class="text-neutral-400"> — payload JSON → .docx → Google Drive; campainha digital + Bearer.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Pipeline GitHub → Trigger.dev</strong><span class="text-neutral-400"> — push faz deploy automático; última versão sempre no ar.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong class="text-neutral-100">Error handling + loop de debug</strong><span class="text-neutral-400"> — log, try/catch, retries, alertas; trace → IA → corrige → redeploy.</span></div></div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-purple-400 mb-2">Próxima Trilha:</h3>
+            <p class="text-neutral-300">Trilha 4 — Construindo Frontends & Apps: dar cara de produto à automação.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="modulo-3-1.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Módulo anterior</a>
+            <a href="../trilha4/index.html" class="flex-1 text-center px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-500 transition-colors">Trilha 4: Frontends & Apps →</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- TOC sticky + scrollspy -->
+    <aside class="hidden lg:block">
+      <nav data-inema-toc aria-label="Índice da página" class="sticky top-24 self-start">
+        <p class="text-sm text-neutral-400 mb-3">Seção <span data-inema-section-counter><span class="inema-toc-pos">1</span> de <span class="inema-toc-total">8</span></span></p>
+        <ol class="space-y-1.5 text-sm">
+          <li><a href="#topico-1" class="inema-toc-link text-neutral-400 hover:text-purple-400 block">1. Agente agendado</a></li>
+          <li><a href="#topico-2" class="inema-toc-link text-neutral-400 hover:text-purple-400 block">2. OAuth refresh token</a></li>
+          <li><a href="#topico-3" class="inema-toc-link text-neutral-400 hover:text-purple-400 block">3. Debug em produção</a></li>
+          <li><a href="#topico-4" class="inema-toc-link text-neutral-400 hover:text-purple-400 block">4. Relatório por webhook</a></li>
+          <li><a href="#topico-5" class="inema-toc-link text-neutral-400 hover:text-purple-400 block">5. Webhook & Bearer</a></li>
+          <li><a href="#topico-6" class="inema-toc-link text-neutral-400 hover:text-purple-400 block">6. Pipeline GitHub → Trigger</a></li>
+          <li><a href="#topico-7" class="inema-toc-link text-neutral-400 hover:text-purple-400 block">7. Error handling em camadas</a></li>
+          <li><a href="#topico-8" class="inema-toc-link text-neutral-400 hover:text-purple-400 block">8. Loop humano de debug</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+  </div>
+
+  <footer class="border-t border-dark-600 py-8 mt-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Vibe Coding na Prática · Curso original <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium">INEMA.CLUB</a> · 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const htmlEl = document.documentElement;
+    if (htmlEl.classList.contains('dark')) { themeToggleLightIcon.classList.remove('hidden'); }
+    else { themeToggleDarkIcon.classList.remove('hidden'); }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      htmlEl.classList.toggle('dark');
+      const isDark = htmlEl.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      if (window.INEMA && INEMA.setPref) { INEMA.setPref('theme', isDark ? 'inema-dark' : 'claro'); }
+    });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+      if (window.INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-3-2#q1', {
+          answer: 0,
+          explain: {
+            0: 'Isso. Timeouts intermitentes são falhas transitórias — retries com backoff resolvem sem tocar na lógica.',
+            1: 'Exagero. O problema não é a lógica; reescrever tudo não trata uma falha de rede temporária.',
+            2: 'Não. Remover o try/catch deixa a tarefa crashar; o tratamento de erro é justamente o que mantém ela de pé.'
+          }
+        });
+      }
+    }
+  </script>
+
+</body>
+</html>

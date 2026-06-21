@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="vibe-coding">
+
+  <!-- ANTI-FOUC: script BLOQUEANTE, SEPARADO, PRIMEIRO no <head>, antes do Tailwind e do learn.css. -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <title>Trilha 4 · Construindo Frontends & Apps | Vibe Coding</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Manifesto do curso (OBRIGATORIO, identico em TODA pagina) -->
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "vibe-coding",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos & Primeiro Workflow", "modules": [
+        { "id": "1-1", "title": "Fundamentos & Ambiente", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "O Ciclo Completo: Plan, Build, Troubleshoot, Optimize", "topics": 8, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "De Funciona a Funciona Bem: Enhancement", "topics": 8, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Domínio do Agente de Código", "modules": [
+        { "id": "2-1", "title": "Workflows Agênticos & o Framework WAT", "topics": 9, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Estendendo o Agente: MCP & Pesquisa", "topics": 7, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Skills, Geração de Artefatos & Tokens", "topics": 9, "href": "curso/trilha2/modulo-2-3.html" }
+      ]},
+      { "n": "3", "title": "Hospedagem & Deploy", "modules": [
+        { "id": "3-1", "title": "Do Local ao Sempre-Ligado: GitHub & Trigger.dev", "topics": 8, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Agentes em Produção: Agendados & Webhooks", "topics": 8, "href": "curso/trilha3/modulo-3-2.html" }
+      ]},
+      { "n": "4", "title": "Construindo Frontends & Apps", "modules": [
+        { "id": "4-1", "title": "Modelo Mental & Primeiro App", "topics": 8, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Produção Real: Auth, Segurança, Pagamentos & Integração", "topics": 9, "href": "curso/trilha4/modulo-4-2.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    [id] { scroll-margin-top: 5rem; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - acento da trilha (amber-800 escuro p/ contraste) + cores das outras trilhas no nav */
+    html:not(.dark) .text-amber-400 { color: #92400e; }
+    html:not(.dark) .bg-amber-500\/20 { background-color: rgba(146, 64, 14, 0.12); }
+    html:not(.dark) .bg-amber-500\/10 { background-color: rgba(146, 64, 14, 0.08); }
+    html:not(.dark) .border-amber-500\/30 { border-color: rgba(146, 64, 14, 0.25); }
+    html:not(.dark) .hover\:bg-amber-500\/30:hover { background-color: rgba(146, 64, 14, 0.18); }
+    html:not(.dark) .hover\:bg-amber-500\/10:hover { background-color: rgba(146, 64, 14, 0.08); }
+    html:not(.dark) .hover\:text-amber-400:hover { color: #92400e; }
+    html:not(.dark) .group:hover .group-hover\:text-amber-400 { color: #92400e; }
+    html:not(.dark) .hover\:border-amber-500\/30:hover { border-color: rgba(146, 64, 14, 0.25); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124, 58, 237, 0.08); }
+
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <a class="skip sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-amber-600 focus:text-white focus:rounded-lg" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- NAVIGATION (T4 ativa) -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">⚡</span>
+            <span class="font-bold text-lg hidden sm:inline">Vibe Coding</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span><span class="hidden sm:inline">Domínio</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span><span class="hidden sm:inline">Deploy</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-amber-400 bg-amber-500/10">
+            <span class="sm:hidden">T4</span><span class="hidden sm:inline">Apps</span>
+          </a>
+          <button type="button" data-inema-journey-open class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors ml-1">
+            <span aria-hidden="true">◷</span><span>Minha jornada</span>
+            <span class="inema-journey-badge hidden" data-inema-journey-badge data-count="0"></span>
+          </button>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" aria-label="Alternar tema claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HEADER DA TRILHA -->
+  <header class="bg-gradient-to-br from-amber-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-semibold rounded-full mb-4">TRILHA 4</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🟡 Construindo Frontends & Apps</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">
+        Dar cara de produto: transformar a automação invisível em um app de verdade — com interface profissional, usuários autenticados, segurança e pagamento recorrente. Do modelo mental ao primeiro app no ar, e dele à produção real.
+      </p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-amber-400">2</div>
+          <div class="text-xs text-neutral-400">Módulos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-amber-400">17</div>
+          <div class="text-xs text-neutral-400">Tópicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-amber-400">~2.5h</div>
+          <div class="text-xs text-neutral-400">Duração</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-amber-400">Avançado</div>
+          <div class="text-xs text-neutral-400">Nível</div>
+        </div>
+      </div>
+
+      <!-- progresso da trilha -->
+      <div class="mt-6 max-w-2xl" data-inema-meter="trilha:4" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha 4">
+        <div class="flex items-center justify-between mb-1 text-sm">
+          <span class="text-neutral-400">Progresso da trilha</span>
+          <span class="text-amber-400 font-semibold"><span data-inema-meter-pct>0%</span> · <span data-inema-meter-frac>0 de 17</span></span>
+        </div>
+        <div class="inema-bar h-2 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-amber-500 rounded-full" data-inema-meter-fill style="width:0%"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <img src="../../assets/img/hero-t4.png" alt="Banner: construção de frontends, uma UI polida com login e pagamento, em âmbar" class="w-full h-auto rounded-2xl border border-amber-500/30 mb-8 shadow-lg shadow-amber-500/5" loading="lazy">
+
+    <!-- HERO SVG -->
+    <section class="mb-12">
+      <div class="rounded-2xl border border-amber-500/30 bg-dark-900/40 p-3 sm:p-4 overflow-hidden">
+        <svg viewBox="0 0 1000 240" class="w-full h-auto" role="img" aria-label="O arco da trilha 4: do modelo mental frontend e backend ao primeiro app publicado, e dele à produção real com autenticação, segurança, pagamentos e integração">
+          <defs>
+            <linearGradient id="t4-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#f59e0b"/>
+            </linearGradient>
+            <filter id="t4-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <pattern id="t4-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <circle cx="1.3" cy="1.3" r="1.3" fill="#f59e0b" opacity="0.12"/>
+            </pattern>
+            <marker id="t4-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#fbbf24"/></marker>
+            <marker id="t4-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+          </defs>
+          <rect x="0" y="0" width="1000" height="240" fill="url(#t4-grid)"/>
+          <g fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.55">
+            <path d="M380,120 L452,120" marker-end="url(#t4-ah)"/>
+          </g>
+          <g fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.55">
+            <path d="M748,120 L820,120" marker-end="url(#t4-ahc)"/>
+          </g>
+
+          <g filter="url(#t4-glow)"><rect x="40" y="80" width="340" height="80" rx="16" fill="#1f1604" stroke="url(#t4-grad)" stroke-width="2.5"/></g>
+          <text x="210" y="112" text-anchor="middle" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="600" font-size="16">Módulo 4.1</text>
+          <text x="210" y="135" text-anchor="middle" fill="#fde3a7" font-family="Inter,sans-serif" font-size="12">Modelo mental · request/response · primeiro app</text>
+
+          <rect x="452" y="80" width="296" height="80" rx="16" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+          <text x="600" y="106" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-weight="600" font-size="15">Frontend (Vercel)</text>
+          <text x="600" y="127" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">↔ Backend (Trigger.dev / n8n)</text>
+          <text x="600" y="146" text-anchor="middle" fill="#7fc4ee" font-family="Inter,sans-serif" font-size="11">conectados por env var</text>
+
+          <rect x="820" y="80" width="140" height="80" rx="16" fill="#1f1604" stroke="#f59e0b" stroke-width="2"/>
+          <text x="890" y="108" text-anchor="middle" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="600" font-size="15">Módulo 4.2</text>
+          <text x="890" y="129" text-anchor="middle" fill="#fde3a7" font-family="Inter,sans-serif" font-size="11">Auth · RLS</text>
+          <text x="890" y="146" text-anchor="middle" fill="#fde3a7" font-family="Inter,sans-serif" font-size="11">Stripe · n8n</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- MAPA DA TRILHA (OBRIGATORIO) -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Mapa da trilha</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a href="#modulo-4-1" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-amber-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-amber-400 font-bold text-sm">4.1</span>
+            <span class="text-xs text-neutral-500">~70 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-amber-400 transition-colors">🧠 Modelo Mental & Primeiro App</h3>
+          <p class="text-xs text-neutral-400">Do que roda no fundo ao primeiro app no ar</p>
+        </a>
+        <a href="#modulo-4-2" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-amber-500/30 p-5 transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-amber-400 font-bold text-sm">4.2</span>
+            <span class="text-xs text-neutral-500">~80 min</span>
+          </div>
+          <h3 class="font-semibold mb-1 group-hover:text-amber-400 transition-colors">🔐 Produção Real</h3>
+          <p class="text-xs text-neutral-400">Login, segurança, pagamento e integração n8n</p>
+        </a>
+      </div>
+    </section>
+
+    <h2 class="text-2xl font-bold mb-6">Conteúdo detalhado</h2>
+
+    <!-- MÓDULO 4.1 -->
+    <div id="modulo-4-1" data-inema-module="4-1" data-inema-track="4" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-amber-400 font-bold">4.1</span>
+          <span class="text-xs text-neutral-500">~70 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">🧠 Modelo Mental & Primeiro App</h3>
+        <p class="text-neutral-400 text-sm">Do que roda no fundo ao que o usuário vê — e o primeiro app no ar: background vs visível, frontend vs backend, o ciclo request/response, tips de design, a skill de design, linguagem de prompt de design, o build do AI Lead Qualifier e a conexão frontend ↔ backend.</p>
+        <div class="mt-3" data-inema-meter="modulo:4-1">
+          <div class="flex items-center justify-between mb-1 text-xs">
+            <span class="text-neutral-500">Progresso do módulo</span>
+            <span class="text-amber-400"><span data-inema-meter-pct>0%</span> · <span data-inema-meter-frac>0 de 8</span></span>
+          </div>
+          <div class="inema-bar h-1.5 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-amber-500 rounded-full" data-inema-meter-fill style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t41-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">🪟</span>
+            <div><span class="font-medium">Background vs visível</span><span class="text-neutral-500 text-sm ml-2">- Workflow no fundo vs app com interface</span></div>
+          </button>
+          <div id="t41-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">A diferença entre o que roda invisível no fundo (workflows, scripts) e o que é visível ao usuário — um app, com uma interface com a qual pessoas interagem.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É a virada de chave da trilha: sair da automação invisível para um produto que outras pessoas usam.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Fundo vs interface; app full-stack; começar simples e iterar por features.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t41-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">🗺️</span>
+            <div><span class="font-medium">Frontend vs backend</span><span class="text-neutral-500 text-sm ml-2">- O que o usuário vê vs a lógica no servidor</span></div>
+          </button>
+          <div id="t41-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Frontend é tudo que o usuário vê (botões, formulários, fontes, layout), rodando no navegador; backend roda no servidor e guarda a lógica, as chamadas de API e o banco.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o modelo mental que sustenta tudo o mais sobre apps — você não precisa dominar cada detalhe, mas precisa internalizar essa separação.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Navegador vs servidor; UX (navegabilidade, legibilidade, clareza); separação de responsabilidades.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t41-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">🔄</span>
+            <div><span class="font-medium">Ciclo request/response</span><span class="text-neutral-500 text-sm ml-2">- Clique → requisição → resposta → UI</span></div>
+          </button>
+          <div id="t41-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">O ciclo contínuo de troca: o usuário clica → uma requisição vai ao servidor → o servidor processa (salva dados, chama uma API, roda lógica) → a resposta volta → o frontend atualiza a tela.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Entender esse vai-e-vem explica por que apps precisam de interface e interação em tempo real, ao contrário de workflows que rodam no fundo.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Requisição → processamento → resposta → atualização da UI; interação em tempo real.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t41-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">🎨</span>
+            <div><span class="font-medium">Tips de design</span><span class="text-neutral-500 text-sm ml-2">- Fugir da "cara de IA"</span></div>
+          </button>
+          <div id="t41-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Técnicas para criar sites bonitos e originais, evitando o visual genérico que sites gerados por IA tendem a ter (layouts, cores, gradientes e heros padronizados).</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Um app com cara de produto transmite credibilidade; o resultado "seguro e previsível" da IA passa despercebido.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Por que outputs de IA se parecem; prompts genéricos geram resultados genéricos; feedback específico.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t41-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">🖼️</span>
+            <div><span class="font-medium">Skill de design & referências</span><span class="text-neutral-500 text-sm ml-2">- Galerias, clones e screenshots</span></div>
+          </button>
+          <div id="t41-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Usar a skill de design para elevar a UI; clonar/inspirar-se em sites de galerias; subir screenshots de referência e pedir algo parecido.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o atalho de maior impacto visual — uma skill de design muda o resultado mesmo em um único prompt.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Front-end design skill; galerias de inspiração; bibliotecas de componentes; referência por imagem.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t41-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">🗣️</span>
+            <div><span class="font-medium">Linguagem de prompt de design</span><span class="text-neutral-500 text-sm ml-2">- Layout, componentes e tom visual</span></div>
+          </button>
+          <div id="t41-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Descrever layout, componentes e tom visual com precisão (ex.: header fixo com logo à esquerda, links à direita, CTA com glow azul, hero com texto grande e bold), e dar feedback específico ao iterar.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Vocabulário concreto evita o ciclo infinito de "está errado" — você fala o que gostou e o que mudar.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Layout/componentes/tom; feedback do que gostou e desgostou; iteração dirigida.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t41-7" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">7</span>
+            <span class="text-lg">🚀</span>
+            <div><span class="font-medium">Build do AI Lead Qualifier</span><span class="text-neutral-500 text-sm ml-2">- Trigger.dev + Vercel, do prompt ao app</span></div>
+          </button>
+          <div id="t41-7" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">O build ponta a ponta de um app full-stack de qualificação de leads: backend no Trigger.dev, frontend no Vercel, conectados — do prompt simples ao app publicado.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o projeto-âncora que amarra os conceitos num app real e acessível por URL.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">CLAUDE.md + estrutura base; deploy dev e produção; resultado: score, resumo e próximos passos.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t41-8" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">8</span>
+            <span class="text-lg">🔗</span>
+            <div><span class="font-medium">Conectar frontend ↔ backend</span><span class="text-neutral-500 text-sm ml-2">- Env vars no Vercel + auto-deploy</span></div>
+          </button>
+          <div id="t41-8" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Ligar o frontend ao backend via chaves/variáveis de ambiente no Vercel (a secret key do Trigger.dev), com deploy automático a cada push no GitHub.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o que faz a interface conversar com a lógica — e o que mantém o site sempre atualizado.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Secret key como env var; nunca colar no chat; auto-deploy via GitHub.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-4-1.html" class="px-4 py-2 text-sm bg-amber-600 hover:bg-amber-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- MÓDULO 4.2 -->
+    <div id="modulo-4-2" data-inema-module="4-2" data-inema-track="4" class="bg-dark-800 rounded-xl border border-dark-600 mb-6">
+      <div class="p-6 border-b border-dark-600">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-amber-400 font-bold">4.2</span>
+          <span class="text-xs text-neutral-500">~80 min</span>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">🔐 Produção Real: Auth, Segurança, Pagamentos & Integração</h3>
+        <p class="text-neutral-400 text-sm">Login, proteção de dados, receita e ligar um frontend a um workflow n8n: por que autenticar, autenticação com Supabase, Row-Level Security, migração SQL & URLs de auth, auditoria de segurança, Stripe freemium, produto/chaves/webhook do Stripe, frontend para workflow n8n e a recap de iteração incremental.</p>
+        <div class="mt-3" data-inema-meter="modulo:4-2">
+          <div class="flex items-center justify-between mb-1 text-xs">
+            <span class="text-neutral-500">Progresso do módulo</span>
+            <span class="text-amber-400"><span data-inema-meter-pct>0%</span> · <span data-inema-meter-frac>0 de 9</span></span>
+          </div>
+          <div class="inema-bar h-1.5 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-amber-500 rounded-full" data-inema-meter-fill style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="divide-y divide-dark-600">
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t42-1" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
+            <span class="text-lg">🛡️</span>
+            <div><span class="font-medium">Por que autenticar</span><span class="text-neutral-500 text-sm ml-2">- App aberto = qualquer um gasta seus tokens</span></div>
+          </button>
+          <div id="t42-1" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Um app sem login deixa qualquer pessoa com a URL disparar o workflow e consumir os seus tokens de IA — você paga pelo uso dos outros.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Autenticação protege uso e dados; é o primeiro passo antes de deixar o app aberto em produção.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Risco do app aberto; proteger uso e dados; usuários com seus próprios dados.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t42-2" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
+            <span class="text-lg">🔑</span>
+            <div><span class="font-medium">Autenticação com Supabase</span><span class="text-neutral-500 text-sm ml-2">- Projeto, senha do banco, região</span></div>
+          </button>
+          <div id="t42-2" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Adicionar login/cadastro usando o Supabase como provedor de banco e autenticação: criar o projeto, definir a senha do banco (distinta da senha de login) e escolher a região.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Um provedor pronto entrega autenticação e banco sem você montar tudo do zero.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Project URL + publishable key como env vars no Vercel; senha do banco ≠ senha de login.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t42-3" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
+            <span class="text-lg">🧱</span>
+            <div><span class="font-medium">Row-Level Security (RLS)</span><span class="text-neutral-500 text-sm ml-2">- Regras no próprio banco</span></div>
+          </button>
+          <div id="t42-3" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Regras que vivem dentro do banco para isolar os dados entre usuários — mesmo que haja um bug no frontend, ninguém vê os dados de outro.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É uma camada extra de segurança que não depende do código da interface estar perfeito.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Isolamento por linha; defesa em profundidade; ativar RLS na tabela.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t42-4" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
+            <span class="text-lg">🗄️</span>
+            <div><span class="font-medium">Migração SQL & URLs de auth</span><span class="text-neutral-500 text-sm ml-2">- Rodar o SQL + URL do app e redirect</span></div>
+          </button>
+          <div id="t42-4" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Rodar no SQL editor do Supabase a migração gerada pela IA (ex.: criar a tabela de leads) e configurar a URL do app (Vercel) e a redirect URL na configuração de auth.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Sem o esquema no banco e as URLs corretas, o login não completa o fluxo de volta ao app.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">SQL editor; tabela criada por migração; URL do app + redirect URL.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t42-5" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
+            <span class="text-lg">🔎</span>
+            <div><span class="font-medium">Auditoria de segurança</span><span class="text-neutral-500 text-sm ml-2">- Rotas, chaves, env vars, RLS</span></div>
+          </button>
+          <div id="t42-5" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Pedir à IA para atuar como especialista em segurança e checar rotas protegidas, nenhuma chave exposta no frontend, segredos só em env vars e RLS ativo.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Uma auditoria explícita pega vulnerabilidades antes que cheguem à produção.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Rotas protegidas; sem chaves expostas; segredos em env; RLS verificado.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t42-6" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
+            <span class="text-lg">💳</span>
+            <div><span class="font-medium">Stripe: modelo freemium</span><span class="text-neutral-500 text-sm ml-2">- Tier grátis limitado + tier pago</span></div>
+          </button>
+          <div id="t42-6" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Adicionar pagamentos com Stripe num modelo freemium: um tier grátis limitado (ex.: 2 qualificações/dia) e um tier pago (assinatura) via Stripe Checkout.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Completa a transição de "só um workflow" para um app que pode gerar receita e limitar o consumo.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Tier grátis vs pro; assinatura recorrente; Checkout.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t42-7" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">7</span>
+            <span class="text-lg">🧾</span>
+            <div><span class="font-medium">Produto, chaves & webhook do Stripe</span><span class="text-neutral-500 text-sm ml-2">- Price ID, chaves, eventos, tabela</span></div>
+          </button>
+          <div id="t42-7" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Criar o produto recorrente, copiar o price ID, pegar as chaves (publishable + secret), criar o webhook com os eventos certos e rodar a migração da tabela de assinaturas.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">São as quatro peças que ligam o pagamento ao seu app e mantêm o estado da assinatura.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Price ID; quatro chaves; eventos de checkout/assinatura; tabela de subscriptions.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t42-8" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">8</span>
+            <span class="text-lg">🪝</span>
+            <div><span class="font-medium">Frontend para workflow n8n</span><span class="text-neutral-500 text-sm ml-2">- Form → Webhook + Respond to Webhook</span></div>
+          </button>
+          <div id="t42-8" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Conectar um workflow n8n a um frontend trocando o nó de formulário por um Webhook (trigger) e o nó final por "Respond to Webhook", ligando via env var no Vercel.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o padrão para dar uma interface bonita a qualquer workflow n8n e abri-lo por URL.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Trocar primeiro e último nó por webhooks; URL de produção; env var no Vercel.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="topic-item">
+          <button onclick="toggleTopic(this)" aria-expanded="false" aria-controls="t42-9" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold flex items-center justify-center flex-shrink-0">9</span>
+            <span class="text-lg">🪜</span>
+            <div><span class="font-medium">Iteração incremental (recap)</span><span class="text-neutral-500 text-sm ml-2">- Começar pequeno, publicar cedo, crescer</span></div>
+          </button>
+          <div id="t42-9" class="topic-explanation px-6 pb-4">
+            <div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9">
+              <div><span class="text-amber-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">A recap da jornada: o app começou como um prompt de uma frase e cresceu por camadas — design → autenticação → pagamento.</p></div>
+              <div><span class="text-amber-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Boa engenharia é incremental: começar pequeno, publicar cedo e escalar conforme a necessidade, sem planejar tudo de uma vez.</p></div>
+              <div><span class="text-amber-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Camadas; publicar a primeira versão; crescer por features.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+        <a href="modulo-4-2.html" class="px-4 py-2 text-sm bg-amber-600 hover:bg-amber-500 text-white rounded-lg transition-colors">Ver Completo</a>
+      </div>
+    </div>
+
+    <!-- NAVEGAÇÃO ENTRE TRILHAS -->
+    <div class="flex flex-col sm:flex-row gap-4 mt-10">
+      <a href="../trilha3/index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Trilha 3: Hospedagem & Deploy</a>
+      <a href="../../index.html" class="flex-1 text-center px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-500 transition-colors">Início do curso →</a>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Vibe Coding na Prática · Curso original <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium">INEMA.CLUB</a> · 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTopic(button) {
+      const topicItem = button.closest('.topic-item');
+      const explanation = topicItem.querySelector('.topic-explanation');
+      const moduleCard = button.closest('.bg-dark-800');
+      moduleCard.querySelectorAll('.topic-explanation.active').forEach(exp => {
+        if (exp !== explanation) {
+          exp.classList.remove('active');
+          const b = exp.closest('.topic-item').querySelector('button');
+          if (b) b.setAttribute('aria-expanded', 'false');
+        }
+      });
+      const willOpen = !explanation.classList.contains('active');
+      explanation.classList.toggle('active');
+      button.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    }
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const htmlEl = document.documentElement;
+    if (htmlEl.classList.contains('dark')) { themeToggleLightIcon.classList.remove('hidden'); }
+    else { themeToggleDarkIcon.classList.remove('hidden'); }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      htmlEl.classList.toggle('dark');
+      const isDark = htmlEl.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      if (window.INEMA && INEMA.setPref) { INEMA.setPref('theme', isDark ? 'inema-dark' : 'claro'); }
+    });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') { window.INEMA.init(); }
+  </script>
+
+</body>
+</html>

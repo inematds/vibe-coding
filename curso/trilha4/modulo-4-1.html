@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="vibe-coding">
+
+  <!-- ANTI-FOUC: script BLOQUEANTE, SEPARADO, PRIMEIRO no <head>, antes do Tailwind e do learn.css. -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+
+  <title>Módulo 4.1 · Modelo Mental & Primeiro App | Vibe Coding</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Manifesto do curso (OBRIGATORIO, identico em TODA pagina) -->
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "vibe-coding",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos & Primeiro Workflow", "modules": [
+        { "id": "1-1", "title": "Fundamentos & Ambiente", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "O Ciclo Completo: Plan, Build, Troubleshoot, Optimize", "topics": 8, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "De Funciona a Funciona Bem: Enhancement", "topics": 8, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Domínio do Agente de Código", "modules": [
+        { "id": "2-1", "title": "Workflows Agênticos & o Framework WAT", "topics": 9, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Estendendo o Agente: MCP & Pesquisa", "topics": 7, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Skills, Geração de Artefatos & Tokens", "topics": 9, "href": "curso/trilha2/modulo-2-3.html" }
+      ]},
+      { "n": "3", "title": "Hospedagem & Deploy", "modules": [
+        { "id": "3-1", "title": "Do Local ao Sempre-Ligado: GitHub & Trigger.dev", "topics": 8, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Agentes em Produção: Agendados & Webhooks", "topics": 8, "href": "curso/trilha3/modulo-3-2.html" }
+      ]},
+      { "n": "4", "title": "Construindo Frontends & Apps", "modules": [
+        { "id": "4-1", "title": "Modelo Mental & Primeiro App", "topics": 8, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Produção Real: Auth, Segurança, Pagamentos & Integração", "topics": 9, "href": "curso/trilha4/modulo-4-2.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    [id] { scroll-margin-top: 5rem; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - acento (amber-800 escuro p/ contraste) + cores das outras trilhas no nav */
+    html:not(.dark) .text-amber-400 { color: #92400e; }
+    html:not(.dark) .bg-amber-500\/20 { background-color: rgba(146, 64, 14, 0.12); }
+    html:not(.dark) .bg-amber-500\/10 { background-color: rgba(146, 64, 14, 0.08); }
+    html:not(.dark) .border-amber-500\/30 { border-color: rgba(146, 64, 14, 0.25); }
+    html:not(.dark) .hover\:bg-amber-500\/30:hover { background-color: rgba(146, 64, 14, 0.18); }
+    html:not(.dark) .hover\:bg-amber-500\/10:hover { background-color: rgba(146, 64, 14, 0.08); }
+    html:not(.dark) .hover\:text-amber-400:hover { color: #92400e; }
+    html:not(.dark) .text-amber-300 { color: #b45309; }
+    html:not(.dark) .bg-amber-900\/20 { background-color: rgba(146, 64, 14, 0.08); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-900\/20 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .text-red-400 { color: #dc2626; }
+    html:not(.dark) .bg-red-900\/20 { background-color: rgba(220, 38, 38, 0.07); }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(220, 38, 38, 0.25); }
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-900\/20 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* TOC scrollspy active link */
+    .inema-toc-link.is-active, [data-inema-toc] a.is-active { color: #fbbf24; font-weight: 600; }
+    html:not(.dark) [data-inema-toc] a.is-active { color: #92400e; }
+
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <a class="skip sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-amber-600 focus:text-white focus:rounded-lg" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- NAVIGATION (T4 ativa) -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">⚡</span>
+            <span class="font-bold text-lg hidden sm:inline">Vibe Coding</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+            <span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+          </a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+            <span class="sm:hidden">T2</span><span class="hidden sm:inline">Domínio</span>
+          </a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
+            <span class="sm:hidden">T3</span><span class="hidden sm:inline">Deploy</span>
+          </a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-amber-400 bg-amber-500/10">
+            <span class="sm:hidden">T4</span><span class="hidden sm:inline">Apps</span>
+          </a>
+          <button type="button" data-inema-journey-open class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors ml-1">
+            <span aria-hidden="true">◷</span><span>Minha jornada</span>
+            <span class="inema-journey-badge hidden" data-inema-journey-badge data-count="0"></span>
+          </button>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" aria-label="Alternar tema claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-amber-400">Início</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-amber-400">Trilha 4</a>
+      <span>/</span>
+      <span class="text-amber-400">Módulo 4.1</span>
+    </div>
+  </nav>
+
+  <!-- HEADER DO MÓDULO -->
+  <header class="bg-gradient-to-br from-amber-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-semibold rounded-full mb-4">MÓDULO 4.1</span>
+      <h3 class="text-2xl font-bold mb-4">🧠 Modelo Mental & Primeiro App</h3>
+      <p class="text-lg text-neutral-400 max-w-3xl">Do que roda no fundo ao que o usuário vê — e o primeiro app no ar. Você forma o modelo mental de frontend e backend, entende o ciclo request/response, aprende a fugir da "cara de IA" com a skill de design, descreve a interface com vocabulário preciso e constrói o AI Lead Qualifier publicado (Trigger.dev + Vercel), conectando frontend e backend por variáveis de ambiente.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-amber-400">8</div>
+          <div class="text-xs text-neutral-400">Tópicos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-amber-400">~70</div>
+          <div class="text-xs text-neutral-400">Minutos</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-amber-400">Avançado</div>
+          <div class="text-xs text-neutral-400">Nível</div>
+        </div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+          <div class="text-xl font-bold text-amber-400">App</div>
+          <div class="text-xs text-neutral-400">Tipo</div>
+        </div>
+      </div>
+      <div class="mt-6 max-w-2xl" data-inema-meter="modulo:4-1" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 4.1">
+        <div class="flex items-center justify-between mb-1 text-sm">
+          <span class="text-neutral-400">Progresso do módulo</span>
+          <span class="text-amber-400 font-semibold"><span data-inema-meter-pct>0%</span> · <span data-inema-meter-frac>0 de 8</span></span>
+        </div>
+        <div class="inema-bar h-2 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-amber-500 rounded-full" data-inema-meter-fill style="width:0%"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[1fr_220px] lg:gap-10">
+
+    <main id="conteudo" class="min-w-0">
+
+      <!-- SVG FUTURISTA: o ciclo request/response -->
+      <section class="mb-12">
+        <p class="text-neutral-300 mb-4 inema-prose leading-relaxed">Um app não é um workflow invisível: ele tem um usuário do outro lado. O diagrama abaixo mostra o ciclo que se repete a cada interação — o navegador (frontend) faz uma requisição, o servidor (backend) processa e devolve uma resposta, e a tela se atualiza.</p>
+        <div class="rounded-2xl border border-amber-500/30 bg-dark-900/40 p-3 sm:p-4 overflow-hidden mb-3">
+          <svg viewBox="0 0 1000 260" class="w-full h-auto" role="img" aria-label="O ciclo request/response: o frontend no navegador envia uma requisição ao backend no servidor, que processa lógica, API e banco e devolve uma resposta que atualiza a interface">
+            <defs>
+              <linearGradient id="m41-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#f59e0b"/>
+              </linearGradient>
+              <filter id="m41-glow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <pattern id="m41-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+                <circle cx="1.3" cy="1.3" r="1.3" fill="#f59e0b" opacity="0.12"/>
+              </pattern>
+              <marker id="m41-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#fbbf24"/></marker>
+              <marker id="m41-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+            </defs>
+            <rect x="0" y="0" width="1000" height="260" fill="url(#m41-grid)"/>
+
+            <!-- Frontend (foco) -->
+            <g filter="url(#m41-glow)"><rect x="40" y="92" width="220" height="80" rx="16" fill="#1f1604" stroke="url(#m41-grad)" stroke-width="2.5"/></g>
+            <text x="150" y="124" text-anchor="middle" fill="#fbbf24" font-family="Inter,sans-serif" font-weight="600" font-size="16">Frontend</text>
+            <text x="150" y="146" text-anchor="middle" fill="#fde3a7" font-family="Inter,sans-serif" font-size="12">navegador · o que você vê</text>
+
+            <!-- Requisição (amber) -->
+            <g fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.6"><path d="M260,116 L548,116" marker-end="url(#m41-ah)"/></g>
+            <text x="404" y="106" text-anchor="middle" fill="#fde3a7" font-family="Inter,sans-serif" font-size="12">1 · clique → requisição</text>
+
+            <!-- Backend (ciano) -->
+            <rect x="548" y="92" width="220" height="80" rx="16" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+            <text x="658" y="120" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-weight="600" font-size="16">Backend</text>
+            <text x="658" y="142" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">servidor · lógica · API</text>
+            <text x="658" y="159" text-anchor="middle" fill="#7fc4ee" font-family="Inter,sans-serif" font-size="11">processa</text>
+
+            <!-- Banco (ciano, abaixo) -->
+            <g fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.5"><path d="M658,172 L658,206" marker-end="url(#m41-ahc)"/></g>
+            <rect x="568" y="206" width="180" height="40" rx="10" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.8"/>
+            <text x="658" y="231" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="12">Banco de dados</text>
+
+            <!-- Resposta (amber, volta) -->
+            <g fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.6"><path d="M548,150 L262,150" marker-end="url(#m41-ah)"/></g>
+            <text x="404" y="170" text-anchor="middle" fill="#fde3a7" font-family="Inter,sans-serif" font-size="12">2 · resposta → UI atualiza</text>
+
+            <!-- Usuário (esquerda) -->
+            <g fill="none" stroke="#fbbf24" stroke-width="1.8" opacity="0.5"><path d="M880,132 L772,132" marker-end="url(#m41-ah)"/></g>
+            <circle cx="918" cy="132" r="26" fill="#1f1604" stroke="#f59e0b" stroke-width="2"/>
+            <text x="918" y="137" text-anchor="middle" fill="#fbbf24" font-family="Inter,sans-serif" font-size="22">👤</text>
+          </svg>
+        </div>
+        <p class="text-xs text-neutral-500">Diagrama ilustrativo — recriação conceitual do ciclo request/response, não uma captura de tela real.</p>
+      </section>
+
+      <!-- TÓPICO 1 -->
+      <section id="topico-1" data-inema-topic="modulo-4-1#topico-1" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xl">1</span>
+            <h2 class="text-2xl font-bold">🪟 Background vs visível</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m4-1-t1-p1">
+          Até aqui o que você construiu rodava <strong class="text-amber-400">no fundo</strong>: workflows e scripts disparados por agenda ou evento, sem ninguém olhando. Um <strong class="text-amber-400">app</strong> é o oposto: ele é <strong class="text-amber-400">visível</strong> — tem uma interface com a qual pessoas interagem. Esta trilha vai do que roda invisível para um produto de verdade na internet, com design, autenticação e pagamento.
+        </p>
+
+        <div class="bg-gradient-to-br from-amber-900/30 to-dark-800 rounded-xl border border-amber-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-amber-400 mb-3 flex items-center"><span class="mr-2">💡</span> A virada de chave</h3>
+          <p class="text-neutral-300 mb-3 inema-prose" data-inema-block="m4-1-t1-p2">Um app full-stack é um frontend por cima do backend que você já sabe construir. A abordagem prática é começar simples — um site básico — e iterar adicionando features, em vez de planejar tudo de antemão.</p>
+          <ul class="space-y-2 text-neutral-300">
+            <li class="flex items-start space-x-2"><span class="text-amber-400 mt-1">•</span><span><strong>Fundo:</strong> workflow/script sem interação visível.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-amber-400 mt-1">•</span><span><strong>Visível:</strong> uma interface que outras pessoas usam.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-amber-400 mt-1">•</span><span><strong>Projeto-âncora:</strong> um AI Lead Qualifier — da ideia ao app no ar.</span></li>
+          </ul>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-amber-900/20 rounded-xl border border-amber-500/30 p-6">
+            <h4 class="font-bold text-amber-400 mb-4">✓ Pensa como produto</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Começa por um site básico e cresce por features.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Assume que outras pessoas vão interagir com ele.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Trata o frontend como parte do produto, não enfeite.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Armadilhas</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Tentar planejar 100% das features antes de publicar.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Tratar um app como se fosse só um workflow no fundo.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Ignorar que agora existe um usuário do outro lado.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Comece pequeno e publique cedo. Um app simples no ar ensina mais do que um plano gigante na cabeça — e cada feature nova (design, login, pagamento) entra como uma camada por cima do que já funciona.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Fundo</div><p class="text-xs text-neutral-400">Workflow sem interface.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Visível</div><p class="text-xs text-neutral-400">App com que se interage.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Full-stack</div><p class="text-xs text-neutral-400">Frontend sobre backend.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Iterar</div><p class="text-xs text-neutral-400">Crescer por features.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 2 -->
+      <section id="topico-2" data-inema-topic="modulo-4-1#topico-2" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xl">2</span>
+            <h2 class="text-2xl font-bold">🗺️ Frontend vs backend</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m4-1-t2-p1">
+          O <strong class="text-amber-400">frontend</strong> é tudo o que o usuário vê — botões, imagens, formulários, textos, fontes, layout — e roda no <strong class="text-amber-400">navegador</strong>. O <strong class="text-amber-400">backend</strong> roda em um <strong class="text-amber-400">servidor</strong>: guarda a lógica, faz as requisições HTTP, chama APIs e conversa com o banco de dados. Você não precisa dominar cada detalhe técnico, mas precisa internalizar essa separação — ela é a base de tudo o mais sobre apps.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-amber-900/20 rounded-xl border border-amber-500/30 p-6">
+            <h4 class="font-bold text-amber-400 mb-4">🖥️ Frontend (navegador)</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-amber-400">•</span><span>Botões, formulários, imagens, textos.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">•</span><span>Fontes, cores e layout — a UX.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">•</span><span>O que o usuário toca e enxerga.</span></li>
+            </ul>
+          </div>
+          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+            <h4 class="font-bold text-blue-400 mb-4">⚙️ Backend (servidor)</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>A lógica e as regras de negócio.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Requisições HTTP e chamadas de API.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Conexão com o banco de dados.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-amber-400 mb-3 flex items-center"><span class="mr-2">🧭</span> Por que apps diferem de workflows</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m4-1-t2-p2">Workflows rodam no fundo, sem interação visível. Apps exigem uma interface e interação em tempo real: alguém clica, espera, e vê o resultado. Por isso a UX — navegabilidade, legibilidade das fontes, clareza do layout — passa a fazer parte do produto.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Quando algo der errado, pergunte-se primeiro: isso é frontend (a tela não mostra) ou backend (a lógica não rodou)? Localizar de que lado está o problema é metade do diagnóstico.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Navegador</div><p class="text-xs text-neutral-400">Onde o frontend roda.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Servidor</div><p class="text-xs text-neutral-400">Onde o backend roda.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">UX</div><p class="text-xs text-neutral-400">Parte do frontend.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Separação</div><p class="text-xs text-neutral-400">O modelo mental-base.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 3 -->
+      <section id="topico-3" data-inema-topic="modulo-4-1#topico-3" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xl">3</span>
+            <h2 class="text-2xl font-bold">🔄 Ciclo request/response</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m4-1-t3-p1">
+          Todo app vive de um vai-e-vem contínuo entre o que o usuário vê e o que acontece nos bastidores. Esse vai-e-vem é o <strong class="text-amber-400">ciclo request/response</strong>: o usuário clica, uma requisição parte para o servidor, o servidor processa, e a resposta volta para atualizar a tela.
+        </p>
+
+        <h3 class="text-xl font-bold mb-4">As quatro etapas do ciclo</h3>
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">O usuário clica</h4>
+              <p class="text-neutral-300 text-sm">Uma ação no frontend (enviar um formulário, apertar um botão) dispara o ciclo.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">A requisição vai ao servidor</h4>
+              <p class="text-neutral-300 text-sm">O navegador envia os dados ao backend, que recebe a requisição.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">O servidor processa</h4>
+              <p class="text-neutral-300 text-sm">Salva dados, chama uma API ou roda a lógica — o trabalho de bastidores.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">4</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">A resposta atualiza a UI</h4>
+              <p class="text-neutral-300 text-sm">O backend devolve a resposta e o frontend redesenha a tela com o resultado.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-2 flex items-center"><span class="mr-2">⏱️</span> Interação em tempo real</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m4-1-t3-p2">É esse ciclo que separa um app de um workflow no fundo: alguém está esperando do outro lado. Cada interação é uma volta completa do ciclo — e a velocidade dessa volta faz parte da experiência.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Ao descrever o app para a IA, pense em termos de ciclo: "quando o usuário envia o formulário, manda X ao backend, processa Y e mostra Z na tela". Isso dá à IA a forma exata da interação.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Clique</div><p class="text-xs text-neutral-400">Início do ciclo.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Requisição</div><p class="text-xs text-neutral-400">Frontend → servidor.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Processo</div><p class="text-xs text-neutral-400">Lógica, API, banco.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Resposta</div><p class="text-xs text-neutral-400">UI atualiza.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 4 -->
+      <section id="topico-4" data-inema-topic="modulo-4-1#topico-4" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xl">4</span>
+            <h2 class="text-2xl font-bold">🎨 Tips de design</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m4-1-t4-p1">
+          Sites gerados por IA tendem a ter uma <strong class="text-amber-400">"cara de IA"</strong>: layouts, cores, gradientes e heros padronizados. Isso acontece porque a IA puxa para um "design funcional" seguro e previsível, sugerido da mesma forma para todo mundo. Criar algo original exige direcioná-la conscientemente — com referências, vocabulário preciso e feedback específico.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ A "cara de IA"</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>"Construa uma landing page" → resultado genérico.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Gradientes e heros idênticos a mil outros sites.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Feedback vago → ciclos infinitos de iteração.</span></li>
+            </ul>
+          </div>
+          <div class="bg-amber-900/20 rounded-xl border border-amber-500/30 p-6">
+            <h4 class="font-bold text-amber-400 mb-4">✓ Direção consciente</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Usar uma skill de design dedicada.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Dar referências (sites, screenshots) concretas.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Dizer o que gostou e o que mudar — e por quê.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-amber-900/30 to-dark-800 rounded-xl border border-amber-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-amber-400 mb-3 flex items-center"><span class="mr-2">💡</span> Por que outputs de IA se parecem</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m4-1-t4-p2">A IA otimiza para um resultado "seguro": o que costuma funcionar para a maioria. Sem direção, ela entrega o denominador comum. A boa notícia é que ela responde muito bem a referência e vocabulário — é exatamente isso que os próximos dois tópicos exploram.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Na primeira vez que vir a interface, anote em voz alta o que gostou e o que não gostou — e por quê. Esse comentário cru é o melhor insumo de feedback para a próxima iteração.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Genérico</div><p class="text-xs text-neutral-400">O default da IA.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Referência</div><p class="text-xs text-neutral-400">Mostra o que quer.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Vocabulário</div><p class="text-xs text-neutral-400">Descreve com precisão.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Feedback</div><p class="text-xs text-neutral-400">Específico, não vago.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 5 -->
+      <section id="topico-5" data-inema-topic="modulo-4-1#topico-5" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xl">5</span>
+            <h2 class="text-2xl font-bold">🖼️ Skill de design & referências</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m4-1-t5-p1">
+          O atalho de maior impacto visual é uma <strong class="text-amber-400">skill de design</strong> dedicada: basta pedir à IA para usá-la ao gerar a UI e o resultado melhora drasticamente, mesmo em um único prompt. Combine isso com <strong class="text-amber-400">referências</strong> — clonar um site que você gosta, inspirar-se em galerias e usar screenshots como exemplo.
+        </p>
+
+        <h3 class="text-xl font-bold mb-4">Três formas de elevar a UI</h3>
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Pedir a skill de design</h4>
+              <p class="text-neutral-300 text-sm">Ao gerar a interface, peça à IA para usar a skill de front-end design. É a mudança de maior efeito por menor esforço.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Clonar / inspirar-se em galerias</h4>
+              <p class="text-neutral-300 text-sm">Encontre um site que você admira e peça para clonar o design; busque inspiração em galerias e bibliotecas de componentes.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Usar screenshots como referência</h4>
+              <p class="text-neutral-300 text-sm">Suba uma imagem ao projeto e peça "algo parecido com isto" — a IA usa a referência visual como norte.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-2 flex items-center"><span class="mr-2">🔎</span> Onde buscar referência</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m4-1-t5-p2">Galerias de design e bibliotecas de componentes são minas de inspiração: layouts testados, paletas e padrões prontos. Em vez de descrever do zero, mostre o que quer — referência vale mais que adjetivos.</p>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Mesmo num prompt único, ativar a skill de design faz uma diferença enorme. Se quiser ir além, junte a skill com uma referência visual — o resultado vira sob medida.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Skill de design</div><p class="text-xs text-neutral-400">Maior impacto.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Clone</div><p class="text-xs text-neutral-400">Copie um site bom.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Galerias</div><p class="text-xs text-neutral-400">Inspiração pronta.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Screenshot</div><p class="text-xs text-neutral-400">Referência por imagem.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 6 -->
+      <section id="topico-6" data-inema-topic="modulo-4-1#topico-6" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xl">6</span>
+            <h2 class="text-2xl font-bold">🗣️ Linguagem de prompt de design</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m4-1-t6-p1">
+          Descrever a interface com <strong class="text-amber-400">precisão</strong> é o que transforma um pedido genérico em um design intencional. Em vez de "faça bonito", você nomeia <strong class="text-amber-400">layout, componentes e tom visual</strong> — e, ao iterar, dá feedback específico em vez de "está errado".
+        </p>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+          <div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-amber-400"></span><span class="text-xs text-neutral-500 ml-2">prompt de design (exemplo ilustrativo)</span></div>
+          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-amber-400"># Layout</span>
+Header fixo: logo à esquerda, links de nav à direita.
+Botão de CTA com glow azul no canto direito.
+
+<span class="text-amber-400"># Hero</span>
+Texto grande e bold, subtítulo curto, um CTA primário.
+
+<span class="text-amber-400"># Tom visual</span>
+Escuro, premium, com um acento âmbar e bastante respiro.</pre>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-amber-900/20 rounded-xl border border-amber-500/30 p-6">
+            <h4 class="font-bold text-amber-400 mb-4">✓ Descreva com precisão</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Layout: posição de header, nav, hero, seções.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Componentes: cards, botões, formulários, estados.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Tom visual: paleta, peso de fonte, densidade.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Evite vago</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>"Deixe bonito" / "moderno" sem detalhe.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>"Está errado" em vez de dizer o que e por quê.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Mudar tudo de uma vez sem isolar o que não foi.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m4-1-t6-p2">Ao iterar, use a fórmula "gostei de X, mas mude Y porque Z". Feedback assim é acionável; "não gostei" obriga a IA a adivinhar e gera mais voltas do que conserto.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Layout</div><p class="text-xs text-neutral-400">Onde cada coisa fica.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Componentes</div><p class="text-xs text-neutral-400">Cards, botões, forms.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Tom visual</div><p class="text-xs text-neutral-400">Paleta e peso.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Feedback</div><p class="text-xs text-neutral-400">Gostei / mude / porquê.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 7 -->
+      <section id="topico-7" data-inema-topic="modulo-4-1#topico-7" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xl">7</span>
+            <h2 class="text-2xl font-bold">🚀 Build do AI Lead Qualifier</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m4-1-t7-p1">
+          O projeto-âncora é um app full-stack de <strong class="text-amber-400">qualificação de leads</strong>: o backend (workflow) roda no <strong class="text-amber-400">Trigger.dev</strong> e o frontend no <strong class="text-amber-400">Vercel</strong>, conectados para que qualquer pessoa com a URL use o workflow. A meta é ir de um prompt simples a um app publicado rapidamente.
+        </p>
+
+        <h3 class="text-xl font-bold mb-4">Do prompt ao app publicado</h3>
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Planejar em Plan Mode</h4>
+              <p class="text-neutral-300 text-sm">Descreva o app (backend no Trigger.dev, frontend no Vercel) e deixe a IA gerar o CLAUDE.md e a estrutura base antes de codar.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Gerar workflow + config do Trigger.dev</h4>
+              <p class="text-neutral-300 text-sm">A IA cria o workflow de qualificação, as instruções de deploy e o <code class="font-mono text-amber-400">trigger.config.ts</code>; cole o project ID/reference.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Deploy do backend (dev + produção)</h4>
+              <p class="text-neutral-300 text-sm">Faça deploy da task nos ambientes de desenvolvimento e produção; adicione a chave da API de IA como env var no Trigger.dev (idealmente chaves separadas).</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center"><span class="text-amber-400 font-bold">4</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+              <h4 class="font-semibold mb-1">Gerar e publicar o frontend no Vercel</h4>
+              <p class="text-neutral-300 text-sm">Gere a UI com a skill de design e faça deploy no Vercel — o site fica acessível de qualquer lugar, com auto-deploy a cada push.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-amber-900/20 rounded-xl border border-amber-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-amber-400 mb-2 flex items-center"><span class="mr-2">📊</span> O resultado</h3>
+          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m4-1-t7-p2">Um formulário que envia os dados da empresa → a IA analisa → exibe um score (ex.: 68/100, "lead morno"), um resumo, o detalhamento do score e os próximos passos sugeridos — com a execução correspondente aparecendo nos runs do Trigger.dev.</p>
+        </div>
+
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">⚠️</span> Atenção</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Não cole secret keys no chat — pergunte onde encontrá-las e configure você mesmo nas env vars.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Não esqueça de promover a task ao ambiente de <strong>produção</strong> (não só dev).</span></li>
+          </ul>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Trigger.dev</div><p class="text-xs text-neutral-400">Backend / workflow.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Vercel</div><p class="text-xs text-neutral-400">Frontend publicado.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Plan Mode</div><p class="text-xs text-neutral-400">CLAUDE.md + base.</p></div>
+          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-amber-400 font-semibold text-sm mb-1">Score</div><p class="text-xs text-neutral-400">Resultado para o usuário.</p></div>
+        </div>
+
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- TÓPICO 8 -->
+      <section id="topico-8" data-inema-topic="modulo-4-1#topico-8" class="mb-16">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xl">8</span>
+            <h2 class="text-2xl font-bold">🔗 Conectar frontend ↔ backend</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
+            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
+          </button>
+        </div>
+
+        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m4-1-t8-p1">
+          Com o backend no Trigger.dev e o frontend no Vercel, falta ligá-los. A conexão é feita por <strong class="text-amber-400">variáveis de ambiente</strong>: você adiciona a <strong class="text-amber-400">secret key</strong> do Trigger.dev como env var no Vercel, e o frontend passa a falar com a lógica. Cada push no GitHub dispara um deploy automático — o site fica sempre atualizado.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-amber-900/20 rounded-xl border border-amber-500/30 p-6">
+            <h4 class="font-bold text-amber-400 mb-4">✓ Como conectar</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Pegar a secret key do Trigger.dev (perguntando onde ela está).</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Adicioná-la como env var no Vercel e redeployar.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-amber-400">✓</span><span>Confiar no auto-deploy a cada push no GitHub.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Não faça</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Colar a secret key no chat ou no código versionado.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Esquecer de redeployar depois de adicionar a env var.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Confundir ambiente de dev com o de produção.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Pense nas env vars como a "tomada" entre frontend e backend: o código nunca contém o segredo, ele só lê de uma variável que vive na plataforma. Trocar a chave é trocar a variável — sem mexer no código.</p>
+        </div>
+
+        <!-- Checagem leve opcional -->
+        <div data-inema-check="modulo-4-1#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <p class="inema-check__q font-medium mb-4">Auto-recuperação (opcional): como o frontend no Vercel se conecta ao backend no Trigger.dev?</p>
+          <div class="inema-check-options inema-check__options space-y-2">
+            <button type="button" class="inema-check__option block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0">Colando a secret key direto no código do frontend.</button>
+            <button type="button" class="inema-check__option block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1">Adicionando a secret key do Trigger.dev como env var no Vercel.</button>
+            <button type="button" class="inema-check__option block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2">Enviando a secret key para a IA no chat.</button>
+          </div>
+          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="flex justify-start mt-8">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 hover:bg-amber-500/30 transition-colors">
+            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
+            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section class="mb-8">
+        <div class="bg-gradient-to-br from-amber-900/40 via-dark-800 to-dark-800 rounded-xl border border-amber-500/30 p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumo do Módulo</h2>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3"><span class="text-amber-400 mt-1">✓</span><div><strong class="text-neutral-100">Background vs visível</strong><span class="text-neutral-400"> — de workflows no fundo para um app com interface; começar pequeno e iterar.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-amber-400 mt-1">✓</span><div><strong class="text-neutral-100">Frontend vs backend</strong><span class="text-neutral-400"> — o que o usuário vê (navegador) vs a lógica no servidor.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-amber-400 mt-1">✓</span><div><strong class="text-neutral-100">Request/response</strong><span class="text-neutral-400"> — clique → requisição → processamento → resposta → UI.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-amber-400 mt-1">✓</span><div><strong class="text-neutral-100">Design</strong><span class="text-neutral-400"> — fugir da cara de IA com skill de design, referências e prompt preciso.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-amber-400 mt-1">✓</span><div><strong class="text-neutral-100">AI Lead Qualifier</strong><span class="text-neutral-400"> — Trigger.dev + Vercel, conectados por env var, do prompt ao app no ar.</span></div></div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-amber-400 mb-2">Próximo Módulo:</h3>
+            <p class="text-neutral-300">4.2 — Produção Real: Auth, Segurança, Pagamentos & Integração</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Voltar para Trilha</a>
+            <a href="modulo-4-2.html" class="flex-1 text-center px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-500 transition-colors">Próximo Módulo →</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- TOC sticky + scrollspy -->
+    <aside class="hidden lg:block">
+      <nav data-inema-toc aria-label="Índice da página" class="sticky top-24 self-start">
+        <p class="text-sm text-neutral-400 mb-3">Seção <span data-inema-section-counter><span class="inema-toc-pos">1</span> de <span class="inema-toc-total">8</span></span></p>
+        <ol class="space-y-1.5 text-sm">
+          <li><a href="#topico-1" class="inema-toc-link text-neutral-400 hover:text-amber-400 block">1. Background vs visível</a></li>
+          <li><a href="#topico-2" class="inema-toc-link text-neutral-400 hover:text-amber-400 block">2. Frontend vs backend</a></li>
+          <li><a href="#topico-3" class="inema-toc-link text-neutral-400 hover:text-amber-400 block">3. Request/response</a></li>
+          <li><a href="#topico-4" class="inema-toc-link text-neutral-400 hover:text-amber-400 block">4. Tips de design</a></li>
+          <li><a href="#topico-5" class="inema-toc-link text-neutral-400 hover:text-amber-400 block">5. Skill de design</a></li>
+          <li><a href="#topico-6" class="inema-toc-link text-neutral-400 hover:text-amber-400 block">6. Prompt de design</a></li>
+          <li><a href="#topico-7" class="inema-toc-link text-neutral-400 hover:text-amber-400 block">7. AI Lead Qualifier</a></li>
+          <li><a href="#topico-8" class="inema-toc-link text-neutral-400 hover:text-amber-400 block">8. Conectar front ↔ back</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+  </div>
+
+  <footer class="border-t border-dark-600 py-8 mt-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Vibe Coding na Prática · Curso original <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium">INEMA.CLUB</a> · 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const htmlEl = document.documentElement;
+    if (htmlEl.classList.contains('dark')) { themeToggleLightIcon.classList.remove('hidden'); }
+    else { themeToggleDarkIcon.classList.remove('hidden'); }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      htmlEl.classList.toggle('dark');
+      const isDark = htmlEl.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      if (window.INEMA && INEMA.setPref) { INEMA.setPref('theme', isDark ? 'inema-dark' : 'claro'); }
+    });
+  </script>
+
+  <script src="../../assets/learn.js"></script>
+  <script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+      if (window.INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-4-1#q1', {
+          answer: 1,
+          explain: {
+            0: 'Não. Secret keys nunca entram no código do frontend — ele roda no navegador e a chave ficaria exposta.',
+            1: 'Isso. A secret key do Trigger.dev entra como variável de ambiente no Vercel; o código só lê dela, sem contê-la.',
+            2: 'Não. Nunca envie chaves no chat — a IA pode gravá-las em arquivos versionados. Configure você mesmo nas env vars.'
+          }
+        });
+      }
+    }
+  </script>
+
+</body>
+</html>
