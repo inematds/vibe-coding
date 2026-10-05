@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="inema-course" content="vibe-coding">
 
-  <!-- ANTI-FOUC: script BLOQUEANTE, SEPARADO, PRIMEIRO no <head>, antes do Tailwind e do learn.css. -->
-  <script>
+<html class="dark" lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="vibe-coding" name="inema-course"/>
+<!-- ANTI-FOUC: script BLOQUEANTE, SEPARADO, PRIMEIRO no <head>, antes do Tailwind e do learn.css. -->
+<script>
   (function () {
     try {
       var html = document.documentElement;
@@ -74,10 +74,9 @@
     }
   })();
   </script>
-
-  <title>Módulo 2.3 · Skills, Geração de Artefatos & Tokens | Vibe Coding</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
+<title>Módulo 2.3 · Skills, Geração de Artefatos &amp; Tokens | Vibe Coding</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
@@ -90,10 +89,9 @@
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Manifesto do curso (OBRIGATORIO, identico em TODA pagina) -->
-  <script type="application/json" data-inema-manifest>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Manifesto do curso (OBRIGATORIO, identico em TODA pagina) -->
+<script data-inema-manifest="" type="application/json">
   {
     "course": "vibe-coding",
     "tracks": [
@@ -118,10 +116,8 @@
     ]
   }
   </script>
-
-  <link rel="stylesheet" href="../../assets/learn.css">
-
-  <style>
+<link href="../../assets/learn.css" rel="stylesheet"/>
+<style>
     body { font-family: 'Inter', sans-serif; }
     .dark body { background-color: #111827; }
     .topic-explanation { display: none; }
@@ -192,286 +188,258 @@
       .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
     }
   </style>
-</head>
-<body class="bg-dark-900 text-neutral-100 min-h-screen">
-
-  <a class="skip sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg" href="#conteudo">Pular para o conteúdo</a>
-
-  <!-- NAVIGATION (T2 ativa) -->
-  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-14">
-        <div class="flex items-center space-x-4">
-          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
-            <span class="text-2xl">⚡</span>
-            <span class="font-bold text-lg hidden sm:inline">Vibe Coding</span>
-          </a>
-          <span class="text-neutral-600">|</span>
-          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
-        </div>
-        <div class="flex items-center space-x-1 sm:space-x-2">
-          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
-            <span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
-          </a>
-          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10">
-            <span class="sm:hidden">T2</span><span class="hidden sm:inline">Domínio</span>
-          </a>
-          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors">
-            <span class="sm:hidden">T3</span><span class="hidden sm:inline">Deploy</span>
-          </a>
-          <a href="../trilha4/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors">
-            <span class="sm:hidden">T4</span><span class="hidden sm:inline">Apps</span>
-          </a>
-          <button type="button" data-inema-journey-open class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors ml-1">
-            <span aria-hidden="true">◷</span><span>Minha jornada</span>
-            <span class="inema-journey-badge hidden" data-inema-journey-badge data-count="0"></span>
-          </button>
-          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" aria-label="Alternar tema claro/escuro">
-            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-            </svg>
-            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- BREADCRUMB -->
-  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
-    <div class="flex items-center space-x-2 text-sm text-neutral-400">
-      <a href="../../index.html" class="hover:text-blue-400">Início</a>
-      <span>/</span>
-      <a href="index.html" class="hover:text-blue-400">Trilha 2</a>
-      <span>/</span>
-      <span class="text-blue-400">Módulo 2.3</span>
-    </div>
-  </nav>
-
-  <!-- HEADER DO MÓDULO -->
-  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.3</span>
-      <h3 class="text-2xl font-bold mb-4">📦 Skills, Geração de Artefatos & Tokens</h3>
-      <p class="text-lg text-neutral-400 max-w-3xl">Empacotar workflows como comandos reutilizáveis e dominar o orçamento de contexto. Você entende o que são skills e quando empacotá-las, constrói uma skill de rascunho de e-mail invocável como slash command, monta um gerador de slide deck, aprende os cinco padrões de prompting, combate o context rot, decide entre <code>/clear</code> e <code>/compact</code>, economiza tokens e consolida tudo num checklist de 12 dicas.</p>
-      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
-          <div class="text-xl font-bold text-blue-400">9</div>
-          <div class="text-xs text-neutral-400">Tópicos</div>
-        </div>
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
-          <div class="text-xl font-bold text-blue-400">~75</div>
-          <div class="text-xs text-neutral-400">Minutos</div>
-        </div>
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
-          <div class="text-xl font-bold text-blue-400">Inter.</div>
-          <div class="text-xs text-neutral-400">Nível</div>
-        </div>
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
-          <div class="text-xl font-bold text-blue-400">Prática</div>
-          <div class="text-xs text-neutral-400">Tipo</div>
-        </div>
-      </div>
-      <div class="mt-6 max-w-2xl" data-inema-meter="modulo:2-3" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 2.3">
-        <div class="flex items-center justify-between mb-1 text-sm">
-          <span class="text-neutral-400">Progresso do módulo</span>
-          <span class="text-blue-400 font-semibold"><span data-inema-meter-pct>0%</span> · <span data-inema-meter-frac>0 de 9</span></span>
-        </div>
-        <div class="inema-bar h-2 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-blue-500 rounded-full" data-inema-meter-fill style="width:0%"></div></div>
-      </div>
-    </div>
-  </header>
-
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[1fr_220px] lg:gap-10">
-
-    <main id="conteudo" class="min-w-0">
-
-      <!-- SVG FUTURISTA: skill como camada + orçamento de contexto -->
-      <section class="mb-12">
-        <p class="text-neutral-300 mb-4 inema-prose leading-relaxed">Uma skill é um workflow empacotado em uma pasta especial e disparado por um slash command — carregado sob demanda, sem inchar o contexto. O diagrama abaixo mostra a skill virando um comando reutilizável e, à direita, o orçamento de contexto com as zonas que indicam quando dar <code>/compact</code> e quando dar <code>/clear</code>.</p>
-        <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 overflow-hidden mb-3">
-          <svg viewBox="0 0 1000 300" class="w-full h-auto" role="img" aria-label="À esquerda, um workflow em markdown é empacotado em uma pasta de skill com SKILL.md e ferramentas Python, exposto como o slash command barra draft-email, carregado sob demanda. À direita, uma barra de orçamento de contexto dividida em quatro zonas: zero a cinquenta por cento seguro, cinquenta a setenta amarelo, setenta a oitenta e cinco laranja onde se roda compact, e acima de oitenta e cinco vermelho onde se roda clear">
-            <defs>
-              <linearGradient id="m23-grad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/>
-              </linearGradient>
-              <filter id="m23-glow" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-              <pattern id="m23-grid" width="32" height="32" patternUnits="userSpaceOnUse">
-                <circle cx="1.3" cy="1.3" r="1.3" fill="#3b82f6" opacity="0.12"/>
-              </pattern>
-              <marker id="m23-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"/></marker>
-              <marker id="m23-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
-            </defs>
-            <rect x="0" y="0" width="1000" height="300" fill="url(#m23-grid)"/>
-
-            <!-- Workflow markdown -->
-            <rect x="34" y="44" width="190" height="60" rx="12" fill="#0e1622" stroke="#60a5fa" stroke-width="2"/>
-            <text x="129" y="70" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="14">Workflow .md</text>
-            <text x="129" y="90" text-anchor="middle" fill="#bfdbfe" font-family="Inter,sans-serif" font-size="11">instruções (a camada W)</text>
-
-            <!-- arrow empacota -->
-            <g fill="none" stroke="#60a5fa" stroke-width="1.8" opacity="0.55"><path d="M224,84 L268,84" marker-end="url(#m23-ah)"/></g>
-
-            <!-- Skill folder (foco) -->
-            <g filter="url(#m23-glow)"><rect x="272" y="40" width="200" height="120" rx="16" fill="#0e1622" stroke="url(#m23-grad)" stroke-width="2.5"/></g>
-            <text x="372" y="66" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="14">.claude/skills/</text>
-            <text x="372" y="88" text-anchor="middle" fill="#bfdbfe" font-family="Inter,sans-serif" font-size="11">draft-email/SKILL.md</text>
-            <text x="372" y="110" text-anchor="middle" fill="#bfdbfe" font-family="Inter,sans-serif" font-size="11">name · description · args</text>
-            <text x="372" y="132" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">+ ferramentas Python (T)</text>
-
-            <!-- arrow expõe -->
-            <g fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.6"><path d="M472,100 L516,100" marker-end="url(#m23-ahc)"/></g>
-
-            <!-- slash command -->
-            <rect x="520" y="70" width="180" height="60" rx="12" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
-            <text x="610" y="96" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-weight="600" font-size="15">/draft-email</text>
-            <text x="610" y="116" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11">carrega sob demanda</text>
-
-            <!-- Orçamento de contexto: barra de zonas -->
-            <text x="500" y="196" text-anchor="middle" fill="#7fc8f5" font-family="Inter,sans-serif" font-size="12" font-weight="600">Orçamento de contexto</text>
-            <rect class="wf-a" x="120" y="212" width="320" height="34" rx="8" fill="#0e2018" stroke="#34d399" stroke-width="1.6"/>
-            <text x="280" y="234" text-anchor="middle" fill="#86efac" font-family="Inter,sans-serif" font-size="11">0–50% · seguro</text>
-            <rect class="wf-a" x="448" y="212" width="150" height="34" rx="8" fill="#221c08" stroke="#fbbf24" stroke-width="1.6"/>
-            <text x="523" y="234" text-anchor="middle" fill="#fde68a" font-family="Inter,sans-serif" font-size="11">50–70% amarelo</text>
-            <rect class="wf-a" x="606" y="212" width="160" height="34" rx="8" fill="#241404" stroke="#f59e0b" stroke-width="1.6"/>
-            <text x="686" y="234" text-anchor="middle" fill="#fcd34d" font-family="Inter,sans-serif" font-size="11">70–85% /compact</text>
-            <rect class="wf-a" x="774" y="212" width="106" height="34" rx="8" fill="#2a0f0f" stroke="#f87171" stroke-width="1.6"/>
-            <text x="827" y="234" text-anchor="middle" fill="#fca5a5" font-family="Inter,sans-serif" font-size="11">85%+ /clear</text>
-            <text x="500" y="278" text-anchor="middle" fill="#7fc8f5" font-family="Inter,sans-serif" font-size="11">qualidade degrada após ~60% — gerencie o contexto antes de ele virar ruído</text>
-          </svg>
-        </div>
-        <p class="text-xs text-neutral-500">Diagrama ilustrativo — recriação conceitual de skills e do orçamento de contexto, não uma captura de tela real.</p>
-      </section>
-
-      <!-- TÓPICO 1 -->
-      <section id="topico-1" data-inema-topic="modulo-2-3#topico-1" class="mb-16">
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
-            <h2 class="text-2xl font-bold">📦 O que são skills</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
-            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
-          </button>
-        </div>
-
-        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t1-p1">
-          <strong class="text-blue-400">O que é:</strong> uma skill é, no fundo, a mesma coisa que um <strong class="text-blue-400">workflow</strong> (a camada W do WAT) — instruções em markdown — só que guardada numa pasta especial, a <code>.claude/skills</code>, com cada skill em sua própria subpasta e um arquivo markdown de skill dentro. A diferença está em <em>onde ela mora</em> e em <em>como é disparada</em>: a skill é exposta como um <strong class="text-blue-400">slash command</strong>, um comando reutilizável que você chama por nome. Por baixo, a skill continua podendo acionar ferramentas (scripts Python de busca, scraping, geração de documento), então o framework WAT permanece intacto.
+<link href="https://inematds.github.io/vibe-coding/curso/trilha2/modulo-2-3.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/vibe-coding/en/curso/trilha2/modulo-2-3.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/vibe-coding/es/curso/trilha2/modulo-2-3.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="modulo-2-3.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">PT</a><a href="../../en/curso/trilha2/modulo-2-3.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="../../es/curso/trilha2/modulo-2-3.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
+<a class="skip sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg" href="#conteudo">Pular para o conteúdo</a>
+<!-- NAVIGATION (T2 ativa) -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">⚡</span>
+<span class="font-bold text-lg hidden sm:inline">Vibe Coding</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html">
+<span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10" href="index.html">
+<span class="sm:hidden">T2</span><span class="hidden sm:inline">Domínio</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html">
+<span class="sm:hidden">T3</span><span class="hidden sm:inline">Deploy</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html">
+<span class="sm:hidden">T4</span><span class="hidden sm:inline">Apps</span>
+</a>
+<button class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors ml-1" data-inema-journey-open="" type="button">
+<span aria-hidden="true">◷</span><span>Minha jornada</span>
+<span class="inema-journey-badge hidden" data-count="0" data-inema-journey-badge=""></span>
+</button>
+<button aria-label="Alternar tema claro/escuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20">
+<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+</svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Trilha de navegação" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-blue-400" href="../../index.html">Início</a>
+<span>/</span>
+<a class="hover:text-blue-400" href="index.html">Trilha 2</a>
+<span>/</span>
+<span class="text-blue-400">Módulo 2.3</span>
+</div>
+</nav>
+<!-- HEADER DO MÓDULO -->
+<header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.3</span>
+<h3 class="text-2xl font-bold mb-4">📦 Skills, Geração de Artefatos &amp; Tokens</h3>
+<p class="text-lg text-neutral-400 max-w-3xl">Empacotar workflows como comandos reutilizáveis e dominar o orçamento de contexto. Você entende o que são skills e quando empacotá-las, constrói uma skill de rascunho de e-mail invocável como slash command, monta um gerador de slide deck, aprende os cinco padrões de prompting, combate o context rot, decide entre <code>/clear</code> e <code>/compact</code>, economiza tokens e consolida tudo num checklist de 12 dicas.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+<div class="text-xl font-bold text-blue-400">9</div>
+<div class="text-xs text-neutral-400">Tópicos</div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+<div class="text-xl font-bold text-blue-400">~75</div>
+<div class="text-xs text-neutral-400">Minutos</div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+<div class="text-xl font-bold text-blue-400">Inter.</div>
+<div class="text-xs text-neutral-400">Nível</div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+<div class="text-xl font-bold text-blue-400">Prática</div>
+<div class="text-xs text-neutral-400">Tipo</div>
+</div>
+</div>
+<div aria-label="Progresso do módulo 2.3" aria-valuemax="100" aria-valuemin="0" class="mt-6 max-w-2xl" data-inema-meter="modulo:2-3" role="progressbar">
+<div class="flex items-center justify-between mb-1 text-sm">
+<span class="text-neutral-400">Progresso do módulo</span>
+<span class="text-blue-400 font-semibold"><span data-inema-meter-pct="">0%</span> · <span data-inema-meter-frac="">0 de 9</span></span>
+</div>
+<div class="inema-bar h-2 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-blue-500 rounded-full" data-inema-meter-fill="" style="width:0%"></div></div>
+</div>
+</div>
+</header>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[1fr_220px] lg:gap-10">
+<main class="min-w-0" id="conteudo">
+<!-- SVG FUTURISTA: skill como camada + orçamento de contexto -->
+<section class="mb-12">
+<p class="text-neutral-300 mb-4 inema-prose leading-relaxed">Uma skill é um workflow empacotado em uma pasta especial e disparado por um slash command — carregado sob demanda, sem inchar o contexto. O diagrama abaixo mostra a skill virando um comando reutilizável e, à direita, o orçamento de contexto com as zonas que indicam quando dar <code>/compact</code> e quando dar <code>/clear</code>.</p>
+<div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 overflow-hidden mb-3">
+<svg aria-label="À esquerda, um workflow em markdown é empacotado em uma pasta de skill com SKILL.md e ferramentas Python, exposto como o slash command barra draft-email, carregado sob demanda. À direita, uma barra de orçamento de contexto dividida em quatro zonas: zero a cinquenta por cento seguro, cinquenta a setenta amarelo, setenta a oitenta e cinco laranja onde se roda compact, e acima de oitenta e cinco vermelho onde se roda clear" class="w-full h-auto" role="img" viewbox="0 0 1000 300">
+<defs>
+<lineargradient id="m23-grad" x1="0" x2="1" y1="0" y2="1">
+<stop offset="0" stop-color="#60a5fa"></stop><stop offset="1" stop-color="#3b82f6"></stop>
+</lineargradient>
+<filter height="180%" id="m23-glow" width="180%" x="-40%" y="-40%">
+<fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge>
+</filter>
+<pattern height="32" id="m23-grid" patternunits="userSpaceOnUse" width="32">
+<circle cx="1.3" cy="1.3" fill="#3b82f6" opacity="0.12" r="1.3"></circle>
+</pattern>
+<marker id="m23-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"></path></marker>
+<marker id="m23-ahc" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"></path></marker>
+</defs>
+<rect fill="url(#m23-grid)" height="300" width="1000" x="0" y="0"></rect>
+<!-- Workflow markdown -->
+<rect fill="#0e1622" height="60" rx="12" stroke="#60a5fa" stroke-width="2" width="190" x="34" y="44"></rect>
+<text fill="#60a5fa" font-family="Inter,sans-serif" font-size="14" font-weight="600" text-anchor="middle" x="129" y="70">Workflow .md</text>
+<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="129" y="90">instruções (a camada W)</text>
+<!-- arrow empacota -->
+<g fill="none" opacity="0.55" stroke="#60a5fa" stroke-width="1.8"><path d="M224,84 L268,84" marker-end="url(#m23-ah)"></path></g>
+<!-- Skill folder (foco) -->
+<g filter="url(#m23-glow)"><rect fill="#0e1622" height="120" rx="16" stroke="url(#m23-grad)" stroke-width="2.5" width="200" x="272" y="40"></rect></g>
+<text fill="#60a5fa" font-family="Inter,sans-serif" font-size="14" font-weight="600" text-anchor="middle" x="372" y="66">.claude/skills/</text>
+<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="372" y="88">draft-email/SKILL.md</text>
+<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="372" y="110">name · description · args</text>
+<text fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="372" y="132">+ ferramentas Python (T)</text>
+<!-- arrow expõe -->
+<g fill="none" opacity="0.6" stroke="#38bdf8" stroke-width="2"><path d="M472,100 L516,100" marker-end="url(#m23-ahc)"></path></g>
+<!-- slash command -->
+<rect fill="#0e1b26" height="60" rx="12" stroke="#38bdf8" stroke-width="2" width="180" x="520" y="70"></rect>
+<text fill="#bfe6ff" font-family="Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle" x="610" y="96">/draft-email</text>
+<text fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="610" y="116">carrega sob demanda</text>
+<!-- Orçamento de contexto: barra de zonas -->
+<text fill="#7fc8f5" font-family="Inter,sans-serif" font-size="12" font-weight="600" text-anchor="middle" x="500" y="196">Orçamento de contexto</text>
+<rect class="wf-a" fill="#0e2018" height="34" rx="8" stroke="#34d399" stroke-width="1.6" width="320" x="120" y="212"></rect>
+<text fill="#86efac" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="280" y="234">0–50% · seguro</text>
+<rect class="wf-a" fill="#221c08" height="34" rx="8" stroke="#fbbf24" stroke-width="1.6" width="150" x="448" y="212"></rect>
+<text fill="#fde68a" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="523" y="234">50–70% amarelo</text>
+<rect class="wf-a" fill="#241404" height="34" rx="8" stroke="#f59e0b" stroke-width="1.6" width="160" x="606" y="212"></rect>
+<text fill="#fcd34d" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="686" y="234">70–85% /compact</text>
+<rect class="wf-a" fill="#2a0f0f" height="34" rx="8" stroke="#f87171" stroke-width="1.6" width="106" x="774" y="212"></rect>
+<text fill="#fca5a5" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="827" y="234">85%+ /clear</text>
+<text fill="#7fc8f5" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="500" y="278">qualidade degrada após ~60% — gerencie o contexto antes de ele virar ruído</text>
+</svg>
+</div>
+<p class="text-xs text-neutral-500">Diagrama ilustrativo — recriação conceitual de skills e do orçamento de contexto, não uma captura de tela real.</p>
+</section>
+<!-- TÓPICO 1 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-1" id="topico-1">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">📦 O que são skills</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t1-p1">
+<strong class="text-blue-400">O que é:</strong> uma skill é, no fundo, a mesma coisa que um <strong class="text-blue-400">workflow</strong> (a camada W do WAT) — instruções em markdown — só que guardada numa pasta especial, a <code>.claude/skills</code>, com cada skill em sua própria subpasta e um arquivo markdown de skill dentro. A diferença está em <em>onde ela mora</em> e em <em>como é disparada</em>: a skill é exposta como um <strong class="text-blue-400">slash command</strong>, um comando reutilizável que você chama por nome. Por baixo, a skill continua podendo acionar ferramentas (scripts Python de busca, scraping, geração de documento), então o framework WAT permanece intacto.
         </p>
-
-        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">💡</span> Por que aprender</h3>
-          <p class="text-neutral-300 mb-3 inema-prose" data-inema-block="m2-3-t1-p2">Skills importam por quatro motivos: <strong>consistência</strong> (o mesmo processo toda vez, sem reexplicar), <strong>economia de tokens</strong> (carregam só quando invocadas), <strong>compartilhamento</strong> (a mesma skill serve um time inteiro) e <strong>confiabilidade</strong> (embrulham passos complexos e fáceis de esquecer, então você delega-e-esquece). E o melhor: você não precisa saber escrever skills — descreve o workflow e pede ao agente para transformá-lo num slash command reutilizável.</p>
-          <ul class="space-y-2 text-neutral-300 text-sm">
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Consistência:</strong> o processo não varia entre execuções.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Tokens:</strong> carregada sob demanda, não a cada sessão.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Compartilhável:</strong> distribua a pasta e o time usa a mesma skill.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Confiável:</strong> embrulha o passo difícil de lembrar.</span></li>
-          </ul>
-        </div>
-
-        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🗂️</span> Skill ≠ CLAUDE.md</h3>
-          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-3-t1-p3">O CLAUDE.md guarda só as regras de <strong>toda sessão</strong> (propósito do projeto, objetivo principal, framework). Instruções <strong>por tarefa</strong> pertencem às skills — assim você evita estourar a janela de contexto. Ter 20–50 skills não incha o contexto como faria um único CLAUDE.md gigante, porque as skills só são carregadas quando chamadas.</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Markdown</div><p class="text-xs text-neutral-400">Igual a um workflow.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">.claude/skills</div><p class="text-xs text-neutral-400">Uma pasta por skill.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Slash command</div><p class="text-xs text-neutral-400">Invocada por nome.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Sob demanda</div><p class="text-xs text-neutral-400">Carrega só ao usar.</p></div>
-        </div>
-
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors">
-            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
-            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- TÓPICO 2 -->
-      <section id="topico-2" data-inema-topic="modulo-2-3#topico-2" class="mb-16">
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
-            <h2 class="text-2xl font-bold">⚖️ Skill vs digitar</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
-            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
-          </button>
-        </div>
-
-        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t2-p1">
-          <strong class="text-blue-400">O que é:</strong> nem todo pedido merece virar skill. A decisão é simples — empacotar quando o ganho de reuso e consistência compensa o esforço de criar a skill; digitar direto quando o pedido é pontual e simples. Empacotar cedo demais é <em>overkill</em>; tarde demais é repetição cansativa.
+<div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">💡</span> Por que aprender</h3>
+<p class="text-neutral-300 mb-3 inema-prose" data-inema-block="m2-3-t1-p2">Skills importam por quatro motivos: <strong>consistência</strong> (o mesmo processo toda vez, sem reexplicar), <strong>economia de tokens</strong> (carregam só quando invocadas), <strong>compartilhamento</strong> (a mesma skill serve um time inteiro) e <strong>confiabilidade</strong> (embrulham passos complexos e fáceis de esquecer, então você delega-e-esquece). E o melhor: você não precisa saber escrever skills — descreve o workflow e pede ao agente para transformá-lo num slash command reutilizável.</p>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Consistência:</strong> o processo não varia entre execuções.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Tokens:</strong> carregada sob demanda, não a cada sessão.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Compartilhável:</strong> distribua a pasta e o time usa a mesma skill.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Confiável:</strong> embrulha o passo difícil de lembrar.</span></li>
+</ul>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🗂️</span> Skill ≠ CLAUDE.md</h3>
+<p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-3-t1-p3">O CLAUDE.md guarda só as regras de <strong>toda sessão</strong> (propósito do projeto, objetivo principal, framework). Instruções <strong>por tarefa</strong> pertencem às skills — assim você evita estourar a janela de contexto. Ter 20–50 skills não incha o contexto como faria um único CLAUDE.md gigante, porque as skills só são carregadas quando chamadas.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Markdown</div><p class="text-xs text-neutral-400">Igual a um workflow.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">.claude/skills</div><p class="text-xs text-neutral-400">Uma pasta por skill.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Slash command</div><p class="text-xs text-neutral-400">Invocada por nome.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Sob demanda</div><p class="text-xs text-neutral-400">Carrega só ao usar.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 2 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-2" id="topico-2">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">⚖️ Skill vs digitar</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t2-p1">
+<strong class="text-blue-400">O que é:</strong> nem todo pedido merece virar skill. A decisão é simples — empacotar quando o ganho de reuso e consistência compensa o esforço de criar a skill; digitar direto quando o pedido é pontual e simples. Empacotar cedo demais é <em>overkill</em>; tarde demais é repetição cansativa.
         </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
-            <h4 class="font-bold text-emerald-400 mb-4">✓ Vale criar uma skill</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>É um <strong>workflow repetido</strong> — você faz isso toda semana.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>A <strong>consistência importa</strong> — o resultado precisa sair sempre igual.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>As instruções são <strong>complexas ou fáceis de esquecer</strong>.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Outras pessoas do <strong>time</strong> vão rodar o mesmo processo.</span></li>
-            </ul>
-          </div>
-          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
-            <h4 class="font-bold text-red-400 mb-4">✗ Melhor só digitar</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>É uma <strong>tarefa única</strong>, que você não vai repetir.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Você ainda está <strong>experimentando</strong> e o processo muda.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>A instrução cabe em <strong>uma frase</strong> — a skill seria exagero.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Não há reuso à vista — empacotar só adicionaria atrito.</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Por que aprender</h3>
-          <p class="text-neutral-300 text-sm">A regra prática: na <strong>terceira vez</strong> que você digitar quase a mesma instrução longa, pare e peça ao agente para transformar aquilo numa skill. Antes disso, digitar é mais ágil; depois disso, a skill paga o investimento em poucos usos.</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Repetição</div><p class="text-xs text-neutral-400">Gatilho nº1 da skill.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Consistência</div><p class="text-xs text-neutral-400">Saída sempre igual.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Complexidade</div><p class="text-xs text-neutral-400">Passos fáceis de esquecer.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Overkill</div><p class="text-xs text-neutral-400">Pontual? Só digite.</p></div>
-        </div>
-
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors">
-            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
-            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- TÓPICO 3 -->
-      <section id="topico-3" data-inema-topic="modulo-2-3#topico-3" class="mb-16">
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
-            <h2 class="text-2xl font-bold">✉️ Skill na prática: /draft-email</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
-            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
-          </button>
-        </div>
-
-        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t3-p1">
-          <strong class="text-blue-400">O que é:</strong> um build prático de uma skill de <strong class="text-blue-400">rascunhar e-mail</strong> — criada, testada, refinada e invocada como slash command. A anatomia é uma pasta <code>.claude/skills</code> com uma subpasta por skill, cada uma com um <code>SKILL.md</code> que define <em>name</em>, <em>description</em>, os <em>argumentos</em> esperados e os passos. Os argumentos aqui são, por exemplo, bullet points com a informação-chave, o destinatário e o tom. Ela vira chamável como <code>/draft-email</code> — slash commands foram unificados com skills, comparáveis a embutidos como <code>/clear</code>.
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">✓ Vale criar uma skill</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>É um <strong>workflow repetido</strong> — você faz isso toda semana.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>A <strong>consistência importa</strong> — o resultado precisa sair sempre igual.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>As instruções são <strong>complexas ou fáceis de esquecer</strong>.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Outras pessoas do <strong>time</strong> vão rodar o mesmo processo.</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Melhor só digitar</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>É uma <strong>tarefa única</strong>, que você não vai repetir.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Você ainda está <strong>experimentando</strong> e o processo muda.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>A instrução cabe em <strong>uma frase</strong> — a skill seria exagero.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Não há reuso à vista — empacotar só adicionaria atrito.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Por que aprender</h3>
+<p class="text-neutral-300 text-sm">A regra prática: na <strong>terceira vez</strong> que você digitar quase a mesma instrução longa, pare e peça ao agente para transformar aquilo numa skill. Antes disso, digitar é mais ágil; depois disso, a skill paga o investimento em poucos usos.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Repetição</div><p class="text-xs text-neutral-400">Gatilho nº1 da skill.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Consistência</div><p class="text-xs text-neutral-400">Saída sempre igual.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Complexidade</div><p class="text-xs text-neutral-400">Passos fáceis de esquecer.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Overkill</div><p class="text-xs text-neutral-400">Pontual? Só digite.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 3 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-3" id="topico-3">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">✉️ Skill na prática: /draft-email</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t3-p1">
+<strong class="text-blue-400">O que é:</strong> um build prático de uma skill de <strong class="text-blue-400">rascunhar e-mail</strong> — criada, testada, refinada e invocada como slash command. A anatomia é uma pasta <code>.claude/skills</code> com uma subpasta por skill, cada uma com um <code>SKILL.md</code> que define <em>name</em>, <em>description</em>, os <em>argumentos</em> esperados e os passos. Os argumentos aqui são, por exemplo, bullet points com a informação-chave, o destinatário e o tom. Ela vira chamável como <code>/draft-email</code> — slash commands foram unificados com skills, comparáveis a embutidos como <code>/clear</code>.
         </p>
-
-        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
-          <div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">.claude/skills/draft-email/SKILL.md (exemplo ilustrativo)</span></div>
-          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-blue-400">name:</span> draft-email
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">.claude/skills/draft-email/SKILL.md (exemplo ilustrativo)</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-blue-400">name:</span> draft-email
 <span class="text-blue-400">description:</span> Rascunha um e-mail polido e conciso, sem enrolação.
 
 <span class="text-blue-400">## Argumentos</span>
@@ -483,75 +451,68 @@
 1. Se faltar algum argumento, pergunte antes de escrever.
 2. Escreva um e-mail claro, direto e sem enchimento.
 3. Salve o rascunho em temporary/outputs/email.md</pre>
-        </div>
-
-        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🛠️</span> Por que aprender — o fluxo de build</h3>
-          <div class="space-y-6">
-            <div class="flex items-start space-x-4">
-              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
-              <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-                <h4 class="font-semibold mb-1">Criar em Plan Mode</h4>
-                <p class="text-neutral-300 text-sm">Peça uma skill que siga o formato oficial, descrevendo entradas (bullets, destinatário, tom), comportamento e onde salvar a saída. Aprove o plano.</p>
-              </div>
-            </div>
-            <div class="flex items-start space-x-4">
-              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
-              <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-                <h4 class="font-semibold mb-1">Limpar contexto e invocar</h4>
-                <p class="text-neutral-300 text-sm">Limpe a conversa e chame <code>/draft-email</code>. Invocar sem argumentos faz o agente perguntar os dados que faltam.</p>
-              </div>
-            </div>
-            <div class="flex items-start space-x-4">
-              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
-              <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-                <h4 class="font-semibold mb-1">Reusar com novas entradas</h4>
-                <p class="text-neutral-300 text-sm">Limpe de novo, chame o slash command com outro destinatário/tom e receba uma saída fresca seguindo as mesmas regras. Modificar a skill é só pedir ao agente para mudá-la.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
-          <p class="text-neutral-300 text-sm">Limpe o contexto entre usos para runs limpos e consistentes. A skill garante as <strong>mesmas regras</strong> (tom, concisão, estrutura) em toda invocação — é exatamente isso que diferencia delegar-e-esquecer de reexplicar tudo de novo.</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">SKILL.md</div><p class="text-xs text-neutral-400">name · description · args.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Argumentos</div><p class="text-xs text-neutral-400">bullets · destino · tom.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Pergunta</div><p class="text-xs text-neutral-400">Sem args, ele pede.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Reuso</div><p class="text-xs text-neutral-400">Limpa e chama de novo.</p></div>
-        </div>
-
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors">
-            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
-            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- TÓPICO 4 -->
-      <section id="topico-4" data-inema-topic="modulo-2-3#topico-4" class="mb-16">
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
-            <h2 class="text-2xl font-bold">🖼️ Gerador de slide deck</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
-            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
-          </button>
-        </div>
-
-        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t4-p1">
-          <strong class="text-blue-400">O que é:</strong> outro build completo no framework WAT — um workflow que pega um <strong class="text-blue-400">documento</strong> e gera uma <strong class="text-blue-400">apresentação profissional</strong> a partir dele. Reusa o fluxo padrão: CLAUDE.md (WAT) → workflow + ferramentas → rodar → iterar. Em Plan Mode, o agente faz perguntas de configuração (linguagem da ferramenta, como extrair os pontos-chave, estilo da apresentação). O workflow lê o documento, extrai os pontos e cria o arquivo de apresentação.
+</div>
+<div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🛠️</span> Por que aprender — o fluxo de build</h3>
+<div class="space-y-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Criar em Plan Mode</h4>
+<p class="text-neutral-300 text-sm">Peça uma skill que siga o formato oficial, descrevendo entradas (bullets, destinatário, tom), comportamento e onde salvar a saída. Aprove o plano.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Limpar contexto e invocar</h4>
+<p class="text-neutral-300 text-sm">Limpe a conversa e chame <code>/draft-email</code>. Invocar sem argumentos faz o agente perguntar os dados que faltam.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Reusar com novas entradas</h4>
+<p class="text-neutral-300 text-sm">Limpe de novo, chame o slash command com outro destinatário/tom e receba uma saída fresca seguindo as mesmas regras. Modificar a skill é só pedir ao agente para mudá-la.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+<p class="text-neutral-300 text-sm">Limpe o contexto entre usos para runs limpos e consistentes. A skill garante as <strong>mesmas regras</strong> (tom, concisão, estrutura) em toda invocação — é exatamente isso que diferencia delegar-e-esquecer de reexplicar tudo de novo.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">SKILL.md</div><p class="text-xs text-neutral-400">name · description · args.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Argumentos</div><p class="text-xs text-neutral-400">bullets · destino · tom.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Pergunta</div><p class="text-xs text-neutral-400">Sem args, ele pede.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Reuso</div><p class="text-xs text-neutral-400">Limpa e chama de novo.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 4 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-4" id="topico-4">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🖼️ Gerador de slide deck</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t4-p1">
+<strong class="text-blue-400">O que é:</strong> outro build completo no framework WAT — um workflow que pega um <strong class="text-blue-400">documento</strong> e gera uma <strong class="text-blue-400">apresentação profissional</strong> a partir dele. Reusa o fluxo padrão: CLAUDE.md (WAT) → workflow + ferramentas → rodar → iterar. Em Plan Mode, o agente faz perguntas de configuração (linguagem da ferramenta, como extrair os pontos-chave, estilo da apresentação). O workflow lê o documento, extrai os pontos e cria o arquivo de apresentação.
         </p>
-
-        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
-          <div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">workflows/documento-para-slides.md (exemplo ilustrativo)</span></div>
-          <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-blue-400"># Workflow: documento → slides</span>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">workflows/documento-para-slides.md (exemplo ilustrativo)</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-blue-400"># Workflow: documento → slides</span>
 
 <span class="text-blue-400">## Entrada</span>
 Documento em temporary/resources/ (10–16 páginas)
@@ -563,386 +524,345 @@ Documento em temporary/resources/ (10–16 páginas)
 
 <span class="text-blue-400">## Saída</span>
 Deck (ex.: 26 slides) em temporary/outputs/</pre>
-        </div>
-
-        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🎨</span> Por que aprender — iteração e design</h3>
-          <p class="text-neutral-300 text-sm mb-3 inema-prose" data-inema-block="m2-3-t4-p2">Você não precisa entender as ferramentas Python — basta verificar se a lógica do workflow produz a saída desejada. Sempre há espaço para melhorar o design: cores, fontes, estilo corporativo vs. casual, mistura de texto com bullets em vez de só bullets. E há um atalho poderoso de reuso: <strong>sobrepor uma skill pública de design de slides</strong> ao workflow eleva o visual sem você precisar explicar manualmente cada necessidade de design.</p>
-          <ul class="space-y-2 text-neutral-300 text-sm">
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Entrada:</strong> documento em temporary/resources.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Saída:</strong> deck profissional em temporary/outputs.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Upgrade:</strong> uma skill de design embutida no workflow.</span></li>
-          </ul>
-        </div>
-
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
-          <p class="text-neutral-300 text-sm">Rode o build em bypass de permissões só depois de aprovar o plano. E lembre: depois de confortável com o fluxo básico, plugar uma skill de design dedicada é a forma mais barata de subir a qualidade do deck — a skill carrega o conhecimento de design que você não quer reescrever.</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">WAT de novo</div><p class="text-xs text-neutral-400">CLAUDE.md → wf+tools.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Doc → slides</div><p class="text-xs text-neutral-400">Extrai e estrutura.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Iterar design</div><p class="text-xs text-neutral-400">Cor, fonte, estilo.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Skill de design</div><p class="text-xs text-neutral-400">Sobreposta ao workflow.</p></div>
-        </div>
-
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors">
-            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
-            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- TÓPICO 5 -->
-      <section id="topico-5" data-inema-topic="modulo-2-3#topico-5" class="mb-16">
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
-            <h2 class="text-2xl font-bold">🗣️ 5 padrões de prompting</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
-            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
-          </button>
-        </div>
-
-        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t5-p1">
-          <strong class="text-blue-400">O que é:</strong> cinco padrões de prompting que produzem resultados consistentes e de alta qualidade. Eles transformam pedidos vagos em instruções que o agente consegue executar bem — e mudam a sua postura de "operador" para "gerente de um especialista".
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🎨</span> Por que aprender — iteração e design</h3>
+<p class="text-neutral-300 text-sm mb-3 inema-prose" data-inema-block="m2-3-t4-p2">Você não precisa entender as ferramentas Python — basta verificar se a lógica do workflow produz a saída desejada. Sempre há espaço para melhorar o design: cores, fontes, estilo corporativo vs. casual, mistura de texto com bullets em vez de só bullets. E há um atalho poderoso de reuso: <strong>sobrepor uma skill pública de design de slides</strong> ao workflow eleva o visual sem você precisar explicar manualmente cada necessidade de design.</p>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Entrada:</strong> documento em temporary/resources.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Saída:</strong> deck profissional em temporary/outputs.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Upgrade:</strong> uma skill de design embutida no workflow.</span></li>
+</ul>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
+<p class="text-neutral-300 text-sm">Rode o build em bypass de permissões só depois de aprovar o plano. E lembre: depois de confortável com o fluxo básico, plugar uma skill de design dedicada é a forma mais barata de subir a qualidade do deck — a skill carrega o conhecimento de design que você não quer reescrever.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">WAT de novo</div><p class="text-xs text-neutral-400">CLAUDE.md → wf+tools.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Doc → slides</div><p class="text-xs text-neutral-400">Extrai e estrutura.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Iterar design</div><p class="text-xs text-neutral-400">Cor, fonte, estilo.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Skill de design</div><p class="text-xs text-neutral-400">Sobreposta ao workflow.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 5 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-5" id="topico-5">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">🗣️ 5 padrões de prompting</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t5-p1">
+<strong class="text-blue-400">O que é:</strong> cinco padrões de prompting que produzem resultados consistentes e de alta qualidade. Eles transformam pedidos vagos em instruções que o agente consegue executar bem — e mudam a sua postura de "operador" para "gerente de um especialista".
         </p>
-
-        <div class="space-y-6 mb-6">
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-              <h4 class="font-semibold mb-1">Defina o objetivo, não os passos</h4>
-              <p class="text-neutral-300 text-sm">Diga o resultado que quer; deixe o agente decidir a sequência. Você descreve o "o quê", não o "como".</p>
-            </div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-              <h4 class="font-semibold mb-1">Seja específico sobre a saída</h4>
-              <p class="text-neutral-300 text-sm">Formato, estrutura, nome dos arquivos e onde salvar. Quanto mais clara a saída esperada, menos retrabalho.</p>
-            </div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-              <h4 class="font-semibold mb-1">Plan Mode primeiro, depois execute</h4>
-              <p class="text-neutral-300 text-sm">Aprove o plano antes de deixar o agente agir; só então passe para o modo de execução (bypass de permissões).</p>
-            </div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">4</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-              <h4 class="font-semibold mb-1">Dê feedback, não correções</h4>
-              <p class="text-neutral-300 text-sm">"Gostei da estrutura, mas o tom está formal demais" funciona melhor que "isso está errado". O feedback atualiza o workflow por baixo.</p>
-            </div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">5</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-              <h4 class="font-semibold mb-1">Trate o agente como especialista</h4>
-              <p class="text-neutral-300 text-sm">Você é o gerente; ele é o desenvolvedor. Delegue o trabalho técnico e foque em descrever bem o objetivo e avaliar o resultado.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Por que aprender</h3>
-          <p class="text-neutral-300 text-sm">Esses cinco padrões juntos ligam o <strong>loop de auto-melhoria</strong>: ao dar feedback (não correção) sobre um resultado bem-especificado, o agente ajusta o workflow subjacente — e o próximo run já sai melhor sem você reexplicar.</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Objetivo</div><p class="text-xs text-neutral-400">O quê, não o como.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Saída clara</div><p class="text-xs text-neutral-400">Formato e local.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Plan Mode</div><p class="text-xs text-neutral-400">Planejar antes.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Feedback</div><p class="text-xs text-neutral-400">Em vez de corrigir.</p></div>
-        </div>
-
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors">
-            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
-            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- TÓPICO 6 -->
-      <section id="topico-6" data-inema-topic="modulo-2-3#topico-6" class="mb-16">
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
-            <h2 class="text-2xl font-bold">📉 Context rot & limiares</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
-            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
-          </button>
-        </div>
-
-        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t6-p1">
-          <strong class="text-blue-400">O que é:</strong> <em>context rot</em> é a degradação gradual de qualidade conforme uma única sessão se alonga. A raiz está em como os mecanismos de atenção funcionam: erros tendem a aparecer depois de ~<strong class="text-blue-400">60%</strong> de uso da janela, quando ela se enche de histórico ruidoso e mensagens recentes (possivelmente irrelevantes) espremem as regras centrais para fora do foco do modelo.
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Defina o objetivo, não os passos</h4>
+<p class="text-neutral-300 text-sm">Diga o resultado que quer; deixe o agente decidir a sequência. Você descreve o "o quê", não o "como".</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Seja específico sobre a saída</h4>
+<p class="text-neutral-300 text-sm">Formato, estrutura, nome dos arquivos e onde salvar. Quanto mais clara a saída esperada, menos retrabalho.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Plan Mode primeiro, depois execute</h4>
+<p class="text-neutral-300 text-sm">Aprove o plano antes de deixar o agente agir; só então passe para o modo de execução (bypass de permissões).</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">4</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Dê feedback, não correções</h4>
+<p class="text-neutral-300 text-sm">"Gostei da estrutura, mas o tom está formal demais" funciona melhor que "isso está errado". O feedback atualiza o workflow por baixo.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">5</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Trate o agente como especialista</h4>
+<p class="text-neutral-300 text-sm">Você é o gerente; ele é o desenvolvedor. Delegue o trabalho técnico e foque em descrever bem o objetivo e avaliar o resultado.</p>
+</div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Por que aprender</h3>
+<p class="text-neutral-300 text-sm">Esses cinco padrões juntos ligam o <strong>loop de auto-melhoria</strong>: ao dar feedback (não correção) sobre um resultado bem-especificado, o agente ajusta o workflow subjacente — e o próximo run já sai melhor sem você reexplicar.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Objetivo</div><p class="text-xs text-neutral-400">O quê, não o como.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Saída clara</div><p class="text-xs text-neutral-400">Formato e local.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Plan Mode</div><p class="text-xs text-neutral-400">Planejar antes.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Feedback</div><p class="text-xs text-neutral-400">Em vez de corrigir.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 6 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-6" id="topico-6">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">📉 Context rot &amp; limiares</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t6-p1">
+<strong class="text-blue-400">O que é:</strong> <em>context rot</em> é a degradação gradual de qualidade conforme uma única sessão se alonga. A raiz está em como os mecanismos de atenção funcionam: erros tendem a aparecer depois de ~<strong class="text-blue-400">60%</strong> de uso da janela, quando ela se enche de histórico ruidoso e mensagens recentes (possivelmente irrelevantes) espremem as regras centrais para fora do foco do modelo.
         </p>
-
-        <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden mb-6">
-          <table class="w-full text-sm">
-            <thead><tr class="bg-dark-700/50 text-left"><th class="px-4 py-3 font-semibold text-neutral-300">Zona</th><th class="px-4 py-3 font-semibold text-blue-400">Faixa</th><th class="px-4 py-3 font-semibold text-blue-400">O que fazer</th></tr></thead>
-            <tbody class="divide-y divide-dark-600 text-neutral-300">
-              <tr><td class="px-4 py-3 font-medium text-emerald-400">Verde</td><td class="px-4 py-3">0–50%</td><td class="px-4 py-3">Seguro — siga trabalhando.</td></tr>
-              <tr><td class="px-4 py-3 font-medium text-yellow-400">Amarelo</td><td class="px-4 py-3">50–70%</td><td class="px-4 py-3">Comece a pensar em compactar.</td></tr>
-              <tr><td class="px-4 py-3 font-medium text-amber-400">Laranja</td><td class="px-4 py-3">70–85%</td><td class="px-4 py-3">Rode <code>/compact</code> proativamente.</td></tr>
-              <tr><td class="px-4 py-3 font-medium text-red-400">Vermelho</td><td class="px-4 py-3">85%+</td><td class="px-4 py-3">Rode <code>/clear</code> e recomece.</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-red-400 mb-2 flex items-center"><span class="mr-2">⚠️</span> Por que aprender — o sinal de alerta</h3>
-          <p class="text-neutral-300 text-sm">Context rot é real: passado ~60% de uso, espere mais erros. Não reutilize uma conversa inchada para trabalho não relacionado. Se você já corrigiu o agente sobre a <strong>mesma coisa mais de duas vezes</strong>, o contexto provavelmente está poluído — limpe e recomece com um prompt melhor.</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">~60%</div><p class="text-xs text-neutral-400">Erros começam aqui.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Atenção</div><p class="text-xs text-neutral-400">Janela vira ruído.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">4 zonas</div><p class="text-xs text-neutral-400">Verde a vermelho.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">2 correções</div><p class="text-xs text-neutral-400">Sinal de contexto sujo.</p></div>
-        </div>
-
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors">
-            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
-            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- TÓPICO 7 -->
-      <section id="topico-7" data-inema-topic="modulo-2-3#topico-7" class="mb-16">
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">7</span>
-            <h2 class="text-2xl font-bold">🧹 /clear vs /compact</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
-            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
-          </button>
-        </div>
-
-        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t7-p1">
-          <strong class="text-blue-400">O que é:</strong> dois comandos para gerenciar o contexto, com propósitos diferentes. <code>/clear</code> é o <strong class="text-blue-400">reset total</strong> da conversa; <code>/compact</code> é um <strong class="text-blue-400">resumo inteligente</strong> que preserva a informação-chave e comprime o resto. Saber qual usar — e quando — é o que mantém a qualidade alta numa sessão longa.
+<div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden mb-6">
+<table class="w-full text-sm">
+<thead><tr class="bg-dark-700/50 text-left"><th class="px-4 py-3 font-semibold text-neutral-300">Zona</th><th class="px-4 py-3 font-semibold text-blue-400">Faixa</th><th class="px-4 py-3 font-semibold text-blue-400">O que fazer</th></tr></thead>
+<tbody class="divide-y divide-dark-600 text-neutral-300">
+<tr><td class="px-4 py-3 font-medium text-emerald-400">Verde</td><td class="px-4 py-3">0–50%</td><td class="px-4 py-3">Seguro — siga trabalhando.</td></tr>
+<tr><td class="px-4 py-3 font-medium text-yellow-400">Amarelo</td><td class="px-4 py-3">50–70%</td><td class="px-4 py-3">Comece a pensar em compactar.</td></tr>
+<tr><td class="px-4 py-3 font-medium text-amber-400">Laranja</td><td class="px-4 py-3">70–85%</td><td class="px-4 py-3">Rode <code>/compact</code> proativamente.</td></tr>
+<tr><td class="px-4 py-3 font-medium text-red-400">Vermelho</td><td class="px-4 py-3">85%+</td><td class="px-4 py-3">Rode <code>/clear</code> e recomece.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-red-400 mb-2 flex items-center"><span class="mr-2">⚠️</span> Por que aprender — o sinal de alerta</h3>
+<p class="text-neutral-300 text-sm">Context rot é real: passado ~60% de uso, espere mais erros. Não reutilize uma conversa inchada para trabalho não relacionado. Se você já corrigiu o agente sobre a <strong>mesma coisa mais de duas vezes</strong>, o contexto provavelmente está poluído — limpe e recomece com um prompt melhor.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">~60%</div><p class="text-xs text-neutral-400">Erros começam aqui.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Atenção</div><p class="text-xs text-neutral-400">Janela vira ruído.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">4 zonas</div><p class="text-xs text-neutral-400">Verde a vermelho.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">2 correções</div><p class="text-xs text-neutral-400">Sinal de contexto sujo.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 7 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-7" id="topico-7">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">7</span>
+<h2 class="text-2xl font-bold">🧹 /clear vs /compact</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t7-p1">
+<strong class="text-blue-400">O que é:</strong> dois comandos para gerenciar o contexto, com propósitos diferentes. <code>/clear</code> é o <strong class="text-blue-400">reset total</strong> da conversa; <code>/compact</code> é um <strong class="text-blue-400">resumo inteligente</strong> que preserva a informação-chave e comprime o resto. Saber qual usar — e quando — é o que mantém a qualidade alta numa sessão longa.
         </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
-            <h4 class="font-bold text-blue-400 mb-4">/compact — resumo inteligente</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Mantém o essencial e comprime o histórico.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Use <strong>no meio de uma tarefa</strong> quando o contexto sobe.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Ideal na zona laranja (70–85%).</span></li>
-            </ul>
-          </div>
-          <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
-            <h4 class="font-bold text-emerald-400 mb-4">/clear — reset total</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-emerald-400">•</span><span>Apaga toda a conversa — começa do zero.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-emerald-400">•</span><span>Use ao <strong>trocar de tarefa</strong> ou quando a qualidade cai.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-emerald-400">•</span><span>Ideal acima de 85% ou após 2+ correções repetidas.</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Por que aprender</h3>
-          <p class="text-neutral-300 text-sm">Regra de bolso: <strong>compactar</strong> quando ainda está na mesma tarefa mas o contexto subiu; <strong>limpar</strong> quando muda de tarefa ou quando a qualidade já degradou. Compactar tarde demais não recupera contexto já apodrecido — nesse caso, prefira limpar e recomeçar com um prompt melhor.</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">/compact</div><p class="text-xs text-neutral-400">Resume, não apaga.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">/clear</div><p class="text-xs text-neutral-400">Reset completo.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Mesma tarefa</div><p class="text-xs text-neutral-400">Compacte.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Trocar tarefa</div><p class="text-xs text-neutral-400">Limpe.</p></div>
-        </div>
-
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors">
-            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
-            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- TÓPICO 8 -->
-      <section id="topico-8" data-inema-topic="modulo-2-3#topico-8" class="mb-16">
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">8</span>
-            <h2 class="text-2xl font-bold">💸 Economia de tokens</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
-            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
-          </button>
-        </div>
-
-        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t8-p1">
-          <strong class="text-blue-400">O que é:</strong> um conjunto de estratégias para minimizar consumo de tokens e desperdício de contexto. Como o agente relê a conversa inteira a cada mensagem, sessões longas custam mais por mensagem — então manter o contexto enxuto é também manter o custo baixo.
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">/compact — resumo inteligente</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Mantém o essencial e comprime o histórico.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Use <strong>no meio de uma tarefa</strong> quando o contexto sobe.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Ideal na zona laranja (70–85%).</span></li>
+</ul>
+</div>
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">/clear — reset total</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">•</span><span>Apaga toda a conversa — começa do zero.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">•</span><span>Use ao <strong>trocar de tarefa</strong> ou quando a qualidade cai.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">•</span><span>Ideal acima de 85% ou após 2+ correções repetidas.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Por que aprender</h3>
+<p class="text-neutral-300 text-sm">Regra de bolso: <strong>compactar</strong> quando ainda está na mesma tarefa mas o contexto subiu; <strong>limpar</strong> quando muda de tarefa ou quando a qualidade já degradou. Compactar tarde demais não recupera contexto já apodrecido — nesse caso, prefira limpar e recomeçar com um prompt melhor.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">/compact</div><p class="text-xs text-neutral-400">Resume, não apaga.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">/clear</div><p class="text-xs text-neutral-400">Reset completo.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Mesma tarefa</div><p class="text-xs text-neutral-400">Compacte.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Trocar tarefa</div><p class="text-xs text-neutral-400">Limpe.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 8 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-8" id="topico-8">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">8</span>
+<h2 class="text-2xl font-bold">💸 Economia de tokens</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t8-p1">
+<strong class="text-blue-400">O que é:</strong> um conjunto de estratégias para minimizar consumo de tokens e desperdício de contexto. Como o agente relê a conversa inteira a cada mensagem, sessões longas custam mais por mensagem — então manter o contexto enxuto é também manter o custo baixo.
         </p>
-
-        <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🪙</span> Por que aprender — as 5 estratégias</h3>
-          <ul class="space-y-2 text-neutral-300 text-sm">
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Uma tarefa por sessão</strong>, depois limpe — não arraste contexto velho.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Defina "pronto"</strong> (ex.: "exatamente 75 perfis") para o agente parar e não entrar em loop.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Use skills</strong> para workflows especializados, em vez de inflar o CLAUDE.md.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Desligue MCPs não usados</strong> — cada um adiciona definições de ferramenta ao contexto.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Mantenha o CLAUDE.md enxuto</strong> (abaixo de ~500 linhas, só conteúdo de toda sessão).</span></li>
-          </ul>
-        </div>
-
-        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-red-400 mb-2 flex items-center"><span class="mr-2">⚠️</span> Armadilha comum</h3>
-          <p class="text-neutral-300 text-sm">Sem um ponto final definido, o agente pode <strong>buscar demais ou entrar em loop</strong>, queimando tokens à toa. E cada servidor MCP ativo consome contexto via definições de ferramenta — deixar ligados os que você não usa é desperdício silencioso.</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">1 por sessão</div><p class="text-xs text-neutral-400">Limpe depois.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Defina pronto</div><p class="text-xs text-neutral-400">Para o loop.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Skills</div><p class="text-xs text-neutral-400">Em vez de CLAUDE.md.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">MCPs off</div><p class="text-xs text-neutral-400">Desligue os ociosos.</p></div>
-        </div>
-
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors">
-            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
-            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- TÓPICO 9 -->
-      <section id="topico-9" data-inema-topic="modulo-2-3#topico-9" class="mb-16">
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">9</span>
-            <h2 class="text-2xl font-bold">✅ 12 dicas finais</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm">
-            <span aria-hidden="true">?</span><span>Tenho dúvida</span>
-          </button>
-        </div>
-
-        <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t9-p1">
-          <strong class="text-blue-400">O que é:</strong> um checklist consolidado de 12 melhores práticas para construir workflows agênticos com qualidade. É o resumo operacional de toda a trilha — leia como uma lista de verificação antes e durante cada build.
+<div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🪙</span> Por que aprender — as 5 estratégias</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Uma tarefa por sessão</strong>, depois limpe — não arraste contexto velho.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Defina "pronto"</strong> (ex.: "exatamente 75 perfis") para o agente parar e não entrar em loop.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Use skills</strong> para workflows especializados, em vez de inflar o CLAUDE.md.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Desligue MCPs não usados</strong> — cada um adiciona definições de ferramenta ao contexto.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Mantenha o CLAUDE.md enxuto</strong> (abaixo de ~500 linhas, só conteúdo de toda sessão).</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-red-400 mb-2 flex items-center"><span class="mr-2">⚠️</span> Armadilha comum</h3>
+<p class="text-neutral-300 text-sm">Sem um ponto final definido, o agente pode <strong>buscar demais ou entrar em loop</strong>, queimando tokens à toa. E cada servidor MCP ativo consome contexto via definições de ferramenta — deixar ligados os que você não usa é desperdício silencioso.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">1 por sessão</div><p class="text-xs text-neutral-400">Limpe depois.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Defina pronto</div><p class="text-xs text-neutral-400">Para o loop.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Skills</div><p class="text-xs text-neutral-400">Em vez de CLAUDE.md.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">MCPs off</div><p class="text-xs text-neutral-400">Desligue os ociosos.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 9 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-9" id="topico-9">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">9</span>
+<h2 class="text-2xl font-bold">✅ 12 dicas finais</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t9-p1">
+<strong class="text-blue-400">O que é:</strong> um checklist consolidado de 12 melhores práticas para construir workflows agênticos com qualidade. É o resumo operacional de toda a trilha — leia como uma lista de verificação antes e durante cada build.
         </p>
-
-        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
-          <ol class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm text-neutral-300 list-decimal list-inside">
-            <li>Sempre comece em <strong>Plan Mode</strong>.</li>
-            <li>Seja claro sobre o <strong>objetivo</strong> (ex.: "75 perfis de CEOs de techs", não "faça um scraper").</li>
-            <li>Defina o que é <strong>"pronto"</strong>.</li>
-            <li>Trate o agente como <strong>especialista</strong> — você gerencia, ele desenvolve.</li>
-            <li>Gerencie o <strong>contexto</strong> proativamente (compact ~70%, clear ao trocar/quebrar, 1 tarefa/sessão).</li>
-            <li>Use o <strong>loop de auto-melhoria</strong> via feedback específico.</li>
-            <li>Guarde <strong>chaves de API</strong> em arquivos de ambiente.</li>
-            <li>Teste com <strong>entradas diferentes</strong>.</li>
-            <li>Salve <strong>skills testadas em batalha</strong>.</li>
-            <li>Recomece do zero quando <strong>travar</strong>.</li>
-            <li>Desligue <strong>MCPs não usados</strong>.</li>
-            <li>Acompanhe o build <strong>cedo</strong> para aprender e pegar erros.</li>
-          </ol>
-        </div>
-
-        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🏁</span> Por que aprender — o desafio prático</h3>
-          <p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-3-t9-p2">Coloque tudo junto num build próprio de ponta a ponta: notas-de-reunião-para-ações, gerador de PDF, rascunhador de e-mail ou um workflow do seu trabalho. Use o WAT, comece em Plan Mode, deixe o agente perguntar, aprove o plano, troque para bypass de permissões. Use ao menos um MCP e/ou uma skill <em>quando fizer sentido</em> (não force). Teste a saída com 2–3 entradas diferentes — um workflow que só funciona com uma entrada é, na prática, um script de uso único.</p>
-        </div>
-
-        <h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Plan Mode</div><p class="text-xs text-neutral-400">Sempre primeiro.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Objetivo claro</div><p class="text-xs text-neutral-400">Específico e mensurável.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Teste plural</div><p class="text-xs text-neutral-400">2–3 entradas.</p></div>
-          <div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">.env</div><p class="text-xs text-neutral-400">Nunca chave no chat.</p></div>
-        </div>
-
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors">
-            <span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done hidden" aria-hidden="true">●</span>
-            <span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- CHECAGEM LEVE -->
-      <section class="mb-12" data-inema-check="modulo-2-3#q1">
-        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
-          <h2 class="text-xl font-bold mb-4 flex items-center"><span class="mr-2">🧠</span> Checagem rápida</h2>
-          <p class="text-neutral-300 mb-4">Você está no meio de uma tarefa, o contexto chegou a ~75% e o agente ainda está focado nela. Qual comando usar?</p>
-          <div class="space-y-2" data-inema-check-options>
-            <button type="button" data-inema-check-opt="0" class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">/clear — apagar tudo e recomeçar do zero</button>
-            <button type="button" data-inema-check-opt="1" class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">/compact — resumir e comprimir, mantendo o essencial</button>
-            <button type="button" data-inema-check-opt="2" class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Nada — seguir até 100% e ver o que acontece</button>
-          </div>
-          <p class="mt-4 text-sm text-neutral-400 hidden" data-inema-check-feedback></p>
-        </div>
-      </section>
-
-      <!-- RESUMO -->
-      <section class="mb-8">
-        <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
-          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumo do Módulo</h2>
-          <div class="space-y-4 mb-8">
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Skills</strong><span class="text-neutral-400"> — workflows em markdown na pasta .claude/skills, invocáveis como slash command; consistência, tokens, compartilhamento e confiabilidade.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Quando empacotar</strong><span class="text-neutral-400"> — repetição, consistência, complexidade ou time; pontual e simples, só digite.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Builds</strong><span class="text-neutral-400"> — a skill /draft-email e o gerador de slide deck (documento → apresentação) no framework WAT.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Prompting + contexto</strong><span class="text-neutral-400"> — 5 padrões; context rot após ~60%; zonas 0-50/50-70/70-85/85%+; /compact vs /clear.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Economia + checklist</strong><span class="text-neutral-400"> — 1 tarefa/sessão, definir "pronto", skills, MCPs off, CLAUDE.md enxuto; as 12 dicas finais.</span></div></div>
-          </div>
-          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
-            <h3 class="font-semibold text-blue-400 mb-2">Próximo Módulo:</h3>
-            <p class="text-neutral-300">3.1 — Do Local ao Sempre-Ligado: GitHub & Trigger.dev</p>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Voltar para Trilha</a>
-            <a href="../trilha3/index.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">Próxima Trilha →</a>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- TOC sticky + scrollspy -->
-    <aside class="hidden lg:block">
-      <nav data-inema-toc aria-label="Índice da página" class="sticky top-24 self-start">
-        <p class="text-sm text-neutral-400 mb-3">Seção <span data-inema-section-counter><span class="inema-toc-pos">1</span> de <span class="inema-toc-total">9</span></span></p>
-        <ol class="space-y-1.5 text-sm">
-          <li><a href="#topico-1" class="inema-toc-link text-neutral-400 hover:text-blue-400 block">1. O que são skills</a></li>
-          <li><a href="#topico-2" class="inema-toc-link text-neutral-400 hover:text-blue-400 block">2. Skill vs digitar</a></li>
-          <li><a href="#topico-3" class="inema-toc-link text-neutral-400 hover:text-blue-400 block">3. Skill na prática</a></li>
-          <li><a href="#topico-4" class="inema-toc-link text-neutral-400 hover:text-blue-400 block">4. Gerador de slide deck</a></li>
-          <li><a href="#topico-5" class="inema-toc-link text-neutral-400 hover:text-blue-400 block">5. 5 padrões de prompting</a></li>
-          <li><a href="#topico-6" class="inema-toc-link text-neutral-400 hover:text-blue-400 block">6. Context rot & limiares</a></li>
-          <li><a href="#topico-7" class="inema-toc-link text-neutral-400 hover:text-blue-400 block">7. /clear vs /compact</a></li>
-          <li><a href="#topico-8" class="inema-toc-link text-neutral-400 hover:text-blue-400 block">8. Economia de tokens</a></li>
-          <li><a href="#topico-9" class="inema-toc-link text-neutral-400 hover:text-blue-400 block">9. 12 dicas finais</a></li>
-        </ol>
-      </nav>
-    </aside>
-
-  </div>
-
-  <footer class="border-t border-dark-600 py-8 mt-8">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
-      <p>Vibe Coding na Prática · Curso original <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium">INEMA.CLUB</a> · 2026</p>
-    </div>
-  </footer>
-
-  <script>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<ol class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm text-neutral-300 list-decimal list-inside">
+<li>Sempre comece em <strong>Plan Mode</strong>.</li>
+<li>Seja claro sobre o <strong>objetivo</strong> (ex.: "75 perfis de CEOs de techs", não "faça um scraper").</li>
+<li>Defina o que é <strong>"pronto"</strong>.</li>
+<li>Trate o agente como <strong>especialista</strong> — você gerencia, ele desenvolve.</li>
+<li>Gerencie o <strong>contexto</strong> proativamente (compact ~70%, clear ao trocar/quebrar, 1 tarefa/sessão).</li>
+<li>Use o <strong>loop de auto-melhoria</strong> via feedback específico.</li>
+<li>Guarde <strong>chaves de API</strong> em arquivos de ambiente.</li>
+<li>Teste com <strong>entradas diferentes</strong>.</li>
+<li>Salve <strong>skills testadas em batalha</strong>.</li>
+<li>Recomece do zero quando <strong>travar</strong>.</li>
+<li>Desligue <strong>MCPs não usados</strong>.</li>
+<li>Acompanhe o build <strong>cedo</strong> para aprender e pegar erros.</li>
+</ol>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🏁</span> Por que aprender — o desafio prático</h3>
+<p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-3-t9-p2">Coloque tudo junto num build próprio de ponta a ponta: notas-de-reunião-para-ações, gerador de PDF, rascunhador de e-mail ou um workflow do seu trabalho. Use o WAT, comece em Plan Mode, deixe o agente perguntar, aprove o plano, troque para bypass de permissões. Use ao menos um MCP e/ou uma skill <em>quando fizer sentido</em> (não force). Teste a saída com 2–3 entradas diferentes — um workflow que só funciona com uma entrada é, na prática, um script de uso único.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceitos-chave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Plan Mode</div><p class="text-xs text-neutral-400">Sempre primeiro.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Objetivo claro</div><p class="text-xs text-neutral-400">Específico e mensurável.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Teste plural</div><p class="text-xs text-neutral-400">2–3 entradas.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">.env</div><p class="text-xs text-neutral-400">Nunca chave no chat.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+</button>
+</div>
+</section>
+<!-- CHECAGEM LEVE -->
+<section class="mb-12" data-inema-check="modulo-2-3#q1">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<h2 class="text-xl font-bold mb-4 flex items-center"><span class="mr-2">🧠</span> Checagem rápida</h2>
+<p class="text-neutral-300 mb-4">Você está no meio de uma tarefa, o contexto chegou a ~75% e o agente ainda está focado nela. Qual comando usar?</p>
+<div class="space-y-2" data-inema-check-options="">
+<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="0" type="button">/clear — apagar tudo e recomeçar do zero</button>
+<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="1" type="button">/compact — resumir e comprimir, mantendo o essencial</button>
+<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="2" type="button">Nada — seguir até 100% e ver o que acontece</button>
+</div>
+<p class="mt-4 text-sm text-neutral-400 hidden" data-inema-check-feedback=""></p>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-8">
+<div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumo do Módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Skills</strong><span class="text-neutral-400"> — workflows em markdown na pasta .claude/skills, invocáveis como slash command; consistência, tokens, compartilhamento e confiabilidade.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Quando empacotar</strong><span class="text-neutral-400"> — repetição, consistência, complexidade ou time; pontual e simples, só digite.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Builds</strong><span class="text-neutral-400"> — a skill /draft-email e o gerador de slide deck (documento → apresentação) no framework WAT.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Prompting + contexto</strong><span class="text-neutral-400"> — 5 padrões; context rot após ~60%; zonas 0-50/50-70/70-85/85%+; /compact vs /clear.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Economia + checklist</strong><span class="text-neutral-400"> — 1 tarefa/sessão, definir "pronto", skills, MCPs off, CLAUDE.md enxuto; as 12 dicas finais.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-blue-400 mb-2">Próximo Módulo:</h3>
+<p class="text-neutral-300">3.1 — Do Local ao Sempre-Ligado: GitHub &amp; Trigger.dev</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Voltar para Trilha</a>
+<a class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors" href="../trilha3/index.html">Próxima Trilha →</a>
+</div>
+</div>
+</section>
+</main>
+<!-- TOC sticky + scrollspy -->
+<aside class="hidden lg:block">
+<nav aria-label="Índice da página" class="sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Seção <span data-inema-section-counter=""><span class="inema-toc-pos">1</span> de <span class="inema-toc-total">9</span></span></p>
+<ol class="space-y-1.5 text-sm">
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-1">1. O que são skills</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-2">2. Skill vs digitar</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-3">3. Skill na prática</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-4">4. Gerador de slide deck</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-5">5. 5 padrões de prompting</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-6">6. Context rot &amp; limiares</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-7">7. /clear vs /compact</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-8">8. Economia de tokens</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-9">9. 12 dicas finais</a></li>
+</ol>
+</nav>
+</aside>
+</div>
+<footer class="border-t border-dark-600 py-8 mt-8">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+<p>Vibe Coding na Prática · Curso original <a class="text-sky-400 hover:text-sky-300 font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
+</div>
+</footer>
+<script>
     const themeToggle = document.getElementById('theme-toggle');
     const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
     const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
@@ -958,9 +878,8 @@ Deck (ex.: 26 slides) em temporary/outputs/</pre>
       if (window.INEMA && INEMA.setPref) { INEMA.setPref('theme', isDark ? 'inema-dark' : 'claro'); }
     });
   </script>
-
-  <script src="../../assets/learn.js"></script>
-  <script>
+<script src="../../assets/learn.js"></script>
+<script>
     if (window.INEMA && typeof window.INEMA.init === 'function') {
       window.INEMA.init();
       if (window.INEMA.registerCheck) {
@@ -975,6 +894,5 @@ Deck (ex.: 26 slides) em temporary/outputs/</pre>
       }
     }
   </script>
-
 </body>
 </html>

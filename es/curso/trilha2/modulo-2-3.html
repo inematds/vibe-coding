@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="vibe-coding" name="inema-course"/>
+<!-- ANTI-FOUC: script BLOQUEANTE, SEPARADO, PRIMEIRO no <head>, antes do Tailwind e do learn.css. -->
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o) { var r = {}; for (var x in o) r[x] = o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            for (var k in DEF) if (parsed[k] != null) p[k] = parsed[k];
+          }
+        } else {
+          var legacy = localStorage.getItem('theme');
+          if (legacy === 'light') p.theme = 'claro';
+          else if (legacy === 'dark') p.theme = 'inema-dark';
+        }
+      } catch (e) { p = clone(DEF); }
+
+      var THEMES = {
+        'inema-dark': { dark: true,  attr: null,        cs: 'dark'  },
+        'claro':      { dark: false, attr: null,        cs: 'light' },
+        'sepia':      { dark: false, attr: 'sepia',     cs: 'light' },
+        'foco':       { dark: null,  attr: 'foco',      cs: null    },
+        'contraste':  { dark: true,  attr: 'contraste', cs: 'dark'  }
+      };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+
+      if (t.dark === true) html.classList.add('dark');
+      else if (t.dark === false) html.classList.remove('dark');
+
+      if (t.attr) html.setAttribute('data-theme', t.attr);
+      else html.removeAttribute('data-theme');
+
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark') ? 'dark' : 'light'));
+
+      html.setAttribute('data-font', p.font || 'inter');
+      html.setAttribute('data-accent', p.accent || 'emerald');
+
+      var s = html.style;
+      var scale = (+p.fontScale || 100);
+      s.setProperty('--inema-font-scale', (scale / 100).toString());
+      s.setProperty('font-size', scale + '%');
+      s.setProperty('--measure', (+p.lineWidth || 68) + 'ch');
+      s.setProperty('--lh-body', (+p.leading || 1.7).toString());
+      var fam = p.font === 'system'
+        ? 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+        : (p.font === 'leitura'
+          ? '"Atkinson Hyperlegible", "Inter", system-ui, sans-serif'
+          : '"Inter", system-ui, sans-serif');
+      s.setProperty('--font-body', fam);
+
+      var ACC = {
+        emerald: [152, 76, 45], blue: [217, 91, 60], purple: [258, 90, 66],
+        amber: [38, 92, 50], teal: [174, 72, 41], rose: [350, 89, 60]
+      };
+      var a = ACC[p.accent] || ACC.emerald;
+      s.setProperty('--accent-h', a[0] + '');
+      s.setProperty('--accent-s', a[1] + '%');
+      s.setProperty('--accent-l', a[2] + '%');
+      s.setProperty('--accent', 'hsl(' + a[0] + ' ' + a[1] + '% ' + a[2] + '%)');
+    } catch (err) {
+      try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme = 'dark'; } catch (e) {}
+    }
+  })();
+  </script>
+<title>Módulo 2.3 · Skills, generación de artefactos y tokens | Vibe Coding</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FACC15',
+            dark: { 900: '#111827', 800: '#1f2937', 700: '#374151', 600: '#4b5563' }
+          }
+        }
+      }
+    }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Manifesto do curso (OBRIGATORIO, identico em TODA pagina) -->
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "vibe-coding",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos & Primeiro Workflow", "modules": [
+        { "id": "1-1", "title": "Fundamentos & Ambiente", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "O Ciclo Completo: Plan, Build, Troubleshoot, Optimize", "topics": 8, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "De Funciona a Funciona Bem: Enhancement", "topics": 8, "href": "curso/trilha1/modulo-1-3.html" }
+      ]},
+      { "n": "2", "title": "Domínio do Agente de Código", "modules": [
+        { "id": "2-1", "title": "Workflows Agênticos & o Framework WAT", "topics": 9, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Estendendo o Agente: MCP & Pesquisa", "topics": 7, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Skills, Geração de Artefatos & Tokens", "topics": 9, "href": "curso/trilha2/modulo-2-3.html" }
+      ]},
+      { "n": "3", "title": "Hospedagem & Deploy", "modules": [
+        { "id": "3-1", "title": "Do Local ao Sempre-Ligado: GitHub & Trigger.dev", "topics": 8, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Agentes em Produção: Agendados & Webhooks", "topics": 8, "href": "curso/trilha3/modulo-3-2.html" }
+      ]},
+      { "n": "4", "title": "Construindo Frontends & Apps", "modules": [
+        { "id": "4-1", "title": "Modelo Mental & Primeiro App", "topics": 8, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Produção Real: Auth, Segurança, Pagamentos & Integração", "topics": 9, "href": "curso/trilha4/modulo-4-2.html" }
+      ]}
+    ]
+  }
+  </script>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    [id] { scroll-margin-top: 5rem; }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+
+    /* Light mode - acento (blue) + cores das outras trilhas no nav */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37, 99, 235, 0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37, 99, 235, 0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37, 99, 235, 0.18); }
+    html:not(.dark) .hover\:bg-blue-500\/10:hover { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .hover\:text-blue-400:hover { color: #2563eb; }
+    html:not(.dark) .text-blue-300 { color: #1d4ed8; }
+    html:not(.dark) .bg-blue-900\/20 { background-color: rgba(37, 99, 235, 0.08); }
+    html:not(.dark) .hover\:text-emerald-400:hover { color: #059669; }
+    html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .hover\:text-purple-400:hover { color: #7c3aed; }
+    html:not(.dark) .hover\:bg-purple-500\/10:hover { background-color: rgba(124, 58, 237, 0.08); }
+    html:not(.dark) .hover\:text-amber-400:hover { color: #92400e; }
+    html:not(.dark) .hover\:bg-amber-500\/10:hover { background-color: rgba(217, 119, 6, 0.08); }
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-900\/20 { background-color: rgba(5, 150, 105, 0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5, 150, 105, 0.25); }
+    html:not(.dark) .text-red-400 { color: #dc2626; }
+    html:not(.dark) .bg-red-900\/20 { background-color: rgba(220, 38, 38, 0.07); }
+    html:not(.dark) .border-red-500\/30 { border-color: rgba(220, 38, 38, 0.25); }
+
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161, 98, 7, 0.08); }
+    html:not(.dark) .border-primary\/40 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161, 98, 7, 0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255, 255, 255, 0.95); }
+
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+
+    /* TOC scrollspy active link */
+    .inema-toc-link.is-active, [data-inema-toc] a.is-active { color: #60a5fa; font-weight: 600; }
+    html:not(.dark) [data-inema-toc] a.is-active { color: #2563eb; }
+
+    @keyframes wf-pulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s}
+      .wf-a:nth-child(4){animation-delay:.75s} .wf-a:nth-child(5){animation-delay:1s}
+    }
+  </style>
+<link href="https://inematds.github.io/vibe-coding/curso/trilha2/modulo-2-3.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/vibe-coding/en/curso/trilha2/modulo-2-3.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/vibe-coding/es/curso/trilha2/modulo-2-3.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha2/modulo-2-3.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha2/modulo-2-3.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="modulo-2-3.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="skip sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg" href="#conteudo">Saltar al contenido</a>
+<!-- NAVIGATION (T2 ativa) -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">⚡</span>
+<span class="font-bold text-lg hidden sm:inline">Vibe Coding</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html">
+<span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10" href="index.html">
+<span class="sm:hidden">T2</span><span class="hidden sm:inline">Dominio</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html">
+<span class="sm:hidden">T3</span><span class="hidden sm:inline">Deploy</span>
+</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html">
+<span class="sm:hidden">T4</span><span class="hidden sm:inline">Apps</span>
+</a>
+<button class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors ml-1" data-inema-journey-open="" type="button">
+<span aria-hidden="true">◷</span><span>Mi recorrido</span>
+<span class="inema-journey-badge hidden" data-count="0" data-inema-journey-badge=""></span>
+</button>
+<button aria-label="Alternar entre tema claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20">
+<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+</svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Ruta de navegación" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-blue-400" href="../../index.html">Inicio</a>
+<span>/</span>
+<a class="hover:text-blue-400" href="index.html">Ruta 2</a>
+<span>/</span>
+<span class="text-blue-400">Módulo 2.3</span>
+</div>
+</nav>
+<!-- HEADER DO MÓDULO -->
+<header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.3</span>
+<h3 class="text-2xl font-bold mb-4">📦 Skills, generación de artefactos y tokens</h3>
+<p class="text-lg text-neutral-400 max-w-3xl">Empaquetar workflows como comandos reutilizables y dominar el presupuesto de contexto. Entiendes qué son las skills y cuándo empaquetarlas, construyes una skill para redactar borradores de correo que se invoca como slash command, montas un generador de slide deck, aprendes los cinco patrones de prompting, combates el context rot, decides entre <code>/clear</code> e <code>/compact</code>, ahorra tokens y lo consolida todo en una lista de verificación de 12 consejos.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+<div class="text-xl font-bold text-blue-400">9</div>
+<div class="text-xs text-neutral-400">Temas</div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+<div class="text-xl font-bold text-blue-400">~75</div>
+<div class="text-xs text-neutral-400">Minutos</div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+<div class="text-xl font-bold text-blue-400">Inter.</div>
+<div class="text-xs text-neutral-400">Nivel</div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
+<div class="text-xl font-bold text-blue-400">Práctica</div>
+<div class="text-xs text-neutral-400">Tipo</div>
+</div>
+</div>
+<div aria-label="Progreso del módulo 2.3" aria-valuemax="100" aria-valuemin="0" class="mt-6 max-w-2xl" data-inema-meter="modulo:2-3" role="progressbar">
+<div class="flex items-center justify-between mb-1 text-sm">
+<span class="text-neutral-400">Progreso del módulo</span>
+<span class="text-blue-400 font-semibold"><span data-inema-meter-pct="">0%</span> · <span data-inema-meter-frac="">0 de 9</span></span>
+</div>
+<div class="inema-bar h-2 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-blue-500 rounded-full" data-inema-meter-fill="" style="width:0%"></div></div>
+</div>
+</div>
+</header>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[1fr_220px] lg:gap-10">
+<main class="min-w-0" id="conteudo">
+<!-- SVG FUTURISTA: skill como camada + orçamento de contexto -->
+<section class="mb-12">
+<p class="text-neutral-300 mb-4 inema-prose leading-relaxed">Una skill es un workflow empaquetado en una carpeta especial y activado mediante un slash command; se carga bajo demanda, sin inflar el contexto. El diagrama de abajo muestra cómo la skill se convierte en un comando reutilizable y, a la derecha, el presupuesto de contexto con las zonas que indican cuándo <code>/compact</code> y cuándo dar <code>/clear</code>.</p>
+<div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 overflow-hidden mb-3">
+<svg aria-label="A la izquierda, un workflow en markdown se empaqueta en una carpeta de skill con SKILL.md y herramientas Python, se expone como el slash command barra draft-email y se carga bajo demanda. A la derecha, una barra de presupuesto de contexto dividida en cuatro zonas: de cero a cincuenta por ciento, seguro; de cincuenta a setenta, amarillo; de setenta a ochenta y cinco, naranja, donde se ejecuta compact; y por encima de ochenta y cinco, rojo, donde se ejecuta clear" class="w-full h-auto" role="img" viewbox="0 0 1000 300">
+<defs>
+<lineargradient id="m23-grad" x1="0" x2="1" y1="0" y2="1">
+<stop offset="0" stop-color="#60a5fa"></stop><stop offset="1" stop-color="#3b82f6"></stop>
+</lineargradient>
+<filter height="180%" id="m23-glow" width="180%" x="-40%" y="-40%">
+<fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge>
+</filter>
+<pattern height="32" id="m23-grid" patternunits="userSpaceOnUse" width="32">
+<circle cx="1.3" cy="1.3" fill="#3b82f6" opacity="0.12" r="1.3"></circle>
+</pattern>
+<marker id="m23-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"></path></marker>
+<marker id="m23-ahc" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"></path></marker>
+</defs>
+<rect fill="url(#m23-grid)" height="300" width="1000" x="0" y="0"></rect>
+<!-- Workflow markdown -->
+<rect fill="#0e1622" height="60" rx="12" stroke="#60a5fa" stroke-width="2" width="190" x="34" y="44"></rect>
+<text fill="#60a5fa" font-family="Inter,sans-serif" font-size="14" font-weight="600" text-anchor="middle" x="129" y="70">Workflow .md</text>
+<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="129" y="90">instrucciones (la capa W)</text>
+<!-- arrow empacota -->
+<g fill="none" opacity="0.55" stroke="#60a5fa" stroke-width="1.8"><path d="M224,84 L268,84" marker-end="url(#m23-ah)"></path></g>
+<!-- Skill folder (foco) -->
+<g filter="url(#m23-glow)"><rect fill="#0e1622" height="120" rx="16" stroke="url(#m23-grad)" stroke-width="2.5" width="200" x="272" y="40"></rect></g>
+<text fill="#60a5fa" font-family="Inter,sans-serif" font-size="14" font-weight="600" text-anchor="middle" x="372" y="66">.claude/skills/</text>
+<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="372" y="88">draft-email/SKILL.md</text>
+<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="372" y="110">name · description · args</text>
+<text fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="372" y="132">+ herramientas de Python (T)</text>
+<!-- arrow expõe -->
+<g fill="none" opacity="0.6" stroke="#38bdf8" stroke-width="2"><path d="M472,100 L516,100" marker-end="url(#m23-ahc)"></path></g>
+<!-- slash command -->
+<rect fill="#0e1b26" height="60" rx="12" stroke="#38bdf8" stroke-width="2" width="180" x="520" y="70"></rect>
+<text fill="#bfe6ff" font-family="Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle" x="610" y="96">/draft-email</text>
+<text fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="610" y="116">se carga bajo demanda</text>
+<!-- Orçamento de contexto: barra de zonas -->
+<text fill="#7fc8f5" font-family="Inter,sans-serif" font-size="12" font-weight="600" text-anchor="middle" x="500" y="196">Presupuesto de contexto</text>
+<rect class="wf-a" fill="#0e2018" height="34" rx="8" stroke="#34d399" stroke-width="1.6" width="320" x="120" y="212"></rect>
+<text fill="#86efac" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="280" y="234">0–50% · seguro</text>
+<rect class="wf-a" fill="#221c08" height="34" rx="8" stroke="#fbbf24" stroke-width="1.6" width="150" x="448" y="212"></rect>
+<text fill="#fde68a" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="523" y="234">50–70% amarillo</text>
+<rect class="wf-a" fill="#241404" height="34" rx="8" stroke="#f59e0b" stroke-width="1.6" width="160" x="606" y="212"></rect>
+<text fill="#fcd34d" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="686" y="234">70–85% /compact</text>
+<rect class="wf-a" fill="#2a0f0f" height="34" rx="8" stroke="#f87171" stroke-width="1.6" width="106" x="774" y="212"></rect>
+<text fill="#fca5a5" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="827" y="234">85%+ /clear</text>
+<text fill="#7fc8f5" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="500" y="278">la calidad se degrada después de ~60%: gestiona el contexto antes de que se convierta en ruido</text>
+</svg>
+</div>
+<p class="text-xs text-neutral-500">Diagrama ilustrativo — recreación conceptual de las skills y del presupuesto de contexto, no es una captura de pantalla real.</p>
+</section>
+<!-- TÓPICO 1 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-1" id="topico-1">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">📦 Qué son las skills</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t1-p1">
+<strong class="text-blue-400">Qué es:</strong> una skill es, en el fondo, lo mismo que un <strong class="text-blue-400">workflow</strong> (la capa W de WAT): instrucciones en markdown, pero guardadas en una carpeta especial, la <code>.claude/skills</code>, con cada skill en su propia subcarpeta y un archivo Markdown de skill dentro. La diferencia está en <em>dónde vive</em> y en <em>cómo se activa</em>: la skill se expone como un <strong class="text-blue-400">slash command</strong>, un comando reutilizable que invocas por nombre. Por debajo, la skill puede seguir activando herramientas (scripts Python de búsqueda, scraping y generación de documentos), así que el framework WAT permanece intacto.
+        </p>
+<div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">💡</span> Por qué aprender</h3>
+<p class="text-neutral-300 mb-3 inema-prose" data-inema-block="m2-3-t1-p2">Las Skills importan por cuatro motivos: <strong>consistencia</strong> (el mismo proceso cada vez, sin volver a explicarlo), <strong>ahorro de tokens</strong> (se cargan solo cuando se invocan), <strong>compartir</strong> (la misma skill le sirve a todo un equipo) y <strong>confiabilidad</strong> (envuelven pasos complejos y fáciles de olvidar, para que delegues y te olvides). Y lo mejor: no necesitas saber escribir skills; describe el workflow y pídele al agente que lo convierta en un slash command reutilizable.</p>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Consistencia:</strong> el proceso no varía entre ejecuciones.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Tokens:</strong> cargada bajo demanda, no en cada sesión.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Compartible:</strong> distribuye la carpeta y el equipo usa la misma skill.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Confiable:</strong> envuelve el paso difícil de recordar.</span></li>
+</ul>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🗂️</span> Skill ≠ CLAUDE.md</h3>
+<p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-3-t1-p3">El CLAUDE.md guarda solo las reglas de <strong>cada sesión</strong> (propósito del proyecto, objetivo principal, framework). Instrucciones <strong>por tarea</strong> pertenecen a las skills; así evitas exceder la ventana de contexto. Tener 20–50 skills no infla el contexto como lo haría un único CLAUDE.md gigante, porque las skills solo se cargan cuando se invocan.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceptos clave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Markdown</div><p class="text-xs text-neutral-400">Igual a un workflow.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">.claude/skills</div><p class="text-xs text-neutral-400">Una carpeta por skill.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Slash command</div><p class="text-xs text-neutral-400">Invocada por nombre.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Bajo demanda</div><p class="text-xs text-neutral-400">Se carga solo al usarlo.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 2 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-2" id="topico-2">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">⚖️ Skill vs. escribir</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t2-p1">
+<strong class="text-blue-400">Qué es:</strong> no toda solicitud merece convertirse en una skill. La decisión es simple: empaqueta cuando la reutilización y la consistencia compensan el esfuerzo de crear la skill; escribe directamente cuando la solicitud es puntual y sencilla. Empaquetar demasiado pronto es <em>overkill</em>; demasiado tarde es una repetición agotadora.
+        </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">✓ Vale la pena crear una skill</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Es un <strong>workflow repetido</strong> — haces esto todas las semanas.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>A <strong>la consistencia importa</strong> — el resultado siempre debe ser el mismo.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Las instrucciones son <strong>complejas o fáciles de olvidar</strong>.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Otras personas de <strong>equipo</strong> ejecutarán el mismo proceso.</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Mejor solo escribir</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Es una <strong>tarea única</strong>, que no vas a repetir.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Todavía estás <strong>experimentando</strong> y el proceso cambia.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>La instrucción cabe en <strong>una frase</strong> — una skill sería excesiva.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>No se ve que pueda reutilizarse; empaquetarlo solo añadiría fricción.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Por qué aprender</h3>
+<p class="text-neutral-300 text-sm">La regla práctica: en la <strong>tercera vez</strong> que vayas a escribir casi la misma instrucción larga, detente y pídele al agente que la convierta en una skill. Antes de eso, escribir es más ágil; después, la skill compensa la inversión en pocos usos.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceptos clave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Repetición</div><p class="text-xs text-neutral-400">Disparador n.º 1 de la skill.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Consistencia</div><p class="text-xs text-neutral-400">La salida siempre es la misma.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Complejidad</div><p class="text-xs text-neutral-400">Pasos fáciles de olvidar.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Excesivo</div><p class="text-xs text-neutral-400">¿Algo puntual? Solo escríbelo.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 3 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-3" id="topico-3">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">✉️ Skill en la práctica: /draft-email</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t3-p1">
+<strong class="text-blue-400">Qué es:</strong> un build práctico de una skill de <strong class="text-blue-400">redactar un correo electrónico</strong> — creada, probada, refinada e invocada como slash command. La anatomía es una carpeta <code>.claude/skills</code> con una subcarpeta por skill, cada una con un <code>SKILL.md</code> que define <em>name</em>, <em>description</em>, los <em>argumentos</em> esperados y los pasos. Los argumentos aquí son, por ejemplo, viñetas con la información clave, el destinatario y el tono. Se puede invocar como <code>/draft-email</code> — los slash commands se unificaron con las skills, comparables a las integradas como <code>/clear</code>.
+        </p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">.claude/skills/draft-email/SKILL.md (ejemplo ilustrativo)</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-blue-400">name:</span> draft-email
+<span class="text-blue-400">description:</span> Rascunha um e-mail polido e conciso, sem enrolação.
+
+<span class="text-blue-400">## Argumentos</span>
+- bullets: pontos-chave do conteúdo
+- destinatario: para quem é (ex.: cliente)
+- tom: profissional | amistoso | formal
+
+<span class="text-blue-400">## Comportamento</span>
+1. Se faltar algum argumento, pergunte antes de escrever.
+2. Escreva um e-mail claro, direto e sem enchimento.
+3. Salve o rascunho em temporary/outputs/email.md</pre>
+</div>
+<div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🛠️</span> Por qué aprender — el flujo de build</h3>
+<div class="space-y-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Crear en Plan Mode</h4>
+<p class="text-neutral-300 text-sm">Pide una skill que siga el formato oficial y describe las entradas (viñetas, destinatario, tono), el comportamiento y dónde guardar la salida. Aprueba el plan.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Limpiar el contexto e invocar</h4>
+<p class="text-neutral-300 text-sm">Limpia la conversación y llama <code>/draft-email</code>. Invocarlo sin argumentos hace que el agente pregunte los datos que faltan.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Reutilizar con nuevas entradas</h4>
+<p class="text-neutral-300 text-sm">Limpia de nuevo, llama el slash command con otro destinatario/tono y recibe una salida nueva que sigue las mismas reglas. Para modificar la skill, solo pídele al agente que la cambie.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Consejo práctico</h3>
+<p class="text-neutral-300 text-sm">Limpia el contexto entre usos para tener runs limpios y consistentes. La skill garantiza las <strong>las mismas reglas</strong> (tono, concisión, estructura) en cada invocación; eso es exactamente lo que diferencia delegar y olvidarse de tener que volver a explicarlo todo.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceptos clave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">SKILL.md</div><p class="text-xs text-neutral-400">name · description · args.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Argumentos</div><p class="text-xs text-neutral-400">viñetas · destino · tono.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Pregunta</div><p class="text-xs text-neutral-400">Sin argumentos, pregunta.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Reutilización</div><p class="text-xs text-neutral-400">Limpia y vuelve a llamar.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 4 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-4" id="topico-4">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🖼️ Generador de presentaciones</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t4-p1">
+<strong class="text-blue-400">Qué es:</strong> otro build completo en el framework WAT — un workflow que toma un <strong class="text-blue-400">documento</strong> y genera una <strong class="text-blue-400">presentación profesional</strong> a partir de él. Reutiliza el flujo estándar: CLAUDE.md (WAT) → workflow + herramientas → ejecutar → iterar. En Plan Mode, el agente hace preguntas de configuración (lenguaje de la herramienta, cómo extraer los puntos clave, estilo de la presentación). El workflow lee el documento, extrae los puntos y crea el archivo de presentación.
+        </p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">workflows/documento-para-slides.md (ejemplo ilustrativo)</span></div>
+<pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed"><span class="text-blue-400"># Workflow: documento → slides</span>
+
+<span class="text-blue-400">## Entrada</span>
+Documento em temporary/resources/ (10–16 páginas)
+
+<span class="text-blue-400">## Passos</span>
+1. Ler o documento e extrair os pontos-chave.
+2. Estruturar em títulos + bullets por slide.
+3. Gerar a apresentação via ferramenta Python.
+
+<span class="text-blue-400">## Saída</span>
+Deck (ex.: 26 slides) em temporary/outputs/</pre>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🎨</span> Por qué aprender — iteración y diseño</h3>
+<p class="text-neutral-300 text-sm mb-3 inema-prose" data-inema-block="m2-3-t4-p2">No necesitas entender las herramientas de Python: basta con comprobar si la lógica del workflow produce el resultado deseado. Siempre hay margen para mejorar el diseño: colores, fuentes, estilo corporativo o informal, combinación de texto con viñetas en lugar de solo viñetas. Y hay un atajo potente para reutilizarlo: <strong>sobrescribir una skill pública de diseño de diapositivas</strong> al workflow eleva el aspecto visual sin que tengas que explicar manualmente cada necesidad de diseño.</p>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Entrada:</strong> documento en temporary/resources.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Salida:</strong> presentación profesional en temporary/outputs.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Actualización:</strong> una skill de diseño integrada en el workflow.</span></li>
+</ul>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Consejo práctico</h3>
+<p class="text-neutral-300 text-sm">Ejecuta el build con bypass de permisos solo después de aprobar el plan. Y recuerda: cuando ya te sientas cómodo con el flujo básico, conectar una skill de diseño dedicada es la forma más económica de mejorar la calidad del deck: la skill incluye el conocimiento de diseño que no quieres reescribir.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceptos clave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">WAT de nuevo</div><p class="text-xs text-neutral-400">CLAUDE.md → wf+tools.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Doc → diapositivas</div><p class="text-xs text-neutral-400">Extrae y estructura.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Iterar el diseño</div><p class="text-xs text-neutral-400">Color, fuente, estilo.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Skill de diseño</div><p class="text-xs text-neutral-400">Superpuesta al workflow.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 5 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-5" id="topico-5">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">🗣️ 5 patrones de prompting</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t5-p1">
+<strong class="text-blue-400">Qué es:</strong> cinco patrones de prompting que producen resultados consistentes y de alta calidad. Transforman pedidos vagos en instrucciones que el agente puede ejecutar bien —y cambian tu postura de «operador» a «gerente de un especialista».
+        </p>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Define el objetivo, no los pasos</h4>
+<p class="text-neutral-300 text-sm">Di el resultado que quieres; deja que el agente decida la secuencia. Describe el «qué», no el «cómo».</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Sé específico sobre la salida</h4>
+<p class="text-neutral-300 text-sm">Formato, estructura, nombre de los archivos y dónde guardar. Cuanto más clara sea la salida esperada, menos trabajo tendrás que repetir.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Primero Plan Mode y después ejecuta</h4>
+<p class="text-neutral-300 text-sm">Aprueba el plan antes de dejar que el agente actúe; solo entonces pasa al modo de ejecución (omisión de permisos).</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">4</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Da feedback, no correcciones</h4>
+<p class="text-neutral-300 text-sm">"Me gustó la estructura, pero el tono es demasiado formal" funciona mejor que "esto está mal". El feedback actualiza el workflow por debajo.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">5</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
+<h4 class="font-semibold mb-1">Trata al agente como especialista</h4>
+<p class="text-neutral-300 text-sm">Tú eres el gerente; el agente es el desarrollador. Delega el trabajo técnico y enfócate en describir bien el objetivo y evaluar el resultado.</p>
+</div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Por qué aprender</h3>
+<p class="text-neutral-300 text-sm">Estos cinco patrones juntos activan el <strong>bucle de automejora</strong>: al dar feedback (no una corrección) sobre un resultado bien especificado, el agente ajusta el workflow subyacente — y la próxima ejecución ya sale mejor sin que tengas que volver a explicarlo.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceptos clave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Objetivo</div><p class="text-xs text-neutral-400">Qué, no cómo.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Salida clara</div><p class="text-xs text-neutral-400">Formato y ubicación.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Plan Mode</div><p class="text-xs text-neutral-400">Planifica primero.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Comentarios</div><p class="text-xs text-neutral-400">En lugar de corregir.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 6 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-6" id="topico-6">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">📉 Context rot y umbrales</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t6-p1">
+<strong class="text-blue-400">Qué es:</strong> <em>context rot</em> es la degradación gradual de la calidad a medida que se alarga una sola sesión. La raíz está en cómo funcionan los mecanismos de atención: los errores tienden a aparecer después de ~<strong class="text-blue-400">60%</strong> de uso de la ventana, cuando se llena de historial ruidoso y los mensajes recientes (posiblemente irrelevantes) desplazan las reglas centrales del foco del modelo.
+        </p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden mb-6">
+<table class="w-full text-sm">
+<thead><tr class="bg-dark-700/50 text-left"><th class="px-4 py-3 font-semibold text-neutral-300">Zonas</th><th class="px-4 py-3 font-semibold text-blue-400">Rango</th><th class="px-4 py-3 font-semibold text-blue-400">Qué hacer</th></tr></thead>
+<tbody class="divide-y divide-dark-600 text-neutral-300">
+<tr><td class="px-4 py-3 font-medium text-emerald-400">Verde</td><td class="px-4 py-3">0–50%</td><td class="px-4 py-3">Es seguro: sigue trabajando.</td></tr>
+<tr><td class="px-4 py-3 font-medium text-yellow-400">Amarillo</td><td class="px-4 py-3">50–70%</td><td class="px-4 py-3">Empieza a pensar en compactar.</td></tr>
+<tr><td class="px-4 py-3 font-medium text-amber-400">Naranja</td><td class="px-4 py-3">70–85%</td><td class="px-4 py-3">Ejecuta <code>/compact</code> proactivamente.</td></tr>
+<tr><td class="px-4 py-3 font-medium text-red-400">Rojo</td><td class="px-4 py-3">85%+</td><td class="px-4 py-3">Ejecuta <code>/clear</code> y vuelve a empezar.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-red-400 mb-2 flex items-center"><span class="mr-2">⚠️</span> Por qué aprender — la señal de alerta</h3>
+<p class="text-neutral-300 text-sm">El desgaste del contexto es real: después de ~60% de uso, espera más errores. No reutilices una conversación saturada para trabajos no relacionados. Si ya corregiste al agente sobre el <strong>lo mismo más de dos veces</strong>, probablemente el contexto está contaminado: límpialo y vuelve a empezar con un mejor prompt.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceptos clave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">~60%</div><p class="text-xs text-neutral-400">Los errores empiezan aquí.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Atención</div><p class="text-xs text-neutral-400">La ventana se convierte en ruido.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">4 zonas</div><p class="text-xs text-neutral-400">De verde a rojo.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">2 correcciones</div><p class="text-xs text-neutral-400">Señal de contexto desordenado.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 7 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-7" id="topico-7">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">7</span>
+<h2 class="text-2xl font-bold">🧹 /clear vs /compact</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t7-p1">
+<strong class="text-blue-400">Qué es:</strong> dos comandos para gestionar el contexto, con propósitos diferentes. <code>/clear</code> é o <strong class="text-blue-400">restablecimiento total</strong> de la conversación; <code>/compact</code> es un <strong class="text-blue-400">resumen inteligente</strong> que conserva la información clave y comprime el resto. Saber cuál usar —y cuándo— es lo que mantiene alta la calidad en una sesión larga.
+        </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">/compact — resumen inteligente</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Mantiene lo esencial y comprime el historial.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Usa <strong>en medio de una tarea</strong> cuando el contexto aumenta.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Ideal en la zona naranja (70–85%).</span></li>
+</ul>
+</div>
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">/clear — reinicio total</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">•</span><span>Borra toda la conversación y empieza desde cero.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">•</span><span>Usa al <strong>cambiar de tarea</strong> o cuando la calidad baja.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">•</span><span>Ideal por encima del 85% o después de 2+ correcciones repetidas.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Por qué aprender</h3>
+<p class="text-neutral-300 text-sm">Regla práctica: <strong>compactar</strong> cuando todavía estás en la misma tarea, pero el contexto aumentó; <strong>limpiar</strong> cuando cambias de tarea o cuando la calidad ya se ha deteriorado. Compactar demasiado tarde no recupera el contexto que ya se ha perdido; en ese caso, prefiere limpiar y empezar de nuevo con un prompt mejor.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceptos clave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">/compact</div><p class="text-xs text-neutral-400">Resume, no borra.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">/clear</div><p class="text-xs text-neutral-400">Restablecimiento completo.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Misma tarea</div><p class="text-xs text-neutral-400">Compacta.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Cambiar tarea</div><p class="text-xs text-neutral-400">Limpia.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 8 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-8" id="topico-8">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">8</span>
+<h2 class="text-2xl font-bold">💸 Ahorro de tokens</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t8-p1">
+<strong class="text-blue-400">Qué es:</strong> un conjunto de estrategias para minimizar el consumo de tokens y el desperdicio de contexto. Como el agente vuelve a leer toda la conversación con cada mensaje, las sesiones largas cuestan más por mensaje; por eso, mantener el contexto conciso también permite mantener bajo el costo.
+        </p>
+<div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🪙</span> Por qué aprender — las 5 estrategias</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Una tarea por sesión</strong>, luego limpia: no arrastres contexto viejo.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Define "listo"</strong> (p. ej., "exactamente 75 perfiles") para que el agente se detenga y no entre en un bucle.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Usa skills</strong> para workflows especializados, en vez de inflar el CLAUDE.md.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Desactiva los MCP que no uses</strong> — cada uno añade definiciones de herramientas al contexto.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Mantén el CLAUDE.md conciso</strong> (menos de ~500 líneas, solo contenido de toda la sesión).</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-red-400 mb-2 flex items-center"><span class="mr-2">⚠️</span> Trampa común</h3>
+<p class="text-neutral-300 text-sm">Sin un punto final definido, el agente puede <strong>buscar demasiado o entrar en un bucle</strong>, desperdiciando tokens. Además, cada servidor MCP activo consume contexto mediante las definiciones de herramientas: dejar activos los que no usas es un desperdicio silencioso.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceptos clave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">1 por sesión</div><p class="text-xs text-neutral-400">Limpia después.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Define qué significa estar listo</div><p class="text-xs text-neutral-400">Para el loop.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Skills</div><p class="text-xs text-neutral-400">En lugar de CLAUDE.md.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">MCP desactivados</div><p class="text-xs text-neutral-400">Desactiva los que estén inactivos.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
+</button>
+</div>
+</section>
+<!-- TÓPICO 9 -->
+<section class="mb-16" data-inema-topic="modulo-2-3#topico-9" id="topico-9">
+<div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">9</span>
+<h2 class="text-2xl font-bold">✅ 12 consejos finales</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
+</button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-3-t9-p1">
+<strong class="text-blue-400">Qué es:</strong> una lista consolidada de 12 mejores prácticas para crear workflows agénticos de calidad. Es el resumen operativo de todo el recorrido: léela como una lista de verificación antes y durante cada build.
+        </p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+<ol class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm text-neutral-300 list-decimal list-inside">
+<li>Empieza siempre en <strong>Plan Mode</strong>.</li>
+<li>Sé claro sobre el <strong>objetivo</strong> (p. ej., "75 perfiles de CEOs de empresas tecnológicas", no "haz un scraper").</li>
+<li>Define qué es <strong>"listo"</strong>.</li>
+<li>Trata al agente como <strong>especialista</strong> — tú gestionas, él desarrolla.</li>
+<li>Administra el <strong>contexto</strong> proactivamente (compact ~70%, clear al cambiar o fallar, 1 tarea/sesión).</li>
+<li>Usa el <strong>bucle de automejora</strong> mediante comentarios específicos.</li>
+<li>Guarda <strong>claves de API</strong> en archivos de entorno.</li>
+<li>Prueba con <strong>entradas diferentes</strong>.</li>
+<li>Guarda <strong>skills probadas en batalla</strong>.</li>
+<li>Empieza desde cero cuando <strong>bloquearse</strong>.</li>
+<li>Desactiva <strong>MCP no utilizados</strong>.</li>
+<li>Sigue el build <strong>temprano</strong> para aprender y detectar errores.</li>
+</ol>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🏁</span> Por qué aprender — el desafío práctico</h3>
+<p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-3-t9-p2">Pon todo junto en un build propio de principio a fin: notas-de-reunión-para-acciones, generador de PDF, borrador de correo electrónico o un workflow de tu trabajo. Usa el WAT, empieza en Plan Mode, deja que el agente pregunte, aprueba el plan y cambia al modo de omisión de permisos. Usa al menos un MCP y/o una skill <em>cuando tenga sentido</em> (no lo fuerces). Prueba el resultado con 2–3 entradas diferentes: un workflow que solo funciona con una entrada es, en la práctica, un script de un solo uso.</p>
+</div>
+<h3 class="text-lg font-semibold text-neutral-100 mb-3">Conceptos clave</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Plan Mode</div><p class="text-xs text-neutral-400">Siempre primero.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Objetivo claro</div><p class="text-xs text-neutral-400">Específico y medible.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Prueba plural</div><p class="text-xs text-neutral-400">2–3 entradas.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">.env</div><p class="text-xs text-neutral-400">Nunca uses una clave en el chat.</p></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
+<span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
+</button>
+</div>
+</section>
+<!-- CHECAGEM LEVE -->
+<section class="mb-12" data-inema-check="modulo-2-3#q1">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<h2 class="text-xl font-bold mb-4 flex items-center"><span class="mr-2">🧠</span> Verificación rápida</h2>
+<p class="text-neutral-300 mb-4">Estás en medio de una tarea, el contexto llegó a ~75% y el agente todavía está enfocado en ella. ¿Qué comando usas?</p>
+<div class="space-y-2" data-inema-check-options="">
+<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="0" type="button">/clear — borrar todo y empezar de cero</button>
+<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="1" type="button">/compact — resumir y comprimir, conservando lo esencial</button>
+<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="2" type="button">Nada: seguir hasta el 100% y ver qué pasa</button>
+</div>
+<p class="mt-4 text-sm text-neutral-400 hidden" data-inema-check-feedback=""></p>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-8">
+<div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumen del módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Skills</strong><span class="text-neutral-400"> — workflows en markdown en la carpeta .claude/skills, que se pueden invocar como slash command; consistencia, tokens, uso compartido y confiabilidad.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Cuándo empaquetar</strong><span class="text-neutral-400"> — repetición, consistencia, complejidad o equipo; si es algo puntual y sencillo, solo escríbelo.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Builds</strong><span class="text-neutral-400"> — la skill /draft-email y el generador de slide deck (documento → presentación) en el framework WAT.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Prompting + contexto</strong><span class="text-neutral-400"> — 5 patrones; context rot después de ~60%; zonas 0-50/50-70/70-85/85%+; /compact vs /clear.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Ahorro + checklist</strong><span class="text-neutral-400"> — 1 tarea/sesión, definir "listo", skills, MCPs desactivados, CLAUDE.md conciso; los 12 consejos finales.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-blue-400 mb-2">Próximo Módulo:</h3>
+<p class="text-neutral-300">3.1 — De lo local a siempre activo: GitHub &amp; Trigger.dev</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Volver a la ruta</a>
+<a class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors" href="../trilha3/index.html">Próxima Ruta →</a>
+</div>
+</div>
+</section>
+</main>
+<!-- TOC sticky + scrollspy -->
+<aside class="hidden lg:block">
+<nav aria-label="Índice de la página" class="sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Sección <span data-inema-section-counter=""><span class="inema-toc-pos">1</span> de <span class="inema-toc-total">9</span></span></p>
+<ol class="space-y-1.5 text-sm">
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-1">1. Qué son las skills</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-2">2. Skill vs escribir</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-3">3. La skill en la práctica</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-4">4. Generador de presentaciones</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-5">5. 5 patrones de prompting</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-6">6. Deterioro del contexto &amp; umbrales</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-7">7. /clear vs /compact</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-8">8. Ahorro de tokens</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-9">9. 12 consejos finales</a></li>
+</ol>
+</nav>
+</aside>
+</div>
+<footer class="border-t border-dark-600 py-8 mt-8">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+<p>Vibe Coding en la práctica · Curso original <a class="text-sky-400 hover:text-sky-300 font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
+</div>
+</footer>
+<script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    const htmlEl = document.documentElement;
+    if (htmlEl.classList.contains('dark')) { themeToggleLightIcon.classList.remove('hidden'); }
+    else { themeToggleDarkIcon.classList.remove('hidden'); }
+    themeToggle.addEventListener('click', () => {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      htmlEl.classList.toggle('dark');
+      const isDark = htmlEl.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      if (window.INEMA && INEMA.setPref) { INEMA.setPref('theme', isDark ? 'inema-dark' : 'claro'); }
+    });
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>
+    if (window.INEMA && typeof window.INEMA.init === 'function') {
+      window.INEMA.init();
+      if (window.INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-2-3#q1', {
+          answer: 1,
+          explain: {
+            0: 'Ainda não. /clear apaga tudo — guarde para quando trocar de tarefa ou a qualidade já tiver caído.',
+            1: 'Isso. No meio da mesma tarefa, com contexto na zona laranja (70–85%), /compact resume e comprime mantendo o essencial.',
+            2: 'Não. Passado ~60% a qualidade degrada; deixar chegar a 100% só multiplica os erros e o custo.'
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>

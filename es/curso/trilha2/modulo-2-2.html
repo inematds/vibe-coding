@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="pt-BR">
+<html class="dark" lang="es">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -74,7 +74,7 @@
     }
   })();
   </script>
-<title>Módulo 2.2 · Estendendo o Agente: MCP &amp; Pesquisa | Vibe Coding</title>
+<title>Módulo 2.2 · Cómo ampliar el agente: MCP e investigación | Vibe Coding</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
     tailwind.config = {
@@ -116,7 +116,7 @@
     ]
   }
   </script>
-<link href="../../assets/learn.css" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
 <style>
     body { font-family: 'Inter', sans-serif; }
     .dark body { background-color: #111827; }
@@ -189,8 +189,8 @@
     }
   </style>
 <link href="https://inematds.github.io/vibe-coding/curso/trilha2/modulo-2-2.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/vibe-coding/en/curso/trilha2/modulo-2-2.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/vibe-coding/es/curso/trilha2/modulo-2-2.html" hreflang="es" rel="alternate"/></head>
-<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="modulo-2-2.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">PT</a><a href="../../en/curso/trilha2/modulo-2-2.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="../../es/curso/trilha2/modulo-2-2.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
-<a class="skip sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg" href="#conteudo">Pular para o conteúdo</a>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha2/modulo-2-2.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha2/modulo-2-2.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="modulo-2-2.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="skip sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg" href="#conteudo">Saltar al contenido</a>
 <!-- NAVIGATION (T2 ativa) -->
 <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -208,7 +208,7 @@
 <span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span>
 </a>
 <a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10" href="index.html">
-<span class="sm:hidden">T2</span><span class="hidden sm:inline">Domínio</span>
+<span class="sm:hidden">T2</span><span class="hidden sm:inline">Dominio</span>
 </a>
 <a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html">
 <span class="sm:hidden">T3</span><span class="hidden sm:inline">Deploy</span>
@@ -217,10 +217,10 @@
 <span class="sm:hidden">T4</span><span class="hidden sm:inline">Apps</span>
 </a>
 <button class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-300 hover:text-neutral-100 hover:bg-dark-700 transition-colors ml-1" data-inema-journey-open="" type="button">
-<span aria-hidden="true">◷</span><span>Minha jornada</span>
+<span aria-hidden="true">◷</span><span>Mi recorrido</span>
 <span class="inema-journey-badge hidden" data-count="0" data-inema-journey-badge=""></span>
 </button>
-<button aria-label="Alternar tema claro/escuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle">
+<button aria-label="Alternar entre tema claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle">
 <svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20">
 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
 </svg>
@@ -233,11 +233,11 @@
 </div>
 </nav>
 <!-- BREADCRUMB -->
-<nav aria-label="Trilha de navegação" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<nav aria-label="Ruta de navegación" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
 <div class="flex items-center space-x-2 text-sm text-neutral-400">
-<a class="hover:text-blue-400" href="../../index.html">Início</a>
+<a class="hover:text-blue-400" href="../../index.html">Inicio</a>
 <span>/</span>
-<a class="hover:text-blue-400" href="index.html">Trilha 2</a>
+<a class="hover:text-blue-400" href="index.html">Ruta 2</a>
 <span>/</span>
 <span class="text-blue-400">Módulo 2.2</span>
 </div>
@@ -246,12 +246,12 @@
 <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.2</span>
-<h3 class="text-2xl font-bold mb-4">🔗 Estendendo o Agente: MCP &amp; Pesquisa</h3>
-<p class="text-lg text-neutral-400 max-w-3xl">Dar superpoderes ao agente conectando ferramentas externas. Você entende o que é MCP, onde encontrar servers, como instalar e diagnosticar, e constrói um workflow de pesquisa de ponta a ponta com Firecrawl — do pipeline de saída à iteração e auto-cura.</p>
+<h3 class="text-2xl font-bold mb-4">🔗 Extender el agente: MCP e investigación</h3>
+<p class="text-lg text-neutral-400 max-w-3xl">Dale superpoderes al agente conectando herramientas externas. Entiende qué es MCP, dónde encontrar servers, cómo instalarlos y diagnosticarlos, y construye un workflow de investigación de principio a fin con Firecrawl, desde el pipeline de salida hasta la iteración y la autocuración.</p>
 <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
 <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
 <div class="text-xl font-bold text-blue-400">7</div>
-<div class="text-xs text-neutral-400">Tópicos</div>
+<div class="text-xs text-neutral-400">Temas</div>
 </div>
 <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
 <div class="text-xl font-bold text-blue-400">~55</div>
@@ -259,16 +259,16 @@
 </div>
 <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
 <div class="text-xl font-bold text-blue-400">Inter.</div>
-<div class="text-xs text-neutral-400">Nível</div>
+<div class="text-xs text-neutral-400">Nivel</div>
 </div>
 <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600">
 <div class="text-xl font-bold text-blue-400">MCP</div>
 <div class="text-xs text-neutral-400">Tipo</div>
 </div>
 </div>
-<div aria-label="Progresso do módulo 2.2" aria-valuemax="100" aria-valuemin="0" class="mt-6 max-w-2xl" data-inema-meter="modulo:2-2" role="progressbar">
+<div aria-label="Progreso del módulo 2.2" aria-valuemax="100" aria-valuemin="0" class="mt-6 max-w-2xl" data-inema-meter="modulo:2-2" role="progressbar">
 <div class="flex items-center justify-between mb-1 text-sm">
-<span class="text-neutral-400">Progresso do módulo</span>
+<span class="text-neutral-400">Progreso del módulo</span>
 <span class="text-blue-400 font-semibold"><span data-inema-meter-pct="">0%</span> · <span data-inema-meter-frac="">0 de 7</span></span>
 </div>
 <div class="inema-bar h-2 rounded-full bg-dark-700 overflow-hidden"><div class="inema-bar__fill h-full bg-blue-500 rounded-full" data-inema-meter-fill="" style="width:0%"></div></div>
@@ -279,9 +279,9 @@
 <main class="min-w-0" id="conteudo">
 <!-- SVG FUTURISTA: o agente + MCP -->
 <section class="mb-12">
-<p class="text-neutral-300 mb-4 inema-prose leading-relaxed">Uma única conexão MCP expõe um conjunto inteiro de ferramentas externas, e o agente decide qual chamar. O diagrama abaixo mostra o agente conectado a um server MCP que dá acesso a scraping, bancos e documentos — e o fluxo de pesquisa que nasce daí.</p>
+<p class="text-neutral-300 mb-4 inema-prose leading-relaxed">Una sola conexión MCP expone un conjunto completo de herramientas externas, y el agente decide cuál invocar. El diagrama de abajo muestra el agente conectado a un server MCP que da acceso a scraping, bases de datos y documentos, y el flujo de investigación que surge de ahí.</p>
 <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 overflow-hidden mb-3">
-<svg aria-label="O agente se conecta a um server MCP por uma única conexão; o server expõe muitas ferramentas (scraping, bancos, documentos) e o agente decide qual chamar para um fluxo de pesquisa que vai do tema ao documento" class="w-full h-auto" role="img" viewbox="0 0 1000 260">
+<svg aria-label="El agente se conecta a un server MCP mediante una sola conexión; el server expone muchas herramientas (scraping, bases de datos, documentos) y el agente decide cuál llamar para un flujo de investigación que va del tema al documento" class="w-full h-auto" role="img" viewbox="0 0 1000 260">
 <defs>
 <lineargradient id="m22-grad" x1="0" x2="1" y1="0" y2="1">
 <stop offset="0" stop-color="#60a5fa"></stop><stop offset="1" stop-color="#3b82f6"></stop>
@@ -299,12 +299,12 @@
 <!-- Agente (esquerda, foco) -->
 <g filter="url(#m22-glow)"><rect fill="#0e1622" height="80" rx="16" stroke="url(#m22-grad)" stroke-width="2.5" width="190" x="40" y="96"></rect></g>
 <text fill="#60a5fa" font-family="Inter,sans-serif" font-size="16" font-weight="600" text-anchor="middle" x="135" y="128">Agente</text>
-<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" x="135" y="150">decide qual chamar</text>
+<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" x="135" y="150">decide cuál llamar</text>
 <!-- MCP server (centro, ciano) -->
 <g fill="none" opacity="0.6" stroke="#38bdf8" stroke-width="2"><path d="M230,136 L408,136" marker-end="url(#m22-ahc)"></path></g>
 <rect fill="#0e1b26" height="64" rx="12" stroke="#38bdf8" stroke-width="2" width="200" x="408" y="106"></rect>
 <text fill="#bfe6ff" font-family="Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle" x="508" y="134">MCP server</text>
-<text fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="508" y="154">uma conexão, muitas ações</text>
+<text fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="508" y="154">una conexión, muchas acciones</text>
 <!-- Ferramentas (direita) -->
 <g fill="none" opacity="0.5" stroke="#60a5fa" stroke-width="1.6">
 <path d="M608,124 C680,100 720,84 778,72" marker-end="url(#m22-ah)"></path>
@@ -314,46 +314,46 @@
 <rect fill="#0e1622" height="44" rx="10" stroke="#60a5fa" stroke-width="1.8" width="182" x="778" y="48"></rect>
 <text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="869" y="75">Scraping (Firecrawl)</text>
 <rect fill="#0e1622" height="44" rx="10" stroke="#60a5fa" stroke-width="1.8" width="182" x="778" y="116"></rect>
-<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="869" y="143">Bancos de dados</text>
+<text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="869" y="143">Bases de datos</text>
 <rect fill="#0e1622" height="44" rx="10" stroke="#60a5fa" stroke-width="1.8" width="182" x="778" y="184"></rect>
 <text fill="#bfdbfe" font-family="Inter,sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="869" y="211">Documentos</text>
 </svg>
 </div>
-<p class="text-xs text-neutral-500">Diagrama ilustrativo — recriação conceitual da arquitetura MCP, não uma captura de tela real.</p>
+<p class="text-xs text-neutral-500">Diagrama ilustrativo — recreación conceptual de la arquitectura MCP, no es una captura de pantalla real.</p>
 </section>
 <!-- TÓPICO 1 -->
 <section class="mb-16" data-inema-topic="modulo-2-2#topico-1" id="topico-1">
 <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
 <div class="flex items-center space-x-4">
 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
-<h2 class="text-2xl font-bold">🔌 O que é MCP (Model Context Protocol)</h2>
+<h2 class="text-2xl font-bold">🔌 Qué es MCP (Model Context Protocol)</h2>
 </div>
 <button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
-<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
 </button>
 </div>
 <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-2-t1-p1">
-<strong class="text-blue-400">MCP</strong> (Model Context Protocol) é um protocolo que deixa uma <strong class="text-blue-400">única conexão expor muitas ferramentas e ações</strong>. Depois que o agente e o server MCP se conectam, o agente conhece todas as ferramentas disponíveis e decide sozinho qual chamar, quando e com quais parâmetros. A analogia: é como o Gmail expor as ações "enviar", "rascunhar" e "buscar e-mails" — o agente descobre qual usar.
+<strong class="text-blue-400">MCP</strong> (Model Context Protocol) es un protocolo que permite que una <strong class="text-blue-400">una sola conexión expone muchas herramientas y acciones</strong>. Después de que el agente y el server MCP se conectan, el agente conoce todas las herramientas disponibles y decide por sí solo cuál llamar, cuándo y con qué parámetros. La analogía: es como si Gmail expusiera las acciones «enviar», «redactar» y «buscar correos»; el agente descubre cuál usar.
         </p>
 <div class="bg-gradient-to-br from-blue-900/30 to-dark-800 rounded-xl border border-blue-500/30 p-6 mb-6">
-<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">💡</span> A ideia central</h3>
-<p class="text-neutral-300 mb-3 inema-prose" data-inema-block="m2-2-t1-p2">Em vez de programar uma integração por ferramenta, você conecta um server MCP e ganha um conjunto inteiro de capacidades de uma vez. O agente passa a "ver" essas ferramentas e a orquestrá-las sem você dizer qual chamar.</p>
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">💡</span> La idea central</h3>
+<p class="text-neutral-300 mb-3 inema-prose" data-inema-block="m2-2-t1-p2">En vez de programar una integración para cada herramienta, conectas un server MCP y obtienes todo un conjunto de capacidades de una vez. El agente empieza a «ver» esas herramientas y a orquestarlas sin que le digas cuál debe usar.</p>
 <ul class="space-y-2 text-neutral-300">
-<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Uma conexão:</strong> expõe várias ações de uma só vez.</span></li>
-<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Autonomia:</strong> o agente escolhe a ferramenta e os parâmetros.</span></li>
-<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Padrão:</strong> o mesmo protocolo serve para muitos serviços.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Una conexión:</strong> expone varias acciones a la vez.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Autonomía:</strong> el agente elige la herramienta y los parámetros.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-1">•</span><span><strong>Patrón:</strong> el mismo protocolo sirve para muchos servicios.</span></li>
 </ul>
 </div>
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Protocolo</div><p class="text-xs text-neutral-400">Padrão de conexão.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Muitas ações</div><p class="text-xs text-neutral-400">Um server, várias ferramentas.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">O agente decide</div><p class="text-xs text-neutral-400">Escolhe qual chamar.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Analogia</div><p class="text-xs text-neutral-400">Gmail: enviar/rascunhar/ler.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Protocolo</div><p class="text-xs text-neutral-400">Patrón de conexión.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Muchas acciones</div><p class="text-xs text-neutral-400">Un server, varias herramientas.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">El agente decide</div><p class="text-xs text-neutral-400">Elige a cuál llamar.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Analogía</div><p class="text-xs text-neutral-400">Gmail: enviar/redactar/leer.</p></div>
 </div>
 <div class="flex justify-start mt-6">
 <button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
 <span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
-<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
 </button>
 </div>
 </section>
@@ -362,47 +362,47 @@
 <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
 <div class="flex items-center space-x-4">
 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
-<h2 class="text-2xl font-bold">🗂️ Onde encontrar MCP servers</h2>
+<h2 class="text-2xl font-bold">🗂️ Dónde encontrar servidores MCP</h2>
 </div>
 <button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
-<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
 </button>
 </div>
 <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-2-t2-p1">
-          Servers MCP ficam em <strong class="text-blue-400">diretórios dedicados</strong> (como o mcp.so) e também aparecem na busca do GitHub por "MCP server" mais o nome do serviço. Saber onde procurar — e em que categoria a sua necessidade se encaixa — acelera a escolha da ferramenta certa para a tarefa.
+          Los servers MCP están en <strong class="text-blue-400">directorios dedicados</strong> (como mcp.so) y también aparecen en la búsqueda de GitHub con "MCP server" más el nombre del servicio. Saber dónde buscar —y en qué categoría encaja tu necesidad— agiliza la elección de la herramienta adecuada para la tarea.
         </p>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
 <div class="text-blue-400 font-semibold mb-2">🕸️ Web scraping</div>
-<p class="text-sm text-neutral-300">Raspar e ler páginas da web. Exemplo usado nesta trilha: <strong>Firecrawl</strong>.</p>
+<p class="text-sm text-neutral-300">Extraer y leer páginas web. Ejemplo usado en esta ruta: <strong>Firecrawl</strong>.</p>
 </div>
 <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
-<div class="text-blue-400 font-semibold mb-2">🗄️ Bancos de dados</div>
-<p class="text-sm text-neutral-300">Ler e escrever dados. Exemplos: Postgres, Supabase.</p>
+<div class="text-blue-400 font-semibold mb-2">🗄️ Bases de datos</div>
+<p class="text-sm text-neutral-300">Leer y escribir datos. Ejemplos: Postgres, Supabase.</p>
 </div>
 <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
 <div class="text-blue-400 font-semibold mb-2">📁 Documentos</div>
-<p class="text-sm text-neutral-300">Acessar arquivos e notas. Exemplos: Google Drive, Notion.</p>
+<p class="text-sm text-neutral-300">Acceder a archivos y notas. Ejemplos: Google Drive, Notion.</p>
 </div>
 <div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
-<div class="text-blue-400 font-semibold mb-2">💬 Comunicação</div>
-<p class="text-sm text-neutral-300">Enviar mensagens e e-mails. Exemplos: Slack, Gmail.</p>
+<div class="text-blue-400 font-semibold mb-2">💬 Comunicación</div>
+<p class="text-sm text-neutral-300">Enviar mensajes y correos electrónicos. Ejemplos: Slack, Gmail.</p>
 </div>
 </div>
 <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
-<p class="text-neutral-300 text-sm">Antes de instalar, pense na categoria: "preciso de scraping, de banco, de documento ou de comunicação?". Isso reduz a busca e evita instalar servers que você nem vai usar (e que consomem contexto).</p>
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Consejo práctico</h3>
+<p class="text-neutral-300 text-sm">Antes de instalar, piensa en la categoría: «¿necesito scraping, una base de datos, documentos o comunicación?». Esto reduce la búsqueda y evita instalar servidores que ni siquiera vas a usar (y que consumen contexto).</p>
 </div>
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Diretórios</div><p class="text-xs text-neutral-400">mcp.so e similares.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">GitHub</div><p class="text-xs text-neutral-400">Buscar "MCP server" + serviço.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Categorias</div><p class="text-xs text-neutral-400">Scraping/bancos/docs/comm.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Foco</div><p class="text-xs text-neutral-400">Só o que a tarefa pede.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Directorios</div><p class="text-xs text-neutral-400">mcp.so y similares.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">GitHub</div><p class="text-xs text-neutral-400">Buscar "MCP server" + servicio.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Categorías</div><p class="text-xs text-neutral-400">Scraping/bases de datos/docs/comunicación.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Enfoque</div><p class="text-xs text-neutral-400">Solo lo que pide la tarea.</p></div>
 </div>
 <div class="flex justify-start mt-6">
 <button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
 <span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
-<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
 </button>
 </div>
 </section>
@@ -411,57 +411,57 @@
 <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
 <div class="flex items-center space-x-4">
 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
-<h2 class="text-2xl font-bold">📦 Instalar um MCP server</h2>
+<h2 class="text-2xl font-bold">📦 Instalar un MCP server</h2>
 </div>
 <button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
-<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
 </button>
 </div>
 <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-2-t3-p1">
-          Para instalar, você dá ao agente o <strong class="text-blue-400">comando de instalação</strong> da documentação do provedor; ele gera o arquivo <code class="font-mono text-blue-400">.mcp.json</code> com a entrada do server e um <strong class="text-blue-400">placeholder de chave</strong>. Depois, você se cadastra no provedor, obtém a API key e a insere <strong class="text-blue-400">manualmente</strong> no arquivo de configuração — nunca colando no chat.
+          Para instalar, le das al agente el <strong class="text-blue-400">comando de instalación</strong> de la documentación del proveedor; genera el archivo <code class="font-mono text-blue-400">.mcp.json</code> con la entrada del server y un <strong class="text-blue-400">marcador de posición de la clave</strong>. Después, te registras con el proveedor, obtienes la API key y la ingresas <strong class="text-blue-400">manualmente</strong> en el archivo de configuración, nunca pegándolo en el chat.
         </p>
-<h3 class="text-xl font-bold mb-4">Passo a passo da instalação</h3>
+<h3 class="text-xl font-bold mb-4">Paso a paso de la instalación</h3>
 <div class="space-y-6 mb-6">
 <div class="flex items-start space-x-4">
 <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
 <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-<h4 class="font-semibold mb-1">Copiar o comando da documentação</h4>
-<p class="text-neutral-300 text-sm">Na doc do provedor (ex.: Firecrawl → Integrations → MCP → seção do assistente de código), copie o comando de instalação.</p>
+<h4 class="font-semibold mb-1">Copiar el comando de la documentación</h4>
+<p class="text-neutral-300 text-sm">En la documentación del proveedor (p. ej., Firecrawl → Integrations → MCP → sección del asistente de código), copia el comando de instalación.</p>
 </div>
 </div>
 <div class="flex items-start space-x-4">
 <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
 <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-<h4 class="font-semibold mb-1">Deixar o agente gerar o .mcp.json</h4>
-<p class="text-neutral-300 text-sm">Peça para instalar usando aquele comando; ele cria o <code class="font-mono text-blue-400">.mcp.json</code> com a config do server e o placeholder da chave.</p>
+<h4 class="font-semibold mb-1">Deja que el agente genere el .mcp.json</h4>
+<p class="text-neutral-300 text-sm">Pídele que lo instale con ese comando; crea el <code class="font-mono text-blue-400">.mcp.json</code> con la config del server y el placeholder de la clave.</p>
 </div>
 </div>
 <div class="flex items-start space-x-4">
 <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
 <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-<h4 class="font-semibold mb-1">Inserir a chave manualmente</h4>
-<p class="text-neutral-300 text-sm">Cadastre-se no provedor, copie sua API key e cole você mesmo no arquivo de config — fora do chat.</p>
+<h4 class="font-semibold mb-1">Insertar la clave manualmente</h4>
+<p class="text-neutral-300 text-sm">Regístrate en el proveedor, copia tu API key y pégala tú mismo en el archivo de config, fuera del chat.</p>
 </div>
 </div>
 </div>
 <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
-<h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">⚠️</span> Atenção: a chave de API</h3>
+<h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">⚠️</span> Atención: la clave de API</h3>
 <ul class="space-y-2 text-neutral-300 text-sm">
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Nunca cole a chave no chat nem deixe o agente inseri-la.</span></li>
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Insira manualmente no arquivo de configuração — é mais seguro.</span></li>
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Trate a chave como acesso ao cartão: vazou, qualquer um gasta.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Nunca pegues la clave en el chat ni dejes que el agente la inserte.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Insértala manualmente en el archivo de configuración: es más seguro.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Trata la clave como el acceso a tu tarjeta: si se filtra, cualquiera puede gastar.</span></li>
 </ul>
 </div>
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Comando</div><p class="text-xs text-neutral-400">Da doc do provedor.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">.mcp.json</div><p class="text-xs text-neutral-400">Gerado pelo agente.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Chave manual</div><p class="text-xs text-neutral-400">Nunca no chat.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Provedor</div><p class="text-xs text-neutral-400">Cadastro + API key.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Comando</div><p class="text-xs text-neutral-400">De la documentación del proveedor.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">.mcp.json</div><p class="text-xs text-neutral-400">Generado por el agente.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Clave manual</div><p class="text-xs text-neutral-400">Nunca en el chat.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Proveedor</div><p class="text-xs text-neutral-400">Registro + API key.</p></div>
 </div>
 <div class="flex justify-start mt-6">
 <button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
 <span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
-<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
 </button>
 </div>
 </section>
@@ -470,47 +470,47 @@
 <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
 <div class="flex items-center space-x-4">
 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
-<h2 class="text-2xl font-bold">🩺 Verificar e diagnosticar</h2>
+<h2 class="text-2xl font-bold">🩺 Verificar y diagnosticar</h2>
 </div>
 <button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
-<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
 </button>
 </div>
 <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-2-t4-p1">
-          Depois de instalar, verifique com o comando <strong class="text-blue-400"><code class="font-mono text-blue-400">/mcp</code></strong>: ele lista os servers instalados e o status de cada um. Se um server recém-instalado <strong class="text-blue-400">não aparece</strong>, a causa mais comum não é falha de instalação — é só falta de reiniciar o assistente para registrar os novos componentes.
+          Después de instalarlo, verifica con el comando <strong class="text-blue-400"><code class="font-mono text-blue-400">/mcp</code></strong>: enumera los servers instalados y el estado de cada uno. Si un server recién instalado <strong class="text-blue-400">no aparece</strong>, la causa más común no es un fallo de instalación: solo hace falta reiniciar el asistente para que registre los nuevos componentes.
         </p>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
-<h4 class="font-bold text-emerald-400 mb-4">✓ Faça</h4>
+<h4 class="font-bold text-emerald-400 mb-4">✓ Hazlo</h4>
 <ul class="space-y-3 text-neutral-300 text-sm">
-<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Rode <code class="font-mono text-emerald-400">/mcp</code> para ver os servers e o status.</span></li>
-<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Reinicie o assistente se o server não aparecer.</span></li>
-<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Confirme a conexão antes de começar a usar a ferramenta.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Ejecuta <code class="font-mono text-emerald-400">/mcp</code> para ver los servers y el estado.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Reinicia el asistente si el server no aparece.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Confirma la conexión antes de empezar a usar la herramienta.</span></li>
 </ul>
 </div>
 <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
-<h4 class="font-bold text-red-400 mb-4">✗ Não faça</h4>
+<h4 class="font-bold text-red-400 mb-4">✗ No lo hagas</h4>
 <ul class="space-y-3 text-neutral-300 text-sm">
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Achar que a instalação falhou sem antes reiniciar.</span></li>
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Reinstalar do zero por impaciência.</span></li>
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Usar a ferramenta sem confirmar que o status está "conectado".</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Creer que la instalación falló sin reiniciar antes.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Reinstalar desde cero por impaciencia.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Usar la herramienta sin confirmar que el estado sea "conectado".</span></li>
 </ul>
 </div>
 </div>
 <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
-<p class="text-neutral-300 text-sm">"Não apareceu? Reinicie." Esse reflexo resolve a maioria dos casos de server invisível e poupa horas de diagnóstico desnecessário.</p>
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Consejo práctico</h3>
+<p class="text-neutral-300 text-sm">"¿No apareció? Reinicia." Ese reflejo resuelve la mayoría de los casos de servidores invisibles y ahorra horas de diagnóstico innecesario.</p>
 </div>
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">/mcp</div><p class="text-xs text-neutral-400">Lista servers + status.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Reiniciar</div><p class="text-xs text-neutral-400">Registra novos servers.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Status</div><p class="text-xs text-neutral-400">Conectado ou não.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Causa comum</div><p class="text-xs text-neutral-400">Faltou reiniciar.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">/mcp</div><p class="text-xs text-neutral-400">Lista servers + estado.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Reiniciar</div><p class="text-xs text-neutral-400">Registra nuevos servers.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Estado</div><p class="text-xs text-neutral-400">Conectado o no.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Causa común</div><p class="text-xs text-neutral-400">Faltó reiniciar.</p></div>
 </div>
 <div class="flex justify-start mt-6">
 <button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
 <span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
-<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
 </button>
 </div>
 </section>
@@ -519,53 +519,53 @@
 <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
 <div class="flex items-center space-x-4">
 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
-<h2 class="text-2xl font-bold">🔎 Workflow de pesquisa com Firecrawl</h2>
+<h2 class="text-2xl font-bold">🔎 Flujo de investigación con Firecrawl</h2>
 </div>
 <button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
-<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
 </button>
 </div>
 <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-2-t5-p1">
-          Com o MCP no lugar, dá para construir um workflow de pesquisa de ponta a ponta: você dá um <strong class="text-blue-400">tema</strong>, o agente pesquisa a web com <strong class="text-blue-400">Firecrawl</strong>, sintetiza os achados e gera um documento estruturado. Tudo reaproveitando o framework WAT e um CLAUDE.md WAT como configuração-mestra lida a cada sessão.
+          Con el MCP en su lugar, puedes construir un workflow de investigación de principio a fin: le das un <strong class="text-blue-400">tema</strong>, el agente busca en la web con <strong class="text-blue-400">Firecrawl</strong>, sintetiza los hallazgos y genera un documento estructurado. Todo reutilizando el framework WAT y un CLAUDE.md WAT como configuración maestra que se lee en cada sesión.
         </p>
 <h3 class="text-xl font-bold mb-4">Plan → Build → Run</h3>
 <div class="space-y-6 mb-6">
 <div class="flex items-start space-x-4">
 <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
 <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-<h4 class="font-semibold mb-1">Plan — descrever o workflow</h4>
-<p class="text-neutral-300 text-sm">Em Plan Mode, descreva: dar um tema, pesquisar a web, achar info relevante e atual, compilar num brief estruturado e gerar um documento na pasta temporária via Firecrawl. Responda às perguntas (formato de saída, nº de fontes).</p>
+<h4 class="font-semibold mb-1">Plan — describe el workflow</h4>
+<p class="text-neutral-300 text-sm">En Plan Mode, describe: dar un tema, investigar en la web, encontrar información relevante y actual, compilarla en un brief estructurado y generar un documento en la carpeta temporal mediante Firecrawl. Responde las preguntas (formato de salida, nº de fuentes).</p>
 </div>
 </div>
 <div class="flex items-start space-x-4">
 <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
 <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-<h4 class="font-semibold mb-1">Build — gerar workflows + tools</h4>
-<p class="text-neutral-300 text-sm">O agente gera o .env, o .mcp.json do Firecrawl, a ferramenta de conversão markdown → documento e o workflow de pesquisa.</p>
+<h4 class="font-semibold mb-1">Build — generar workflows + tools</h4>
+<p class="text-neutral-300 text-sm">El agente genera el .env, el .mcp.json de Firecrawl, la herramienta de conversión de markdown → documento y el workflow de investigación.</p>
 </div>
 </div>
 <div class="flex items-start space-x-4">
 <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
 <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600">
-<h4 class="font-semibold mb-1">Run — disparar com um tema</h4>
-<p class="text-neutral-300 text-sm">Limpe o contexto e dispare com um tema concreto. O agente lê o workflow, roda as buscas no Firecrawl, sintetiza e converte em documento.</p>
+<h4 class="font-semibold mb-1">Run — disparar con un tema</h4>
+<p class="text-neutral-300 text-sm">Limpia el contexto y ejecuta con un tema concreto. El agente lee el workflow, realiza las búsquedas en Firecrawl, sintetiza y lo convierte en un documento.</p>
 </div>
 </div>
 </div>
 <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
-<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🎯</span> O que o workflow especifica</h3>
-<p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-2-t5-p2">Um bom workflow de pesquisa declara gatilhos, entradas, passos, um alvo de fontes (ex.: 3-5 buscas direcionadas), tratamento de erro e critérios para avaliar cada fonte — assim a saída é consistente e confiável.</p>
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🎯</span> Lo que especifica el workflow</h3>
+<p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-2-t5-p2">Un buen workflow de investigación declara los activadores, las entradas, los pasos, un objetivo de fuentes (p. ej., 3-5 búsquedas dirigidas), el manejo de errores y los criterios para evaluar cada fuente; así, el resultado es consistente y confiable.</p>
 </div>
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Tema</div><p class="text-xs text-neutral-400">A entrada do workflow.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Firecrawl</div><p class="text-xs text-neutral-400">Pesquisa a web.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Síntese</div><p class="text-xs text-neutral-400">Compila um brief.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">3-5 fontes</div><p class="text-xs text-neutral-400">Alvo de buscas.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Tema</div><p class="text-xs text-neutral-400">La entrada del workflow.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Firecrawl</div><p class="text-xs text-neutral-400">Busca en la web.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Síntesis</div><p class="text-xs text-neutral-400">Compila un brief.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">3-5 fuentes</div><p class="text-xs text-neutral-400">Objetivo de búsqueda.</p></div>
 </div>
 <div class="flex justify-start mt-6">
 <button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
 <span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
-<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
 </button>
 </div>
 </section>
@@ -574,44 +574,44 @@
 <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
 <div class="flex items-center space-x-4">
 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
-<h2 class="text-2xl font-bold">📄 Pipeline de saída</h2>
+<h2 class="text-2xl font-bold">📄 Pipeline de salida</h2>
 </div>
 <button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
-<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
 </button>
 </div>
 <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-2-t6-p1">
-          O pipeline de saída separa <strong class="text-blue-400">conteúdo de formato</strong>: o agente produz primeiro um <strong class="text-blue-400">markdown</strong> e depois o converte para um arquivo de documento por meio de uma ferramenta gerada de conversão. Isso deixa a saída flexível — o mesmo conteúdo pode virar formatos diferentes — e fácil de auditar.
+          El pipeline de salida separa <strong class="text-blue-400">contenido de formato</strong>: el agente primero produce un <strong class="text-blue-400">markdown</strong> y después lo convierte en un archivo de documento mediante una herramienta de conversión generada. Esto hace que la salida sea flexible —el mismo contenido puede convertirse a distintos formatos— y fácil de auditar.
         </p>
 <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
-<div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">pipeline de saída (exemplo ilustrativo)</span></div>
+<div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full bg-red-400"></span><span class="w-3 h-3 rounded-full bg-yellow-400"></span><span class="w-3 h-3 rounded-full bg-emerald-400"></span><span class="text-xs text-neutral-500 ml-2">pipeline de salida (ejemplo ilustrativo)</span></div>
 <pre class="font-mono text-sm text-neutral-300 overflow-x-auto leading-relaxed">tema → busca Firecrawl → síntese
    → <span class="text-blue-400">brief.md</span>            (conteúdo, markdown)
    → ferramenta de conversão
    → <span class="text-blue-400">brief.docx</span>          (formato, documento)</pre>
 </div>
 <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6 mb-6">
-<h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">⚠️</span> Atenção: a sincronia dos dois arquivos</h3>
+<h3 class="text-lg font-semibold text-red-400 mb-3 flex items-center"><span class="mr-2">⚠️</span> Atención: la sincronización de los dos archivos</h3>
 <ul class="space-y-2 text-neutral-300 text-sm">
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Atualizar o markdown nem sempre atualiza o documento final.</span></li>
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Ao pedir uma mudança, peça explicitamente para atualizar <strong>os dois</strong>.</span></li>
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Não confie só na aparência do markdown — abra o documento gerado.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Actualizar el markdown no siempre actualiza el documento final.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Al pedir un cambio, pide explícitamente que actualice <strong>ambos</strong>.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>No te fíes solo de la apariencia del markdown; abre el documento generado.</span></li>
 </ul>
 </div>
 <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Dica prática</h3>
-<p class="text-neutral-300 text-sm">Quando mudar a formatação (ex.: trocar a seção de fontes de tabela para lista), peça para propagar a mudança ao markdown <strong>e</strong> ao documento. Caso contrário, você corrige um e o outro fica desatualizado.</p>
+<h3 class="text-lg font-semibold text-primary mb-2 flex items-center"><span class="mr-2">🎯</span> Consejo práctico</h3>
+<p class="text-neutral-300 text-sm">Cuando cambies el formato (p. ej., cambiar la sección de fuentes de tabla a lista), pide que se propague el cambio al markdown <strong>e</strong> al documento. De lo contrario, corriges uno y el otro queda desactualizado.</p>
 </div>
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Markdown</div><p class="text-xs text-neutral-400">O conteúdo primeiro.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Conversão</div><p class="text-xs text-neutral-400">Ferramenta gerada.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Documento</div><p class="text-xs text-neutral-400">O formato final.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Sincronia</div><p class="text-xs text-neutral-400">Atualize os dois.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Markdown</div><p class="text-xs text-neutral-400">Primero, el contenido.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Conversión</div><p class="text-xs text-neutral-400">Herramienta generada.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Documento</div><p class="text-xs text-neutral-400">El formato final.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Sincronización</div><p class="text-xs text-neutral-400">Actualiza ambos.</p></div>
 </div>
 <div class="flex justify-start mt-6">
 <button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
 <span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
-<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
 </button>
 </div>
 </section>
@@ -620,59 +620,59 @@
 <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
 <div class="flex items-center space-x-4">
 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">7</span>
-<h2 class="text-2xl font-bold">♻️ Iteração &amp; auto-cura</h2>
+<h2 class="text-2xl font-bold">♻️ Iteración y autocuración</h2>
 </div>
 <button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" type="button">
-<span aria-hidden="true">?</span><span>Tenho dúvida</span>
+<span aria-hidden="true">?</span><span>Tengo una duda</span>
 </button>
 </div>
 <p class="text-neutral-300 mb-6 leading-relaxed inema-prose" data-inema-block="m2-2-t7-p1">
-          O primeiro run raramente sai perfeito — e tudo bem. A qualidade vem do <strong class="text-blue-400">loop de iteração</strong>: você dá feedback específico ("gostei da estrutura, mas reformate as fontes como lista") e, se algo quebra, pede para a <strong class="text-blue-400">própria IA se consertar</strong> (auto-cura). Quanto mais específico o feedback, melhor o resultado.
+          El primer run rara vez sale perfecto, y está bien. La calidad viene del <strong class="text-blue-400">bucle de iteración</strong>: das comentarios específicos ("me gustó la estructura, pero reformatea las fuentes como una lista") y, si algo falla, le pides a la <strong class="text-blue-400">que la propia IA se corrija</strong> (autocorrección). Cuanto más específico sea el feedback, mejor será el resultado.
         </p>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
 <h4 class="font-bold text-emerald-400 mb-4">✓ Feedback que funciona</h4>
 <ul class="space-y-3 text-neutral-300 text-sm">
-<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>"Reformate a seção de fontes de tabela para lista."</span></li>
-<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>"O tom está formal demais; deixe mais direto."</span></li>
-<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>"Quebrou? Olhe o erro e se conserte."</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>"Reformatea la sección de fuentes de la tabla como una lista."</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>"El tono es demasiado formal; hazlo más directo."</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>"¿Se rompió? Revisa el error y corrígelo por tu cuenta."</span></li>
 </ul>
 </div>
 <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
-<h4 class="font-bold text-red-400 mb-4">✗ Feedback que trava</h4>
+<h4 class="font-bold text-red-400 mb-4">✗ Comentarios que bloquean</h4>
 <ul class="space-y-3 text-neutral-300 text-sm">
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>"Está ruim." (sem dizer o que nem onde)</span></li>
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>"Refaça tudo." (joga fora o que já estava bom)</span></li>
-<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Desistir no primeiro erro em vez de pedir o conserto.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>"Está mal." (sin decir qué ni dónde)</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>"Vuelve a hacerlo todo." (desecha lo que ya estaba bien)</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Rendirse ante el primer error en vez de pedir que lo corrijan.</span></li>
 </ul>
 </div>
 </div>
 <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
-<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🔁</span> O loop de auto-cura</h3>
-<p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-2-t7-p2">Se o workflow falha, copie o erro e devolva à IA pedindo o conserto. Lembre de pedir que a correção entre no workflow e na ferramenta, não só no resultado — assim a próxima execução já nasce certa.</p>
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🔁</span> El loop de autocuración</h3>
+<p class="text-neutral-300 text-sm inema-prose" data-inema-block="m2-2-t7-p2">Si el workflow falla, copia el error y pídele a la IA que lo corrija. Recuerda pedirle que aplique la corrección al workflow y a la herramienta, no solo al resultado; así, la próxima ejecución ya saldrá bien.</p>
 </div>
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Iterar</div><p class="text-xs text-neutral-400">Primeiro run não é o final.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Específico</div><p class="text-xs text-neutral-400">Diga o quê e onde.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Auto-cura</div><p class="text-xs text-neutral-400">Pedir para se consertar.</p></div>
-<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Persistir</div><p class="text-xs text-neutral-400">Correção no workflow.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Iterar</div><p class="text-xs text-neutral-400">La primera ejecución no es la final.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Específico</div><p class="text-xs text-neutral-400">Di qué y dónde.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Autocuración</div><p class="text-xs text-neutral-400">Pedirle que se corrija.</p></div>
+<div class="bg-dark-800 rounded-lg p-4 border border-dark-600"><div class="text-blue-400 font-semibold text-sm mb-1">Persistir</div><p class="text-xs text-neutral-400">Corrección en el workflow.</p></div>
 </div>
 <div class="flex justify-start mt-6">
 <button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button">
 <span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done hidden">●</span>
-<span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done hidden">Lido</span>
+<span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done hidden">Leído</span>
 </button>
 </div>
 </section>
 <!-- CHECAGEM LEVE -->
 <section class="mb-12" data-inema-check="modulo-2-2#q1">
 <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
-<h2 class="text-xl font-bold mb-4 flex items-center"><span class="mr-2">🧠</span> Checagem rápida</h2>
-<p class="text-neutral-300 mb-4">Onde você deve inserir a API key de um MCP server recém-instalado?</p>
+<h2 class="text-xl font-bold mb-4 flex items-center"><span class="mr-2">🧠</span> Verificación rápida</h2>
+<p class="text-neutral-300 mb-4">¿Dónde debes ingresar la clave de API de un MCP server recién instalado?</p>
 <div class="space-y-2" data-inema-check-options="">
-<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="0" type="button">Colando direto no chat com o agente</button>
-<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="1" type="button">Manualmente no arquivo de configuração, fora do chat</button>
-<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="2" type="button">Pedindo para o agente inseri-la por você</button>
+<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="0" type="button">Pegando directamente en el chat con el agente</button>
+<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="1" type="button">Manualmente en el archivo de configuración, fuera del chat</button>
+<button class="w-full text-left px-4 py-3 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-opt="2" type="button">Pedirle al agente que la inserte por ti</button>
 </div>
 <p class="mt-4 text-sm text-neutral-400 hidden" data-inema-check-feedback=""></p>
 </div>
@@ -680,17 +680,17 @@
 <!-- RESUMO -->
 <section class="mb-8">
 <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
-<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumo do Módulo</h2>
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">📌</span> Resumen del módulo</h2>
 <div class="space-y-4 mb-8">
-<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">MCP</strong><span class="text-neutral-400"> — uma conexão expõe muitas ferramentas; o agente decide qual chamar.</span></div></div>
-<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Encontrar e instalar</strong><span class="text-neutral-400"> — diretórios/GitHub por categoria; .mcp.json gerado; chave manual, fora do chat.</span></div></div>
-<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Verificar</strong><span class="text-neutral-400"> — /mcp mostra status; não apareceu? reinicie o assistente.</span></div></div>
-<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Pesquisa com Firecrawl</strong><span class="text-neutral-400"> — tema → web → síntese → documento (plan/build/run), com alvo de fontes.</span></div></div>
-<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Saída &amp; iteração</strong><span class="text-neutral-400"> — markdown → documento; feedback específico e loop de auto-cura.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">MCP</strong><span class="text-neutral-400"> — una conexión expone muchas herramientas; el agente decide cuál llamar.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Encontrar e instalar</strong><span class="text-neutral-400"> — directorios/GitHub por categoría; .mcp.json generado; clave manual, fuera del chat.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Verificar</strong><span class="text-neutral-400"> — /mcp muestra el estado; ¿no aparece? Reinicia el asistente.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Búsqueda con Firecrawl</strong><span class="text-neutral-400"> — tema → web → síntesis → documento (plan/build/run), con fuentes objetivo.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong class="text-neutral-100">Salida e iteración</strong><span class="text-neutral-400"> — markdown → documento; comentarios específicos y ciclo de autocorrección.</span></div></div>
 </div>
 <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
 <h3 class="font-semibold text-blue-400 mb-2">Próximo Módulo:</h3>
-<p class="text-neutral-300">2.3 — Skills, Geração de Artefatos &amp; Tokens</p>
+<p class="text-neutral-300">2.3 — Skills, generación de artefactos y tokens</p>
 </div>
 <div class="flex flex-col sm:flex-row gap-4">
 <a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="modulo-2-1.html">← Módulo anterior</a>
@@ -701,23 +701,23 @@
 </main>
 <!-- TOC sticky + scrollspy -->
 <aside class="hidden lg:block">
-<nav aria-label="Índice da página" class="sticky top-24 self-start" data-inema-toc="">
-<p class="text-sm text-neutral-400 mb-3">Seção <span data-inema-section-counter=""><span class="inema-toc-pos">1</span> de <span class="inema-toc-total">7</span></span></p>
+<nav aria-label="Índice de la página" class="sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Sección <span data-inema-section-counter=""><span class="inema-toc-pos">1</span> de <span class="inema-toc-total">7</span></span></p>
 <ol class="space-y-1.5 text-sm">
-<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-1">1. O que é MCP</a></li>
-<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-2">2. Onde encontrar servers</a></li>
-<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-3">3. Instalar um MCP server</a></li>
-<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-4">4. Verificar e diagnosticar</a></li>
-<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-5">5. Pesquisa com Firecrawl</a></li>
-<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-6">6. Pipeline de saída</a></li>
-<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-7">7. Iteração &amp; auto-cura</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-1">1. Qué es MCP</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-2">2. Dónde encontrar servers</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-3">3. Instalar un servidor MCP</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-4">4. Verificar y diagnosticar</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-5">5. Investigación con Firecrawl</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-6">6. Pipeline de salida</a></li>
+<li><a class="inema-toc-link text-neutral-400 hover:text-blue-400 block" href="#topico-7">7. Iteración y autocuración</a></li>
 </ol>
 </nav>
 </aside>
 </div>
 <footer class="border-t border-dark-600 py-8 mt-8">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
-<p>Vibe Coding na Prática · Curso original <a class="text-sky-400 hover:text-sky-300 font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
+<p>Vibe Coding en la práctica · Curso original <a class="text-sky-400 hover:text-sky-300 font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
 </div>
 </footer>
 <script>
@@ -736,7 +736,7 @@
       if (window.INEMA && INEMA.setPref) { INEMA.setPref('theme', isDark ? 'inema-dark' : 'claro'); }
     });
   </script>
-<script src="../../assets/learn.js"></script>
+<script src="../../../assets/learn.js"></script>
 <script>
     if (window.INEMA && typeof window.INEMA.init === 'function') {
       window.INEMA.init();
